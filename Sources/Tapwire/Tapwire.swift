@@ -33,13 +33,23 @@ public enum Tapwire {
 
     /// Starts capturing requests made through `URLSession.shared` and through any
     /// configuration passed to ``install(in:)``.
-    public static func start() {
+    ///
+    /// - Parameter showsButton: Shows a small floating button that opens the inspector (iOS only).
+    public static func start(showsButton: Bool = true) {
         #if DEBUG
-        lock.withLock {
-            guard !running else { return }
+        let started: Bool = lock.withLock {
+            guard !running else { return false }
             running = true
             URLProtocol.registerClass(TapwireURLProtocol.self)
+            return true
         }
+        #if os(iOS)
+        if started {
+            DispatchQueue.main.async {
+                if showsButton { FloatingButton.shared.install() }
+            }
+        }
+        #endif
         #endif
     }
 
@@ -55,6 +65,9 @@ public enum Tapwire {
                 store.endPause()
             }
         }
+        #if os(iOS)
+        DispatchQueue.main.async { FloatingButton.shared.uninstall() }
+        #endif
         #endif
     }
 
