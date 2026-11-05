@@ -36,6 +36,7 @@ struct TimelineView: View {
         .background(Theme.background.ignoresSafeArea())
         .safeAreaInset(edge: .bottom) { bottomBar }
         .navigationBarTitleDisplayMode(.inline)
+        .inspectorBarBackground()
         .toolbar { toolbar }
         .navigationDestination(for: UUID.self) { id in
             EntryDetailView(model: model, id: id)

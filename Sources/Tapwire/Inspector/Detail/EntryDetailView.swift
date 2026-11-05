@@ -27,30 +27,35 @@ struct EntryDetailView: View {
         }
         .background(Theme.background.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
+        .inspectorBarBackground()
         .toast($toast)
     }
 
     private func content(_ entry: NetworkEntry) -> some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
+            // The card stays outside the lazy stack so its position keeps being reported
+            // after it scrolls out of view.
+            VStack(alignment: .leading, spacing: 0) {
                 SummaryCard(entry: entry)
                     .background(
                         GeometryReader { proxy in
                             Color.clear.preference(key: SummaryBottomKey.self, value: proxy.frame(in: .named(Self.space)).maxY)
                         }
                     )
-                Section {
-                    VStack(alignment: .leading, spacing: 18) {
-                        HeadersSection(headers: side == .request ? entry.requestHeaders : entry.responseHeaders)
-                        BodySection(
-                            data: side == .request ? entry.requestBody : entry.responseBody,
-                            size: side == .request ? entry.requestBodySize : entry.responseBodySize
-                        )
+                LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
+                    Section {
+                        VStack(alignment: .leading, spacing: 18) {
+                            HeadersSection(headers: side == .request ? entry.requestHeaders : entry.responseHeaders)
+                            BodySection(
+                                data: side == .request ? entry.requestBody : entry.responseBody,
+                                size: side == .request ? entry.requestBodySize : entry.responseBodySize
+                            )
+                        }
+                        .id(side)
+                        .padding(.top, 8)
+                    } header: {
+                        sidePicker
                     }
-                    .id(side)
-                    .padding(.top, 8)
-                } header: {
-                    sidePicker
                 }
             }
             .padding(.horizontal, 16)
@@ -65,10 +70,9 @@ struct EntryDetailView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                if !summaryVisible {
-                    CompactSummary(entry: entry)
-                        .transition(.opacity)
-                }
+                CompactSummary(entry: entry)
+                    .opacity(summaryVisible ? 0 : 1)
+                    .accessibilityHidden(summaryVisible)
             }
             ToolbarItem(placement: .primaryAction) {
                 ShareLink(item: entry.curlCommand) {
@@ -133,9 +137,10 @@ struct EntryDetailView: View {
     private static let space = "entry-detail"
 }
 
+/// Where the summary card's bottom edge is, relative to the top of the scroll view.
 private struct SummaryBottomKey: PreferenceKey {
-    static var defaultValue: CGFloat = 1
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
+    static var defaultValue: CGFloat = .infinity
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = min(value, nextValue()) }
 }
 
 /// The card at the top of the detail screen.

@@ -24,11 +24,12 @@ struct HeadersSection: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(14)
                 }
-                ForEach(shown, id: \.name) { header in
+                ForEach(Array(shown.enumerated()), id: \.element.name) { index, header in
+                    if index > 0 { divider }
                     row(header.name, header.value)
-                    Rectangle().fill(Color(hex: 0x1A221E)).frame(height: 1)
                 }
                 if all.count > Self.collapsedCount {
+                    divider
                     Button(showsAll ? "Show fewer" : "Show all \(all.count) headers") {
                         withAnimation(.easeInOut(duration: 0.2)) { showsAll.toggle() }
                     }
@@ -40,6 +41,10 @@ struct HeadersSection: View {
             .background(Theme.surface, in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(Theme.border))
         }
+    }
+
+    private var divider: some View {
+        Rectangle().fill(Color(hex: 0x1A221E)).frame(height: 1)
     }
 
     private func row(_ name: String, _ value: String) -> some View {
