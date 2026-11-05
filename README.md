@@ -2,7 +2,7 @@
 
 See what your iOS app sends and logs: network requests and analytics events, side by side, in one timeline.
 
-> **Status:** early development. The API below is the target design and will change.
+> **Status:** early development. The network inspector (v1) works; the API may still change before 1.0.
 
 ## What it is
 
@@ -14,12 +14,19 @@ Tapwire is an in-app debugging tool for iOS. It records your app's own `URLSessi
 - **Not for production.** It is built for debug builds and is designed to be easy to exclude from release builds.
 - **No telemetry.** Nothing leaves the device. Tapwire does not phone home.
 
-## Planned features
+## Features
 
 **v1: network inspector**
-- Request and response capture via `URLProtocol`
-- SwiftUI list and detail views with search and filters
-- cURL export and a shake or gesture trigger
+- Request and response capture via `URLProtocol`, kept in memory only
+- A timeline of every request, newest first, with search and filters for status, method and host
+- Request and response detail with headers, pretty or raw JSON bodies and find-in-body
+- Sensitive headers such as `Authorization` and `Cookie` hidden until you tap to reveal them
+- Copy a one-line summary, a body, or the whole request as cURL
+- Pause recording, with the paused gaps marked on the timeline
+- A small floating button and shake-to-open, both optional
+- Native Liquid Glass on iOS 26, with a material fallback on iOS 16 to 25
+
+## Planned
 
 **v1.1: analytics timeline**
 - Optional adapters as separate products: `TapwirePostHog`, `TapwireAppsFlyer`
@@ -35,17 +42,44 @@ Tapwire is an in-app debugging tool for iOS. It records your app's own `URLSessi
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/<your-username>/tapwire", from: "0.1.0")
+.package(url: "https://github.com/BachoOnn/tapwire", from: "0.1.0")
 ```
 
-## Quick start (target API)
+## Quick start
+
+Start Tapwire as early as possible, for example in your app's `init`:
 
 ```swift
-#if DEBUG
 import Tapwire
 
-Tapwire.start()
-#endif
+@main
+struct MyApp: App {
+    init() {
+        Tapwire.start()
+    }
+    // ...
+}
+```
+
+Tap the floating button or shake the device to open the inspector. In builds without
+`DEBUG`, every Tapwire call does nothing.
+
+`Tapwire.start()` covers `URLSession.shared`. For your own sessions, add Tapwire to the
+configuration before creating the session:
+
+```swift
+let configuration = URLSessionConfiguration.default
+Tapwire.install(in: configuration)
+let session = URLSession(configuration: configuration)
+```
+
+Other options:
+
+```swift
+Tapwire.start(showsButton: false, opensOnShake: true) // choose how the inspector opens
+Tapwire.present()                                       // open it from your own debug menu
+Tapwire.pause()                                         // stop recording until resume()
+Tapwire.resume()
 ```
 
 ## Requirements
