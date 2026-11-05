@@ -81,6 +81,17 @@ public enum Tapwire {
         #endif
     }
 
+    /// Opens the inspector over the app's current screen.
+    ///
+    /// Use this to open Tapwire from your own debug menu. It does nothing in non-`DEBUG`
+    /// builds, on platforms other than iOS, or when the inspector is already open.
+    @MainActor
+    public static func present() {
+        #if DEBUG && os(iOS)
+        InspectorPresenter.present()
+        #endif
+    }
+
     /// Adds Tapwire to a custom session configuration.
     ///
     /// `start()` only covers `URLSession.shared`. Call this on a configuration before
