@@ -34,8 +34,10 @@ public enum Tapwire {
     /// Starts capturing requests made through `URLSession.shared` and through any
     /// configuration passed to ``install(in:)``.
     ///
-    /// - Parameter showsButton: Shows a small floating button that opens the inspector (iOS only).
-    public static func start(showsButton: Bool = true) {
+    /// - Parameters:
+    ///   - showsButton: Shows a small floating button that opens the inspector (iOS only).
+    ///   - opensOnShake: Opens the inspector when the device is shaken (iOS only).
+    public static func start(showsButton: Bool = true, opensOnShake: Bool = true) {
         #if DEBUG
         let started: Bool = lock.withLock {
             guard !running else { return false }
@@ -47,6 +49,7 @@ public enum Tapwire {
         if started {
             DispatchQueue.main.async {
                 if showsButton { FloatingButton.shared.install() }
+                if opensOnShake { ShakeToOpen.enable() }
             }
         }
         #endif
@@ -66,7 +69,10 @@ public enum Tapwire {
             }
         }
         #if os(iOS)
-        DispatchQueue.main.async { FloatingButton.shared.uninstall() }
+        DispatchQueue.main.async {
+            FloatingButton.shared.uninstall()
+            ShakeToOpen.isEnabled = false
+        }
         #endif
         #endif
     }
