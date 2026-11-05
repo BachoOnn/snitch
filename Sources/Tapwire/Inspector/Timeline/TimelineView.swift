@@ -7,6 +7,7 @@ struct TimelineView: View {
     let onClose: () -> Void
 
     @State private var toast: Toast?
+    @State private var showsFilters = false
 
     var body: some View {
         let sections = model.sections
@@ -116,6 +117,16 @@ struct TimelineView: View {
             .padding(.horizontal, 18)
             .frame(height: 52)
             .tapwireGlass(in: Capsule())
+
+            Button { showsFilters = true } label: {
+                GlassCircle(systemImage: "line.3.horizontal.decrease", badge: model.filter.tokens.count)
+            }
+            .accessibilityLabel(model.filter.isEmpty ? "Filters" : "Filters, \(model.filter.tokens.count) active")
+            .popover(isPresented: $showsFilters, arrowEdge: .bottom) {
+                FilterPanel(filter: $model.filter, methods: model.methods, hosts: model.hosts)
+                    .compactPopover()
+                    .preferredColorScheme(.dark)
+            }
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
