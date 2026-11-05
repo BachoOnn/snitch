@@ -104,4 +104,40 @@ struct NetworkStoreTests {
         #expect("\(entry)" == "POST api.example.test/users 201")
         #expect(!String(reflecting: entry).contains("secret"))
     }
+
+    @Test func recordsPauses() {
+        let store = NetworkStore()
+        let start = Date(timeIntervalSince1970: 100)
+        store.beginPause(at: start)
+        store.beginPause(at: start.addingTimeInterval(5))
+        #expect(store.pauses.count == 1, "a second begin while paused is ignored")
+        #expect(store.pauses.first?.end == nil)
+
+        store.endPause(at: start.addingTimeInterval(47))
+        #expect(store.pauses.first?.end == start.addingTimeInterval(47))
+        store.endPause()
+        #expect(store.pauses.count == 1)
+    }
+
+    @Test func clearKeepsActivePause() {
+        let store = NetworkStore()
+        store.beginPause()
+        store.endPause()
+        store.beginPause()
+        store.insert(make("a"))
+        store.clear()
+        #expect(store.entries.isEmpty)
+        #expect(store.pauses.count == 1)
+        #expect(store.pauses.first?.end == nil)
+    }
+
+    @Test func keepsAtMostFiftyPauses() {
+        let store = NetworkStore()
+        for _ in 0..<60 {
+            store.beginPause()
+            store.endPause()
+        }
+        #expect(store.pauses.count == NetworkStore.maxPauses)
+    }
 }
+

@@ -169,4 +169,26 @@ final class TapwireURLProtocolTests {
         _ = try await session.data(from: Self.base)
         #expect(Tapwire.store.entries.isEmpty)
     }
+
+    @Test func pauseSkipsCaptureAndRecordsGap() async throws {
+        Tapwire.pause()
+        #expect(Tapwire.isPaused)
+        _ = try await session.data(from: Self.base)
+        #expect(Tapwire.store.entries.isEmpty, "requests made while paused are not recorded")
+        #expect(Tapwire.store.pauses.last?.end == nil)
+
+        Tapwire.resume()
+        #expect(!Tapwire.isPaused)
+        #expect(Tapwire.store.pauses.last?.end != nil)
+        _ = try await session.data(from: Self.base)
+        #expect(try await completed(1).count == 1)
+    }
+
+    @Test func stopEndsPause() {
+        Tapwire.pause()
+        Tapwire.stop()
+        #expect(!Tapwire.isPaused)
+        #expect(Tapwire.store.pauses.last?.end != nil)
+    }
 }
+

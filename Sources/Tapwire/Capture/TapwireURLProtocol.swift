@@ -25,7 +25,7 @@ final class TapwireURLProtocol: URLProtocol {
     private var stopped = false
 
     override class func canInit(with request: URLRequest) -> Bool {
-        guard Tapwire.isRunning,
+        guard Tapwire.isCapturing,
               let scheme = request.url?.scheme?.lowercased(),
               scheme == "http" || scheme == "https",
               property(forKey: handledKey, in: request) == nil
