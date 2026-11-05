@@ -37,6 +37,9 @@ struct TimelineView: View {
         .safeAreaInset(edge: .bottom) { bottomBar }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbar }
+        .navigationDestination(for: UUID.self) { id in
+            EntryDetailView(model: model, id: id)
+        }
         .toast($toast)
     }
 
