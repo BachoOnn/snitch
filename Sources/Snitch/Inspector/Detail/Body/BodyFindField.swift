@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The search field above a body, with the number of matching lines.
@@ -25,4 +24,3 @@ struct BodyFindField: View {
         .frame(height: Theme.Size.field)
     }
 }
-#endif

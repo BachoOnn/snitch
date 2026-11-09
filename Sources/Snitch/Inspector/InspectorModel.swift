@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// State shared by the inspector's screens. Mirrors the store and holds the filters.
@@ -50,4 +49,3 @@ final class InspectorModel: ObservableObject {
         store.clear()
     }
 }
-#endif

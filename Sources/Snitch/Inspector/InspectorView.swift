@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The inspector's root: a navigation stack that starts on the timeline.
@@ -19,4 +18,3 @@ struct InspectorView: View {
         .task { await model.observe() }
     }
 }
-#endif

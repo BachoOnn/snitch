@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The card at the top of the detail screen: status, endpoint, error, and timing.
@@ -39,4 +38,3 @@ struct SummaryCard: View {
         }
     }
 }
-#endif

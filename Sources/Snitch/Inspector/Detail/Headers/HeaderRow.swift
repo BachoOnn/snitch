@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// One header: name, value, and an eye button for sensitive values. Long press copies.
@@ -57,4 +56,3 @@ struct HeaderRow: View {
         }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// Lays children out in rows, wrapping to a new row when the width runs out.
@@ -46,4 +45,3 @@ struct FlowLayout: Layout {
         return rows
     }
 }
-#endif

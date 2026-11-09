@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// One request in full: a summary card, then its request or response headers and body.
@@ -108,4 +107,3 @@ struct EntryDetailView: View {
 
     private static let space = "entry-detail"
 }
-#endif

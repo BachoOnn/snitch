@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The active filters as removable chips, under a `FILTERED · N` label.
@@ -33,4 +32,3 @@ struct ActiveFilters: View {
         }
     }
 }
-#endif

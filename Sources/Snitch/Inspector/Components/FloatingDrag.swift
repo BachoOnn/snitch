@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// Lets a floating control be dragged anywhere inside its container. It stays exactly
@@ -42,4 +41,3 @@ extension View {
         modifier(FloatingDrag(center: center, isDragging: isDragging, size: size, margin: margin))
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The Pretty · Raw switch for JSON bodies.
@@ -27,4 +26,3 @@ struct BodyFormatToggle: View {
             .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
-#endif

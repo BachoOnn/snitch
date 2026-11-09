@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The compact filter panel shown in a popover from the filter button.
@@ -46,4 +45,3 @@ struct FilterPanel: View {
         .buttonStyle(.plain)
     }
 }
-#endif

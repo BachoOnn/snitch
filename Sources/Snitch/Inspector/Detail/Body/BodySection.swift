@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A request or response body: pretty or raw, with find and line numbers.
@@ -40,4 +39,3 @@ struct BodySection: View {
         }
     }
 }
-#endif

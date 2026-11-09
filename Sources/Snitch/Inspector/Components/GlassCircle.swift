@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A round glass button face for floating actions, such as filters and copy.
@@ -32,4 +31,3 @@ struct GlassCircle: View {
         }
     }
 }
-#endif

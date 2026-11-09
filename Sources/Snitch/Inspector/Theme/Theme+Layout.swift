@@ -1,4 +1,3 @@
-#if os(iOS)
 import CoreGraphics
 
 extension Theme {
@@ -46,4 +45,3 @@ extension Theme {
         static let methodPill = CGSize(width: 52, height: 28)
     }
 }
-#endif

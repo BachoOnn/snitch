@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// One timeline item: a request that opens its detail and can be copied with a
@@ -35,4 +34,3 @@ struct TimelineItemView: View {
         toast = Toast(title: "Copied", detail: "\(entry.method) \(entry.displayPath)")
     }
 }
-#endif

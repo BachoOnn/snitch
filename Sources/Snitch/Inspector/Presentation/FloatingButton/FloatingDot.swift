@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The green activity dot. It pulses on each new request and shows a badge after errors.
@@ -42,4 +41,3 @@ struct FloatingDot: View {
         withAnimation(.easeIn(duration: 0.25).delay(0.12)) { pulse = false }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The Failed and Pending toggles: outcomes that have no status code.
@@ -25,4 +24,3 @@ struct ResultFilters: View {
         .frame(height: Theme.Size.field)
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The trash button. Asks for confirmation before clearing every request.
@@ -31,4 +30,3 @@ struct ClearButton: View {
         count == 1 ? "Clear Request" : "Clear \(count) Requests"
     }
 }
-#endif

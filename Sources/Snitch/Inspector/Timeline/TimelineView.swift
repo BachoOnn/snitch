@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The inspector's first screen: every captured request on one wire, newest first.
@@ -71,4 +70,3 @@ struct TimelineView: View {
         }
     }
 }
-#endif

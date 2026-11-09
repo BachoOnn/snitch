@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A short confirmation shown at the top of a screen, such as `Copied`.
@@ -62,4 +61,3 @@ private struct ToastView: View {
         .accessibilityElement(children: .combine)
     }
 }
-#endif

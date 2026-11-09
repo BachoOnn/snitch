@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A request's or response's headers. Shows the first few, hides sensitive values.
@@ -43,4 +42,3 @@ struct HeadersSection: View {
         .frame(maxWidth: .infinity, minHeight: Theme.Size.row)
     }
 }
-#endif

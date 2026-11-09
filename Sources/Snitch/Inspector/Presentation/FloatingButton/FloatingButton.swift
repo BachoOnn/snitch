@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 import UIKit
 
@@ -127,4 +126,3 @@ final class FloatingButton: NSObject {
         )
     }
 }
-#endif

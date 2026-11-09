@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 import UIKit
 
@@ -59,4 +58,3 @@ enum InspectorPresenter {
         }
     }
 }
-#endif

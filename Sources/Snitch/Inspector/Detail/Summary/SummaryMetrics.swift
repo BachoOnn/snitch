@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// Duration · response size · start time, under a hairline at the bottom of the summary card.
@@ -24,4 +23,3 @@ struct SummaryMetrics: View {
         Rectangle().fill(Theme.control).frame(width: Theme.Size.hairline, height: 12)
     }
 }
-#endif

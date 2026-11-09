@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 /// Copies text to the clipboard with a light haptic.
@@ -9,4 +8,3 @@ enum Clipboard {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 }
-#endif

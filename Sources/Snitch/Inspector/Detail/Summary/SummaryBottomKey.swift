@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// Where the summary card's bottom edge is, relative to the top of the scroll view.
@@ -20,4 +19,3 @@ extension View {
         )
     }
 }
-#endif

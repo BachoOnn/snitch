@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The vertical line that joins the timeline's pills. Dashed across pause gaps.
@@ -37,4 +36,3 @@ extension View {
             .background(Wire(dashed: dashed))
     }
 }
-#endif

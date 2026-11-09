@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The navigation title: SNITCH over a status dot and the number of requests.
@@ -31,4 +30,3 @@ struct RecordingTitle: View {
             .frame(width: Theme.Size.statusDot, height: Theme.Size.statusDot)
     }
 }
-#endif

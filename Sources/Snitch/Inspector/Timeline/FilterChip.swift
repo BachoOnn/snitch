@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A quiet, removable chip for one active filter.
@@ -25,4 +24,3 @@ struct FilterChip: View {
         .accessibilityLabel("Remove filter \(label)")
     }
 }
-#endif

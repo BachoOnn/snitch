@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A row that opens a native menu of options with checkmarks, such as Method or Host.
@@ -49,4 +48,3 @@ struct ChoiceMenu: View {
         selection.isEmpty ? "All" : selection.sorted().joined(separator: ", ")
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The Request · Response switch pinned above the headers and body.
@@ -28,4 +27,3 @@ struct SidePicker: View {
             .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
-#endif

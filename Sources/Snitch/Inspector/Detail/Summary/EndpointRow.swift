@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 import UIKit
 
@@ -46,4 +45,3 @@ struct EndpointRow: View {
         return text
     }
 }
-#endif

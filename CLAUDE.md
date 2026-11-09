@@ -5,7 +5,7 @@ Debugging tool for iOS: network requests and analytics events in one SwiftUI tim
 ## Rules
 
 - Personal open source project. Build everything from scratch. Never copy or adapt code, names, designs, or architecture from any employer's codebase.
-- SwiftUI only for UI. iOS 16+, Swift 5.9+.
+- iOS only: no macOS or other platforms, so no `#if os(...)` guards. SwiftUI only for UI. iOS 16+, Swift 5.9+.
 - The core target has zero third-party dependencies. Analytics adapters (PostHog, AppsFlyer) are separate SPM products that depend on their SDKs. Core defines a small protocol and never imports them.
 - Debug-only by default. Guard public entry points with `#if DEBUG` or a clear runtime opt-in so it can't ship active in a release build by accident.
 - No telemetry, no network calls of its own, no data leaves the device.
@@ -16,7 +16,7 @@ Debugging tool for iOS: network requests and analytics events in one SwiftUI tim
 ## Workflow
 
 - Work in small tasks, one feature at a time.
-- Run `swift build` and `swift test` after each change.
+- Run the tests on the simulator after each change: `xcodebuild test -scheme Snitch -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -derivedDataPath .build/xcode -quiet`.
 - Add a test for every new behavior.
 
 ## Roadmap

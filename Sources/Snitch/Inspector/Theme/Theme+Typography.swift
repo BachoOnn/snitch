@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 extension Theme {
@@ -13,4 +12,3 @@ extension Theme {
     /// Small uppercase section labels, such as `HEADERS · 6`.
     static let sectionLabel = Font.system(size: 11, weight: .semibold)
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A short message in place of missing content, such as "No body".
@@ -18,4 +17,3 @@ struct DetailNote: View {
             .background(Theme.surface, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
     }
 }
-#endif

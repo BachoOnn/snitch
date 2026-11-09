@@ -35,8 +35,8 @@ public enum Snitch {
     /// configuration passed to ``install(in:)``.
     ///
     /// - Parameters:
-    ///   - showsButton: Shows a small floating button that opens the inspector (iOS only).
-    ///   - opensOnShake: Opens the inspector when the device is shaken (iOS only).
+    ///   - showsButton: Shows a small floating button that opens the inspector.
+    ///   - opensOnShake: Opens the inspector when the device is shaken.
     public static func start(showsButton: Bool = true, opensOnShake: Bool = true) {
         #if DEBUG
         let started: Bool = lock.withLock {
@@ -45,14 +45,12 @@ public enum Snitch {
             URLProtocol.registerClass(SnitchURLProtocol.self)
             return true
         }
-        #if os(iOS)
         if started {
             DispatchQueue.main.async {
                 if showsButton { FloatingButton.shared.install() }
                 if opensOnShake { ShakeToOpen.enable() }
             }
         }
-        #endif
         #endif
     }
 
@@ -68,12 +66,10 @@ public enum Snitch {
                 store.endPause()
             }
         }
-        #if os(iOS)
         DispatchQueue.main.async {
             FloatingButton.shared.uninstall()
             ShakeToOpen.isEnabled = false
         }
-        #endif
         #endif
     }
 
@@ -103,10 +99,10 @@ public enum Snitch {
     /// Opens the inspector over the app's current screen.
     ///
     /// Use this to open Snitch from your own debug menu. It does nothing in non-`DEBUG`
-    /// builds, on platforms other than iOS, or when the inspector is already open.
+    /// builds or when the inspector is already open.
     @MainActor
     public static func present() {
-        #if DEBUG && os(iOS)
+        #if DEBUG
         InspectorPresenter.present()
         #endif
     }

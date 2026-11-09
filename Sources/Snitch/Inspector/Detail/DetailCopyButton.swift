@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The floating copy button on the detail screen. Tap copies the body,
@@ -44,4 +43,3 @@ struct DetailCopyButton: View {
         }
     }
 }
-#endif

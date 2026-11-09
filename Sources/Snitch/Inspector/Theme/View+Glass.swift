@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 extension View {
@@ -21,4 +20,3 @@ extension View {
             .overlay(shape.stroke(Theme.veil(0.10), lineWidth: Theme.Size.hairline))
     }
 }
-#endif

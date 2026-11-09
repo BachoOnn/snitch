@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The 200 · 300 · 400 · 500 toggles, plus exact codes the user adds.
@@ -96,4 +95,3 @@ extension EntryFilter.StatusClass {
         }
     }
 }
-#endif

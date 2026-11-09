@@ -1,4 +1,3 @@
-#if os(iOS)
 import ObjectiveC
 import UIKit
 
@@ -40,4 +39,3 @@ extension UIWindow {
         }
     }
 }
-#endif

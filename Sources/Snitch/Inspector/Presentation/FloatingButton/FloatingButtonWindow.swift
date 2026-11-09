@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 /// A window that holds only the floating button. It is the button's size and moves with
@@ -16,4 +15,3 @@ extension UIWindowScene {
         windows.first { !($0 is FloatingButtonWindow) }
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The inspector's design system: colors here, layout in `Theme+Layout`, type in
@@ -66,4 +65,3 @@ enum Theme {
         Color(name, bundle: .module)
     }
 }
-#endif

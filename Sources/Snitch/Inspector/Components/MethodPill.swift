@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The HTTP method in a pill colored by how the request ended.
@@ -32,4 +31,3 @@ struct MethodPill: View {
             }
     }
 }
-#endif

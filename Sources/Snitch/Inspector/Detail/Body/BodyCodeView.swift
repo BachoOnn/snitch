@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// Body lines with a find field, line numbers, and a truncation note when needed.
@@ -44,4 +43,3 @@ struct BodyCodeView: View {
         .padding(.vertical, Theme.Spacing.m)
     }
 }
-#endif

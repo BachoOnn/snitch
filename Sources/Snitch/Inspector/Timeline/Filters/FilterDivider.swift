@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A hairline between filter panel sections.
@@ -8,4 +7,3 @@ struct FilterDivider: View {
             .padding(.top, Theme.Spacing.s)
     }
 }
-#endif

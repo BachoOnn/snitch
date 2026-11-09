@@ -1,4 +1,3 @@
-#if os(iOS)
 import Foundation
 
 /// Watches the store for the button's pulse and error badge.
@@ -35,4 +34,3 @@ final class FloatingButtonModel: ObservableObject {
         hasNewErrors = entries.contains { $0.startDate > lastSeen && $0.outcome.isError }
     }
 }
-#endif

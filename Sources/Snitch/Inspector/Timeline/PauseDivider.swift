@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// Marks a stretch of time when capture was paused: a pause icon on a dashed wire,
@@ -56,4 +55,3 @@ struct PauseDivider: View {
             : "Paused for \(pause.durationText), requests were not recorded"
     }
 }
-#endif

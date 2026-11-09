@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The one-line summary shown in the navigation bar once the card scrolls away.
@@ -22,4 +21,3 @@ struct CompactSummary: View {
         .frame(maxWidth: Self.maxWidth)
     }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 import UIKit
 
@@ -50,4 +49,3 @@ struct SelectableText: UIViewRepresentable {
         return CGSize(width: ceil(bounds.width) + 1, height: ceil(bounds.height))
     }
 }
-#endif

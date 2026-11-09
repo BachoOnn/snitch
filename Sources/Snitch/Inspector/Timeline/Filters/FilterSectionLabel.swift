@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A small uppercase heading inside the filter panel.
@@ -20,4 +19,3 @@ struct FilterSectionLabel: View {
             .padding(.bottom, Theme.Spacing.xs)
     }
 }
-#endif

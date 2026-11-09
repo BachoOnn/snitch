@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// The floating bar under the timeline: search plus the filter button and its panel.
@@ -44,4 +43,3 @@ struct TimelineBottomBar: View {
         }
     }
 }
-#endif

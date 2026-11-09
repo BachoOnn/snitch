@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A one-point horizontal line between rows.
@@ -9,4 +8,3 @@ struct Hairline: View {
         Rectangle().fill(color).frame(height: Theme.Size.hairline)
     }
 }
-#endif

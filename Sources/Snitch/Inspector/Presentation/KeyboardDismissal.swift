@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 /// Hides the keyboard when the user taps anywhere outside a text field.
@@ -37,4 +36,3 @@ final class KeyboardDismissal: NSObject, UIGestureRecognizerDelegate {
         true
     }
 }
-#endif

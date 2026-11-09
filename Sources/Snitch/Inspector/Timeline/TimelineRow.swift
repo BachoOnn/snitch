@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// One request in the timeline: method pill, endpoint, host, status and a small duration.
@@ -59,4 +58,3 @@ struct TimelineRow: View {
         }
     }
 }
-#endif

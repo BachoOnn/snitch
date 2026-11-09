@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// A tile that is tinted green while its filter is on.
@@ -22,4 +21,3 @@ struct FilterToggleCell<Content: View>: View {
         .accessibilityAddTraits(isOn ? .isSelected : [])
     }
 }
-#endif

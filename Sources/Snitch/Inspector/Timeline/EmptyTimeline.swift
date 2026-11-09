@@ -1,4 +1,3 @@
-#if os(iOS)
 import SwiftUI
 
 /// Shown when there is nothing to list, either yet or after filtering.
@@ -25,4 +24,3 @@ struct EmptyTimeline: View {
         .padding(.top, Self.topOffset)
     }
 }
-#endif
