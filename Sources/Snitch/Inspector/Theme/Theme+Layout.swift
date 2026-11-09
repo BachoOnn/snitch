@@ -14,6 +14,8 @@ extension Theme {
         static let xxl: CGFloat = 16
         static let xxxl: CGFloat = 20
 
+        /// The gap between the sections of a screen, such as headers and body.
+        static let section: CGFloat = 18
         /// The horizontal margin of every screen.
         static let screen: CGFloat = 16
         /// Room left under scrolling content so the floating controls never cover it.

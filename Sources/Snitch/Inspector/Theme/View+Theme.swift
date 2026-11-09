@@ -9,6 +9,16 @@ extension View {
             .toolbarBackground(.visible, for: .navigationBar)
     }
 
+    /// A filled, outlined rounded rectangle behind the view, the shape of every card.
+    func cardStyle(
+        radius: CGFloat = Theme.Radius.card,
+        fill: Color = Theme.surface,
+        stroke: Color = Theme.border
+    ) -> some View {
+        let shape = RoundedRectangle(cornerRadius: radius)
+        return background(fill, in: shape).overlay(shape.strokeBorder(stroke))
+    }
+
     /// Applies the small uppercase section-label style.
     func sectionLabelStyle() -> some View {
         font(Theme.sectionLabel)

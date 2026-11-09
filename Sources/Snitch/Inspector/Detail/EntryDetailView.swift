@@ -1,34 +1,21 @@
 #if os(iOS)
 import SwiftUI
-import UIKit
 
 /// One request in full: a summary card, then its request or response headers and body.
 struct EntryDetailView: View {
     @ObservedObject var model: InspectorModel
     let id: UUID
 
-    enum Side: String, CaseIterable {
-        case request = "Request", response = "Response"
-    }
-
-    @State private var side: Side = .request
+    @State private var side: EntrySide = .request
     @State private var summaryVisible = true
     @State private var toast: Toast?
-    @State private var copyButtonCenter: CGPoint? = Self.lastCopyButtonCenter
-    @State private var draggingCopyButton = false
-
-    /// Where the copy button was last left, so it stays put across detail screens.
-    private static var lastCopyButtonCenter: CGPoint?
 
     var body: some View {
         Group {
             if let entry = model.entry(id: id) {
                 content(entry)
             } else {
-                Text("This request was cleared.")
-                    .font(.system(size: 15))
-                    .foregroundStyle(Theme.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                clearedNote
             }
         }
         .background(Theme.background.ignoresSafeArea())
@@ -43,98 +30,67 @@ struct EntryDetailView: View {
             // after it scrolls out of view.
             VStack(alignment: .leading, spacing: 0) {
                 SummaryCard(entry: entry, onCopy: copy)
-                    .background(
-                        GeometryReader { proxy in
-                            Color.clear.preference(key: SummaryBottomKey.self, value: proxy.frame(in: .named(Self.space)).maxY)
-                        }
-                    )
+                    .reportsSummaryBottom(in: Self.space)
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
                     Section {
-                        VStack(alignment: .leading, spacing: 18) {
-                            HeadersSection(headers: side == .request ? entry.requestHeaders : entry.responseHeaders, onCopy: copy)
-                            BodySection(
-                                data: side == .request ? entry.requestBody : entry.responseBody,
-                                size: side == .request ? entry.requestBodySize : entry.responseBodySize
-                            )
-                        }
-                        .id(side)
-                        .padding(.top, 8)
+                        sections(entry)
                     } header: {
-                        sidePicker
+                        SidePicker(selection: $side)
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 100)
+            .padding(.horizontal, Theme.Spacing.screen)
+            .padding(.bottom, Theme.Spacing.floatingClearance)
         }
         .scrollDismissesKeyboard(.interactively)
         .coordinateSpace(name: Self.space)
-        .onPreferenceChange(SummaryBottomKey.self) { bottom in
-            let visible = bottom > 0
-            if visible != summaryVisible {
-                withAnimation(.easeInOut(duration: 0.2)) { summaryVisible = visible }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                CompactSummary(entry: entry)
-                    .opacity(summaryVisible ? 0 : 1)
-                    .accessibilityHidden(summaryVisible)
-            }
-            ToolbarItem(placement: .primaryAction) {
-                ShareLink(item: entry.curlCommand) {
-                    Image(systemName: "square.and.arrow.up")
-                }
-                .accessibilityLabel("Share as cURL")
-            }
-        }
+        .onPreferenceChange(SummaryBottomKey.self, perform: updateSummaryVisibility)
+        .toolbar { toolbar(entry) }
         .overlay {
-            copyButton(entry)
-                .floatingDrag(center: $copyButtonCenter, isDragging: $draggingCopyButton, size: CGSize(width: 52, height: 52))
-                // The keyboard should not push the button up over the content.
-                .ignoresSafeArea(.keyboard)
+            DetailCopyButton(
+                onCopy: { copyBody(of: entry) },
+                onCopyAsCurl: { copy(entry.curlCommand, confirmation: "Copied as cURL") }
+            )
         }
-        .onChange(of: copyButtonCenter) { Self.lastCopyButtonCenter = $0 }
     }
 
-    private var sidePicker: some View {
-        HStack(spacing: 4) {
-            ForEach(Side.allCases, id: \.self) { option in
-                Button(option.rawValue) { side = option }
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(side == option ? Theme.onAccent : Theme.textMuted)
-                    .frame(maxWidth: .infinity, minHeight: 36)
-                    .background(side == option ? Theme.accentFill : .clear, in: Capsule())
-                    .accessibilityAddTraits(side == option ? .isSelected : [])
-            }
+    private func sections(_ entry: NetworkEntry) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.section) {
+            HeadersSection(headers: entry.headers(on: side), onCopy: copy)
+            BodySection(data: entry.body(on: side), size: entry.bodySize(on: side))
         }
-        .padding(4)
-        .snitchGlass(in: Capsule())
-        .padding(.vertical, 10)
-        .background(Theme.background)
+        // Fresh state, such as find text, for each side.
+        .id(side)
+        .padding(.top, Theme.Spacing.s)
     }
 
-    private func copyButton(_ entry: NetworkEntry) -> some View {
-        Button {
-            // A drag that ends on the button must not also copy.
-            guard !draggingCopyButton else { return }
-            copyBody(of: entry)
-        } label: {
-            GlassCircle(systemImage: "doc.on.doc")
+    @ToolbarContentBuilder
+    private func toolbar(_ entry: NetworkEntry) -> some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            CompactSummary(entry: entry)
+                .opacity(summaryVisible ? 0 : 1)
+                .accessibilityHidden(summaryVisible)
         }
-        .accessibilityLabel("Copy")
-        .accessibilityHint("Long press for more options. Drag to move.")
-        .contextMenu {
-            Button { copyBody(of: entry) } label: {
-                Label("Copy", systemImage: "doc.on.doc")
+        ToolbarItem(placement: .primaryAction) {
+            ShareLink(item: entry.curlCommand) {
+                Image(systemName: "square.and.arrow.up")
             }
-            Button {
-                Clipboard.copy(entry.curlCommand)
-                toast = Toast(title: "Copied as cURL")
-            } label: {
-                Label("Copy as cURL", systemImage: "chevron.left.forwardslash.chevron.right")
-            }
+            .accessibilityLabel("Share as cURL")
         }
+    }
+
+    private var clearedNote: some View {
+        Text("This request was cleared.")
+            .font(.system(size: 15))
+            .foregroundStyle(Theme.secondary)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    /// Shows the compact summary in the bar once the card has scrolled away.
+    private func updateSummaryVisibility(bottom: CGFloat) {
+        let visible = bottom > 0
+        guard visible != summaryVisible else { return }
+        withAnimation(.easeInOut(duration: 0.2)) { summaryVisible = visible }
     }
 
     private func copy(_ text: String, confirmation: String) {
@@ -143,113 +99,13 @@ struct EntryDetailView: View {
     }
 
     private func copyBody(of entry: NetworkEntry) {
-        let data = side == .request ? entry.requestBody : entry.responseBody
-        guard let data, let text = BodyFormatter.copyText(for: data) else {
+        guard let data = entry.body(on: side), let text = BodyFormatter.copyText(for: data) else {
             toast = Toast(title: "No body to copy")
             return
         }
-        Clipboard.copy(text)
-        toast = Toast(title: "Copied")
+        copy(text, confirmation: "Copied")
     }
 
     private static let space = "entry-detail"
-}
-
-/// Where the summary card's bottom edge is, relative to the top of the scroll view.
-private struct SummaryBottomKey: PreferenceKey {
-    static var defaultValue: CGFloat = .infinity
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = min(value, nextValue()) }
-}
-
-/// The card at the top of the detail screen.
-struct SummaryCard: View {
-    let entry: NetworkEntry
-    /// Copies text and shows a confirmation.
-    let onCopy: (_ text: String, _ confirmation: String) -> Void
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 10) {
-                MethodPill(method: entry.method, outcome: entry.outcome)
-                Text(entry.displayStatus)
-                    .font(Theme.mono(20, .bold))
-                    .foregroundStyle(entry.outcome == .pending ? Theme.secondary : Theme.color(for: entry.outcome))
-                if let phrase = entry.reasonPhrase, entry.outcome != .failed {
-                    Text(phrase)
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(Theme.secondary)
-                }
-            }
-            HStack(alignment: .top, spacing: 8) {
-                SelectableText(text: endpoint)
-                    .id(colorScheme)
-                    .accessibilityLabel(entry.url?.absoluteString ?? "")
-                Button {
-                    onCopy(entry.url?.absoluteString ?? "", "URL copied")
-                } label: {
-                    Image(systemName: "doc.on.doc")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(Theme.secondary)
-                        .frame(width: 28, height: 28)
-                        .background(Theme.veil(0.06), in: Circle())
-                }
-                .accessibilityLabel("Copy URL")
-                .padding(.top, -5)
-            }
-            if let error = entry.error {
-                Text(error)
-                    .font(.system(size: 13))
-                    .foregroundStyle(Theme.danger)
-            }
-            HStack(spacing: 14) {
-                Text(entry.displayDuration ?? "pending")
-                separator
-                Text(NetworkEntry.format(bytes: entry.responseBodySize))
-                separator
-                Text(entry.startDate.formatted(date: .omitted, time: .standard))
-            }
-            .font(Theme.mono(12))
-            .foregroundStyle(Theme.textMuted)
-            .padding(.top, 8)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .overlay(alignment: .top) { Rectangle().fill(Theme.border).frame(height: 1) }
-        }
-        .padding(14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20))
-        .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(Theme.border))
-        .accessibilityElement(children: .contain)
-    }
-
-    /// Host, dimmed, followed by the path and query.
-    private var endpoint: NSAttributedString {
-        let font = UIFont.monospacedSystemFont(ofSize: 13, weight: .medium)
-        let text = NSMutableAttributedString(
-            string: entry.displayHost,
-            attributes: [.font: font, .foregroundColor: UIColor(Theme.tertiary)]
-        )
-        text.append(NSAttributedString(string: entry.displayPath, attributes: [.font: font, .foregroundColor: UIColor(Theme.text)]))
-        return text
-    }
-
-    private var separator: some View {
-        Rectangle().fill(Theme.control).frame(width: 1, height: 12)
-    }
-}
-
-/// The one-line summary shown in the navigation bar once the card scrolls away.
-private struct CompactSummary: View {
-    let entry: NetworkEntry
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Circle().fill(Theme.color(for: entry.outcome)).frame(width: 7, height: 7)
-            Text(entry.displayStatus).foregroundStyle(Theme.color(for: entry.outcome))
-            Text(entry.method).foregroundStyle(Theme.textMuted)
-            Text(entry.displayPath).foregroundStyle(Theme.text).lineLimit(1).truncationMode(.middle)
-        }
-        .font(Theme.mono(13, .semibold))
-        .frame(maxWidth: 240)
-    }
 }
 #endif

@@ -17,7 +17,7 @@ struct ActiveFilters: View {
         .padding(.top, Theme.Spacing.xxs)
         .padding(.bottom, Theme.Spacing.xxl)
         .overlay(alignment: .bottom) {
-            Rectangle().fill(Theme.veil(0.07)).frame(height: Theme.Size.hairline)
+            Hairline(color: Theme.veil(0.07))
         }
     }
 

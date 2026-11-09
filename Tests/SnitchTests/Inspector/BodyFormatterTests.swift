@@ -60,4 +60,11 @@ struct BodyFormatterTests {
         #expect(BodyFormatter.copyText(for: Data(#"{"a":1}"#.utf8)) == "{\n  \"a\": 1\n}")
         #expect(BodyFormatter.copyText(for: Data("plain".utf8)) == "plain")
     }
+
+    @Test func findsMatchingLines() throws {
+        let lines = try #require(BodyFormatter.lines(for: Data("Alpha\nbeta\nALPHABET".utf8), pretty: false))
+        #expect(BodyFormatter.lines(matching: "alpha", in: lines) == [0, 2])
+        #expect(BodyFormatter.lines(matching: "  beta ", in: lines) == [1])
+        #expect(BodyFormatter.lines(matching: "   ", in: lines).isEmpty)
+    }
 }

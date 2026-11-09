@@ -26,6 +26,13 @@ enum BodyFormatter {
         return String(data: data, encoding: .utf8)
     }
 
+    /// The indices of the lines that contain `query`, ignoring case and surrounding spaces.
+    static func lines(matching query: String, in lines: [[BodyToken]]) -> Set<Int> {
+        let needle = query.trimmingCharacters(in: .whitespaces)
+        guard !needle.isEmpty else { return [] }
+        return Set(lines.indices.filter { lines[$0].map(\.text).joined().localizedCaseInsensitiveContains(needle) })
+    }
+
     /// Re-indents valid JSON two spaces per level, keeping the original key order.
     static func prettyJSON(_ data: Data) -> [[BodyToken]]? {
         guard (try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)) != nil else {
