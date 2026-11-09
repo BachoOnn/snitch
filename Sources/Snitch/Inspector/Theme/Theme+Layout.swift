@@ -36,6 +36,8 @@ extension Theme {
         /// Round floating buttons, such as filters and copy.
         static let floatingControl: CGFloat = 52
         static let field: CGFloat = 38
+        /// Rows in menus and lists of options.
+        static let row: CGFloat = 40
         static let chip: CGFloat = 28
         static let statusDot: CGFloat = 7
         static let hairline: CGFloat = 1

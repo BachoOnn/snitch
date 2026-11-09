@@ -66,6 +66,18 @@ struct EntryFilter: Equatable {
         }
     }
 
+    mutating func toggle(_ statusClass: StatusClass) {
+        statusClasses.toggle(statusClass)
+    }
+
+    mutating func toggleMethod(_ method: String) {
+        methods.toggle(method)
+    }
+
+    mutating func toggleHost(_ host: String) {
+        hosts.toggle(host)
+    }
+
     /// Adds an exact status code. Returns `false` if the text is not a code from 100 to 599.
     @discardableResult
     mutating func addCode(_ text: String) -> Bool {
@@ -97,5 +109,14 @@ struct EntryFilter: Equatable {
         guard !query.isEmpty else { return true }
         return [entry.url?.absoluteString ?? "", entry.method, entry.displayStatus]
             .contains { $0.localizedCaseInsensitiveContains(query) }
+    }
+}
+
+extension Set {
+    /// Inserts `member` if it is missing, removes it if it is present.
+    mutating func toggle(_ member: Element) {
+        if remove(member) == nil {
+            insert(member)
+        }
     }
 }

@@ -71,4 +71,17 @@ struct EntryFilterTests {
         filter.remove(.failed)
         #expect(filter.tokens.map(\.label) == ["500", "POST"])
     }
+
+    @Test func togglesAddAndRemove() {
+        var filter = EntryFilter()
+        filter.toggle(.serverError)
+        filter.toggleMethod("POST")
+        filter.toggleHost("api.example.test")
+        #expect(filter.tokens.map(\.label) == ["500", "POST", "api.example.test"])
+        filter.toggle(.serverError)
+        filter.toggleMethod("POST")
+        filter.toggleHost("api.example.test")
+        #expect(filter.isEmpty)
+    }
 }
+
