@@ -1,5 +1,6 @@
 #if os(iOS)
 import SwiftUI
+import UIKit
 
 /// One request in full: a summary card, then its request or response headers and body.
 struct EntryDetailView: View {
@@ -36,7 +37,7 @@ struct EntryDetailView: View {
             // The card stays outside the lazy stack so its position keeps being reported
             // after it scrolls out of view.
             VStack(alignment: .leading, spacing: 0) {
-                SummaryCard(entry: entry)
+                SummaryCard(entry: entry, onCopy: copy)
                     .background(
                         GeometryReader { proxy in
                             Color.clear.preference(key: SummaryBottomKey.self, value: proxy.frame(in: .named(Self.space)).maxY)
@@ -45,7 +46,7 @@ struct EntryDetailView: View {
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
                     Section {
                         VStack(alignment: .leading, spacing: 18) {
-                            HeadersSection(headers: side == .request ? entry.requestHeaders : entry.responseHeaders)
+                            HeadersSection(headers: side == .request ? entry.requestHeaders : entry.responseHeaders, onCopy: copy)
                             BodySection(
                                 data: side == .request ? entry.requestBody : entry.responseBody,
                                 size: side == .request ? entry.requestBodySize : entry.responseBodySize
@@ -124,6 +125,11 @@ struct EntryDetailView: View {
         }
     }
 
+    private func copy(_ text: String, confirmation: String) {
+        Clipboard.copy(text)
+        toast = Toast(title: confirmation)
+    }
+
     private func copyBody(of entry: NetworkEntry) {
         let data = side == .request ? entry.requestBody : entry.responseBody
         guard let data, let text = BodyFormatter.copyText(for: data) else {
@@ -146,6 +152,8 @@ private struct SummaryBottomKey: PreferenceKey {
 /// The card at the top of the detail screen.
 struct SummaryCard: View {
     let entry: NetworkEntry
+    /// Copies text and shows a confirmation.
+    let onCopy: (_ text: String, _ confirmation: String) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -160,9 +168,21 @@ struct SummaryCard: View {
                         .foregroundStyle(Color(hex: 0xA9BBB0))
                 }
             }
-            (Text(entry.displayHost).foregroundColor(Theme.tertiary) + Text(entry.displayPath).foregroundColor(Theme.text))
-                .font(Theme.mono(13))
-                .textSelection(.enabled)
+            HStack(alignment: .top, spacing: 8) {
+                SelectableText(text: endpoint)
+                    .accessibilityLabel(entry.url?.absoluteString ?? "")
+                Button {
+                    onCopy(entry.url?.absoluteString ?? "", "URL copied")
+                } label: {
+                    Image(systemName: "doc.on.doc")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Theme.secondary)
+                        .frame(width: 28, height: 28)
+                        .background(Color.white.opacity(0.06), in: Circle())
+                }
+                .accessibilityLabel("Copy URL")
+                .padding(.top, -5)
+            }
             if let error = entry.error {
                 Text(error)
                     .font(.system(size: 13))
@@ -184,7 +204,18 @@ struct SummaryCard: View {
         .padding(14)
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 20))
         .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(Theme.border))
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
+    }
+
+    /// Host, dimmed, followed by the path and query.
+    private var endpoint: NSAttributedString {
+        let font = UIFont.monospacedSystemFont(ofSize: 13, weight: .medium)
+        let text = NSMutableAttributedString(
+            string: entry.displayHost,
+            attributes: [.font: font, .foregroundColor: UIColor(Theme.tertiary)]
+        )
+        text.append(NSAttributedString(string: entry.displayPath, attributes: [.font: font, .foregroundColor: UIColor(Theme.text)]))
+        return text
     }
 
     private var separator: some View {

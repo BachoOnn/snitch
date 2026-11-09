@@ -4,6 +4,8 @@ import SwiftUI
 /// A request's or response's headers. Shows the first few, hides sensitive values.
 struct HeadersSection: View {
     let headers: [String: String]
+    /// Copies text and shows a confirmation.
+    var onCopy: (_ text: String, _ confirmation: String) -> Void = { _, _ in }
 
     @State private var showsAll = false
     @State private var revealed: Set<String> = []
@@ -58,7 +60,6 @@ struct HeadersSection: View {
                 .foregroundStyle(Theme.text)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(showsAll ? nil : 1)
-                .textSelection(.enabled)
             if SensitiveHeaders.contains(name) {
                 Button {
                     if hidden { revealed.insert(name) } else { revealed.remove(name) }
@@ -74,6 +75,15 @@ struct HeadersSection: View {
         .font(Theme.mono(12, .regular))
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
+        .contentShape(Rectangle())
+        .contextMenu {
+            Button { onCopy(value, "Value copied") } label: {
+                Label("Copy value", systemImage: "doc.on.doc")
+            }
+            Button { onCopy("\(name): \(value)", "Header copied") } label: {
+                Label("Copy header", systemImage: "text.badge.plus")
+            }
+        }
     }
 }
 #endif
