@@ -29,6 +29,13 @@ struct EntryFormattingTests {
         #expect(entry(status: status, duration: duration, error: error).outcome == expected)
     }
 
+    @Test func errorOutcomes() {
+        let errors: [NetworkEntry.Outcome] = [.clientError, .serverError, .failed]
+        let others: [NetworkEntry.Outcome] = [.pending, .success]
+        #expect(errors.allSatisfy { $0.isError })
+        #expect(others.allSatisfy { !$0.isError })
+    }
+
     @Test func pathAndHost() {
         let e = entry()
         #expect(e.displayPath == "/v2/products?page=2")

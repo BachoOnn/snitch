@@ -8,6 +8,14 @@ extension NetworkEntry {
         case clientError
         case serverError
         case failed
+
+        /// Whether the request went wrong: an error status or no response at all.
+        var isError: Bool {
+            switch self {
+            case .clientError, .serverError, .failed: return true
+            case .pending, .success: return false
+            }
+        }
     }
 
     var outcome: Outcome {
