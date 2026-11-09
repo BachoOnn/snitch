@@ -7,7 +7,7 @@ enum InspectorPresenter {
     private static weak var sheet: UIViewController?
     private static let dismissObserver = DismissObserver()
 
-    /// Called when the inspector opens or closes, so the floating button can hide.
+    /// Called when the inspector opens or closes.
     static var onVisibilityChange: ((Bool) -> Void)?
 
     static var isPresented: Bool { sheet != nil }
@@ -25,6 +25,11 @@ enum InspectorPresenter {
         presenter.present(host, animated: true)
         sheet = host
         onVisibilityChange?(true)
+    }
+
+    /// Opens the inspector, or closes it when it is already open.
+    static func toggle() {
+        isPresented ? dismiss() : present()
     }
 
     static func dismiss() {

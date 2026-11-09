@@ -21,8 +21,10 @@ final class FloatingButton: NSObject {
     /// Shows the button now, or as soon as the app has an active scene.
     func install() {
         wanted = true
+        // The button stays on screen while the inspector is open; opening it only
+        // clears the error badge.
         InspectorPresenter.onVisibilityChange = { [weak self] visible in
-            self?.setHidden(visible)
+            if visible { self?.model.markSeen() }
         }
         showIfPossible()
         if window == nil { observeSceneActivation() }
@@ -48,11 +50,6 @@ final class FloatingButton: NSObject {
         }
     }
 
-    private func setHidden(_ hidden: Bool) {
-        window?.isHidden = hidden || !wanted
-        if hidden { model.markSeen() }
-    }
-
     private func showIfPossible() {
         guard wanted, window == nil, let scene = InspectorPresenter.activeScene else { return }
         let window = FloatingButtonWindow(windowScene: scene)
@@ -64,7 +61,7 @@ final class FloatingButton: NSObject {
         // than a SwiftUI button inside it.
         window.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
         window.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(drag(_:))))
-        window.isHidden = InspectorPresenter.isPresented
+        window.isHidden = false
         self.window = window
     }
 
@@ -93,7 +90,7 @@ final class FloatingButton: NSObject {
     // MARK: - Gestures
 
     @objc private func tap() {
-        InspectorPresenter.present()
+        InspectorPresenter.toggle()
     }
 
     @objc private func drag(_ pan: UIPanGestureRecognizer) {
@@ -114,15 +111,24 @@ final class FloatingButton: NSObject {
         }
     }
 
-    /// Leaves the button where it was dropped, only pulling it back inside the safe area.
+    /// Leaves the button where it was dropped. When it was dropped partly off screen,
+    /// it springs back just inside the safe area.
     private func keepOnScreen(_ window: UIWindow) {
         guard let scene = window.windowScene else { return }
         let insets = scene.appWindow?.safeAreaInsets ?? .zero
-        window.center = FloatingSnap.clamp(
+        let target = FloatingSnap.clamp(
             window.center,
             size: CGSize(width: Self.size, height: Self.size),
             in: scene.coordinateSpace.bounds.inset(by: insets),
             margin: Self.margin
         )
+        guard target != window.center else { return }
+        UIView.animate(
+            withDuration: 0.45, delay: 0,
+            usingSpringWithDamping: 0.6, initialSpringVelocity: 0.5,
+            options: [.allowUserInteraction, .beginFromCurrentState]
+        ) {
+            window.center = target
+        }
     }
 }
