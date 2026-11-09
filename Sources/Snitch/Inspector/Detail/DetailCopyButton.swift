@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// The floating copy button on the detail screen. Tap copies the body,
-/// long press offers more, and a drag moves it wherever the user drops it.
+/// The floating copy button on the detail screen. Tap copies the whole request and
+/// response, long press offers more, and a drag moves it wherever the user drops it.
 struct DetailCopyButton: View {
+    /// Copies the whole request and response as readable text.
     let onCopy: () -> Void
     let onCopyAsCurl: () -> Void
 
@@ -20,7 +21,7 @@ struct DetailCopyButton: View {
         } label: {
             GlassCircle(systemImage: "doc.on.doc")
         }
-        .accessibilityLabel("Copy")
+        .accessibilityLabel("Copy request and response")
         .accessibilityHint("Long press for more options. Drag to move.")
         .contextMenu { menu }
         .floatingDrag(
@@ -36,7 +37,7 @@ struct DetailCopyButton: View {
     @ViewBuilder
     private var menu: some View {
         Button(action: onCopy) {
-            Label("Copy", systemImage: "doc.on.doc")
+            Label("Copy all", systemImage: "doc.on.doc")
         }
         Button(action: onCopyAsCurl) {
             Label("Copy as cURL", systemImage: "chevron.left.forwardslash.chevron.right")

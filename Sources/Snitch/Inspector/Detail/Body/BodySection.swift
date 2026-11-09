@@ -5,6 +5,8 @@ struct BodySection: View {
     let data: Data?
     /// The full size, which can be larger than `data` when the body was truncated.
     let size: Int
+    /// Copies text and shows a confirmation.
+    var onCopy: (_ text: String, _ confirmation: String) -> Void = { _, _ in }
 
     @State private var pretty = true
 
@@ -30,7 +32,9 @@ struct BodySection: View {
     private func content(isJSON: Bool) -> some View {
         if let data, !data.isEmpty {
             if let lines = BodyFormatter.lines(for: data, pretty: pretty && isJSON) {
-                BodyCodeView(lines: lines, storedSize: data.count, fullSize: size)
+                BodyCodeView(lines: lines, storedSize: data.count, fullSize: size) {
+                    onCopy($0, "Body copied")
+                }
             } else {
                 DetailNote("Binary data · \(NetworkEntry.format(bytes: size))")
             }

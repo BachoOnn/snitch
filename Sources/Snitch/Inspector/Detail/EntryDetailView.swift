@@ -47,7 +47,7 @@ struct EntryDetailView: View {
         .toolbar { toolbar(entry) }
         .overlay {
             DetailCopyButton(
-                onCopy: { copyBody(of: entry) },
+                onCopy: { copy(entry.reportText, confirmation: "Request and response copied") },
                 onCopyAsCurl: { copy(entry.curlCommand, confirmation: "Copied as cURL") }
             )
         }
@@ -56,7 +56,7 @@ struct EntryDetailView: View {
     private func sections(_ entry: NetworkEntry) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.section) {
             HeadersSection(headers: entry.headers(on: side), onCopy: copy)
-            BodySection(data: entry.body(on: side), size: entry.bodySize(on: side))
+            BodySection(data: entry.body(on: side), size: entry.bodySize(on: side), onCopy: copy)
         }
         // Fresh state, such as find text, for each side.
         .id(side)
@@ -95,14 +95,6 @@ struct EntryDetailView: View {
     private func copy(_ text: String, confirmation: String) {
         Clipboard.copy(text)
         toast = Toast(title: confirmation)
-    }
-
-    private func copyBody(of entry: NetworkEntry) {
-        guard let data = entry.body(on: side), let text = BodyFormatter.copyText(for: data) else {
-            toast = Toast(title: "No body to copy")
-            return
-        }
-        copy(text, confirmation: "Copied")
     }
 
     private static let space = "entry-detail"

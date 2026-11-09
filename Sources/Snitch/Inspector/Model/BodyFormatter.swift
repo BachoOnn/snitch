@@ -20,10 +20,13 @@ enum BodyFormatter {
 
     /// The body as text for copying: pretty JSON when possible, otherwise the raw text.
     static func copyText(for data: Data) -> String? {
-        if let json = prettyJSON(data) {
-            return json.map { $0.map(\.text).joined() }.joined(separator: "\n")
-        }
+        if let json = prettyJSON(data) { return text(of: json) }
         return String(data: data, encoding: .utf8)
+    }
+
+    /// Joins formatted lines back into plain text.
+    static func text(of lines: [[BodyToken]]) -> String {
+        lines.map { $0.map(\.text).joined() }.joined(separator: "\n")
     }
 
     /// The indices of the lines that contain `query`, ignoring case and surrounding spaces.

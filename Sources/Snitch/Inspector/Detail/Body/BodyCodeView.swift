@@ -7,6 +7,8 @@ struct BodyCodeView: View {
     let storedSize: Int
     /// How large the body really was.
     let fullSize: Int
+    /// Copies the body as shown, pretty or raw.
+    let onCopy: (String) -> Void
 
     @State private var query = ""
     /// The text is drawn from resolved colors, so it is rebuilt when the appearance changes.
@@ -17,7 +19,11 @@ struct BodyCodeView: View {
     var body: some View {
         let matches = BodyFormatter.lines(matching: query, in: lines)
         VStack(alignment: .leading, spacing: 0) {
-            BodyFindField(query: $query, matchCount: matches.count)
+            HStack(spacing: 0) {
+                BodyFindField(query: $query, matchCount: matches.count)
+                CopyChip(accessibilityLabel: "Copy body") { onCopy(BodyFormatter.text(of: lines)) }
+                    .padding(.trailing, Theme.Spacing.m)
+            }
             Hairline()
             code(matches: matches)
             if fullSize > storedSize {
