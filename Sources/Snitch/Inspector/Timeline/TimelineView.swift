@@ -7,35 +7,16 @@ struct TimelineView: View {
     let onClose: () -> Void
 
     @State private var toast: Toast?
-    @State private var showsFilters = false
-    @State private var confirmingClear = false
 
     var body: some View {
-        let sections = model.sections
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
-                if !model.filter.isEmpty {
-                    ActiveFilters(filter: $model.filter)
-                        .padding(.bottom, 12)
-                }
-                if sections.isEmpty {
-                    EmptyTimeline(isFiltered: !model.filter.isEmpty || !model.search.isEmpty)
-                }
-                ForEach(sections) { section in
-                    Text(Timeline.title(for: section.day))
-                        .sectionLabelStyle()
-                        .padding(.vertical, 8)
-                    ForEach(section.items) { item in
-                        row(for: item)
-                    }
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 96)
+            content
+                .padding(.horizontal, Theme.Spacing.screen)
+                .padding(.bottom, Theme.Spacing.floatingClearance)
         }
         .scrollDismissesKeyboard(.interactively)
         .background(Theme.background.ignoresSafeArea())
-        .safeAreaInset(edge: .bottom) { bottomBar }
+        .safeAreaInset(edge: .bottom) { TimelineBottomBar(model: model) }
         .navigationBarTitleDisplayMode(.inline)
         .inspectorBarBackground()
         .toolbar { toolbar }
@@ -45,26 +26,24 @@ struct TimelineView: View {
         .toast($toast)
     }
 
-    @ViewBuilder
-    private func row(for item: TimelineItem) -> some View {
-        switch item {
-        case .entry(let entry):
-            NavigationLink(value: entry.id) {
-                TimelineRow(entry: entry)
-                    .background(Theme.background)
+    private var content: some View {
+        let sections = model.sections
+        return LazyVStack(alignment: .leading, spacing: 0) {
+            if !model.filter.isEmpty {
+                ActiveFilters(filter: $model.filter)
+                    .padding(.bottom, Theme.Spacing.l)
             }
-            .buttonStyle(.plain)
-            .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 16))
-            .contextMenu {
-                Button {
-                    Clipboard.copy(entry.summary)
-                    toast = Toast(title: "Copied", detail: "\(entry.method) \(entry.displayPath)")
-                } label: {
-                    Label("Copy", systemImage: "doc.on.doc")
+            if sections.isEmpty {
+                EmptyTimeline(isFiltered: !model.filter.isEmpty || !model.search.isEmpty)
+            }
+            ForEach(sections) { section in
+                Text(Timeline.title(for: section.day))
+                    .sectionLabelStyle()
+                    .padding(.vertical, Theme.Spacing.s)
+                ForEach(section.items) { item in
+                    TimelineItemView(item: item, toast: $toast)
                 }
             }
-        case .pause(let pause):
-            PauseDivider(pause: pause)
         }
     }
 
@@ -77,144 +56,19 @@ struct TimelineView: View {
             .accessibilityLabel("Close")
         }
         ToolbarItem(placement: .principal) {
-            VStack(spacing: 2) {
-                Text("SNITCH")
-                    .font(Theme.title)
-                    .tracking(2)
-                    .foregroundStyle(Theme.text)
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(model.isPaused ? Color.clear : Theme.accent)
-                        .overlay(Circle().strokeBorder(Theme.silver, lineWidth: model.isPaused ? 1.5 : 0))
-                        .frame(width: 7, height: 7)
-                    Text("\(model.entries.count)")
-                        .font(Theme.mono(12, .semibold))
-                        .foregroundStyle(model.isPaused ? Theme.silver : Theme.secondary)
-                }
-            }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Snitch, \(model.isPaused ? "paused" : "recording"), \(model.entries.count) requests")
+            RecordingTitle(count: model.entries.count, isPaused: model.isPaused)
         }
         ToolbarItemGroup(placement: .primaryAction) {
             Button(action: model.togglePause) {
                 Image(systemName: model.isPaused ? "play.fill" : "pause.fill")
             }
             .accessibilityLabel(model.isPaused ? "Resume recording" : "Pause recording")
-            Button { confirmingClear = true } label: {
-                Image(systemName: "trash")
-            }
-            .accessibilityLabel("Clear all requests")
-            .disabled(model.entries.isEmpty && model.pauses.isEmpty)
-            .confirmationDialog(clearTitle, isPresented: $confirmingClear, titleVisibility: .visible) {
-                Button(clearButtonTitle, role: .destructive, action: model.clear)
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("They're removed from Snitch only. Your app isn't affected.")
-            }
+            ClearButton(
+                count: model.entries.count,
+                isEnabled: !model.entries.isEmpty || !model.pauses.isEmpty,
+                onClear: model.clear
+            )
         }
-    }
-
-    private var clearTitle: String {
-        model.entries.count == 1 ? "Clear 1 request?" : "Clear all \(model.entries.count) requests?"
-    }
-
-    private var clearButtonTitle: String {
-        model.entries.count == 1 ? "Clear Request" : "Clear \(model.entries.count) Requests"
-    }
-
-    private var bottomBar: some View {
-        HStack(spacing: 10) {
-            HStack(spacing: 10) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(Theme.secondary)
-                TextField("Search URL, method, status", text: $model.search)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .submitLabel(.search)
-                    .foregroundStyle(Theme.text)
-            }
-            .font(.system(size: 16))
-            .padding(.horizontal, 18)
-            .frame(height: 52)
-            .snitchGlass(in: Capsule())
-
-            Button { showsFilters = true } label: {
-                GlassCircle(systemImage: "line.3.horizontal.decrease", badge: model.filter.tokens.count)
-            }
-            .accessibilityLabel(model.filter.isEmpty ? "Filters" : "Filters, \(model.filter.tokens.count) active")
-            .popover(isPresented: $showsFilters, arrowEdge: .bottom) {
-                FilterPanel(filter: $model.filter, methods: model.methods, hosts: model.hosts)
-                    .compactPopover()
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-    }
-}
-
-/// The active filters as removable chips, under a `FILTERED · N` label.
-struct ActiveFilters: View {
-    @Binding var filter: EntryFilter
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Filtered · \(filter.tokens.count)")
-                    .sectionLabelStyle()
-                    .foregroundStyle(Theme.tertiary)
-                Spacer()
-                Button("Clear") { filter = EntryFilter() }
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Theme.secondary)
-            }
-            FlowLayout(spacing: 6) {
-                ForEach(filter.tokens, id: \.self) { token in
-                    Button { filter.remove(token) } label: {
-                        HStack(spacing: 4) {
-                            Text(token.label)
-                            Image(systemName: "xmark")
-                                .font(.system(size: 8, weight: .bold))
-                                .foregroundStyle(Theme.tertiary)
-                        }
-                        .font(Theme.mono(11))
-                        .foregroundStyle(Theme.textMuted)
-                        .padding(.leading, 10)
-                        .padding(.trailing, 8)
-                        .frame(height: 28)
-                        .background(Theme.veil(0.04), in: Capsule())
-                        .overlay(Capsule().strokeBorder(Theme.veil(0.09)))
-                    }
-                    .accessibilityLabel("Remove filter \(token.label)")
-                }
-            }
-        }
-        .padding(.vertical, 4)
-        .padding(.bottom, 12)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(Theme.veil(0.07)).frame(height: 1)
-        }
-    }
-}
-
-private struct EmptyTimeline: View {
-    let isFiltered: Bool
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Image(systemName: isFiltered ? "line.3.horizontal.decrease" : "arrow.up.arrow.down")
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(Theme.tertiary)
-                .padding(.bottom, 6)
-            Text(isFiltered ? "No matching requests" : "No requests yet")
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(Theme.text)
-            Text(isFiltered ? "Try removing a filter or changing the search." : "Requests your app makes will show up here.")
-                .font(.system(size: 13))
-                .foregroundStyle(Theme.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 80)
     }
 }
 #endif
