@@ -8,6 +8,7 @@ struct TimelineView: View {
 
     @State private var toast: Toast?
     @State private var showsFilters = false
+    @State private var confirmingClear = false
 
     var body: some View {
         let sections = model.sections
@@ -99,11 +100,26 @@ struct TimelineView: View {
                 Image(systemName: model.isPaused ? "play.fill" : "pause.fill")
             }
             .accessibilityLabel(model.isPaused ? "Resume recording" : "Pause recording")
-            Button(action: model.clear) {
+            Button { confirmingClear = true } label: {
                 Image(systemName: "trash")
             }
             .accessibilityLabel("Clear all requests")
+            .disabled(model.entries.isEmpty && model.pauses.isEmpty)
+            .confirmationDialog(clearTitle, isPresented: $confirmingClear, titleVisibility: .visible) {
+                Button(clearButtonTitle, role: .destructive, action: model.clear)
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("They're removed from Snitch only. Your app isn't affected.")
+            }
         }
+    }
+
+    private var clearTitle: String {
+        model.entries.count == 1 ? "Clear 1 request?" : "Clear all \(model.entries.count) requests?"
+    }
+
+    private var clearButtonTitle: String {
+        model.entries.count == 1 ? "Clear Request" : "Clear \(model.entries.count) Requests"
     }
 
     private var bottomBar: some View {
