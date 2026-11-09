@@ -19,10 +19,10 @@ final class InspectorHostingController: UIHostingController<InspectorView> {
 
     private static let styleControls: Void = {
         let segmented = UISegmentedControl.appearance(whenContainedInInstancesOf: [InspectorHostingController.self])
-        // Close to the page background, with a soft fill for the selection, so the
+        // Close to the page background, with a light brand fill for the selection, so the
         // switch sits quietly on the page in both light and dark mode.
         segmented.backgroundColor = color("CodeBackground")
-        segmented.selectedSegmentTintColor = color("Control")
+        segmented.selectedSegmentTintColor = color("AccentFill").withAlphaComponent(0.6)
         segmented.setTitleTextAttributes([
             .foregroundColor: color("TextMuted"),
             .font: UIFont.systemFont(ofSize: 14, weight: .medium),
