@@ -36,7 +36,7 @@ final class StubURLProtocol: URLProtocol {
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
-        if let body = request.httpBody ?? request.httpBodyStream.map(SnitchURLProtocol.readAll) {
+        if let body = request.httpBody ?? request.httpBodyStream?.readAll() {
             Self.lock.withLock { Self._receivedBodies.append(body) }
         }
         let url = request.url!
