@@ -102,9 +102,9 @@ struct EntryDetailView: View {
             ForEach(Side.allCases, id: \.self) { option in
                 Button(option.rawValue) { side = option }
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(side == option ? Color(hex: 0x06210F) : Color(hex: 0xC9D6CE))
+                    .foregroundStyle(side == option ? Theme.onAccent : Theme.textMuted)
                     .frame(maxWidth: .infinity, minHeight: 36)
-                    .background(side == option ? Theme.accent : .clear, in: Capsule())
+                    .background(side == option ? Theme.accentFill : .clear, in: Capsule())
                     .accessibilityAddTraits(side == option ? .isSelected : [])
             }
         }
@@ -166,6 +166,7 @@ struct SummaryCard: View {
     let entry: NetworkEntry
     /// Copies text and shows a confirmation.
     let onCopy: (_ text: String, _ confirmation: String) -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -177,11 +178,12 @@ struct SummaryCard: View {
                 if let phrase = entry.reasonPhrase, entry.outcome != .failed {
                     Text(phrase)
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(Color(hex: 0xA9BBB0))
+                        .foregroundStyle(Theme.secondary)
                 }
             }
             HStack(alignment: .top, spacing: 8) {
                 SelectableText(text: endpoint)
+                    .id(colorScheme)
                     .accessibilityLabel(entry.url?.absoluteString ?? "")
                 Button {
                     onCopy(entry.url?.absoluteString ?? "", "URL copied")
@@ -190,7 +192,7 @@ struct SummaryCard: View {
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Theme.secondary)
                         .frame(width: 28, height: 28)
-                        .background(Color.white.opacity(0.06), in: Circle())
+                        .background(Theme.veil(0.06), in: Circle())
                 }
                 .accessibilityLabel("Copy URL")
                 .padding(.top, -5)
@@ -208,7 +210,7 @@ struct SummaryCard: View {
                 Text(entry.startDate.formatted(date: .omitted, time: .standard))
             }
             .font(Theme.mono(12))
-            .foregroundStyle(Color(hex: 0xC9D6CE))
+            .foregroundStyle(Theme.textMuted)
             .padding(.top, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
             .overlay(alignment: .top) { Rectangle().fill(Theme.border).frame(height: 1) }
@@ -231,7 +233,7 @@ struct SummaryCard: View {
     }
 
     private var separator: some View {
-        Rectangle().fill(Color(hex: 0x24302A)).frame(width: 1, height: 12)
+        Rectangle().fill(Theme.control).frame(width: 1, height: 12)
     }
 }
 
@@ -243,7 +245,7 @@ private struct CompactSummary: View {
         HStack(spacing: 8) {
             Circle().fill(Theme.color(for: entry.outcome)).frame(width: 7, height: 7)
             Text(entry.displayStatus).foregroundStyle(Theme.color(for: entry.outcome))
-            Text(entry.method).foregroundStyle(Color(hex: 0xC9D6CE))
+            Text(entry.method).foregroundStyle(Theme.textMuted)
             Text(entry.displayPath).foregroundStyle(Theme.text).lineLimit(1).truncationMode(.middle)
         }
         .font(Theme.mono(13, .semibold))

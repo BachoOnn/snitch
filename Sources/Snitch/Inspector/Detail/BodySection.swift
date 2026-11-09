@@ -10,6 +10,8 @@ struct BodySection: View {
 
     @State private var pretty = true
     @State private var query = ""
+    /// The body is drawn from resolved colors, so it is rebuilt when the appearance changes.
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         let isJSON = data.flatMap(BodyFormatter.prettyJSON) != nil
@@ -37,7 +39,7 @@ struct BodySection: View {
                     .foregroundStyle(pretty == isPretty ? Theme.text : Theme.secondary)
                     .padding(.horizontal, 10)
                     .frame(height: 26)
-                    .background(pretty == isPretty ? Color(hex: 0x24302A) : .clear, in: RoundedRectangle(cornerRadius: 7))
+                    .background(pretty == isPretty ? Theme.control : .clear, in: RoundedRectangle(cornerRadius: 7))
                     .accessibilityAddTraits(pretty == isPretty ? .isSelected : [])
             }
         }
@@ -74,14 +76,16 @@ struct BodySection: View {
             }
             .padding(.horizontal, 12)
             .frame(height: 38)
-            Rectangle().fill(Color(hex: 0x1A221E)).frame(height: 1)
+            Rectangle().fill(Theme.divider).frame(height: 1)
 
             HStack(alignment: .top, spacing: 12) {
                 SelectableText(text: gutter(count: lines.count, matches: matches), wraps: false, selectable: false)
+                    .id(colorScheme)
                     .frame(width: 34, alignment: .trailing)
                     .accessibilityHidden(true)
                 ScrollView(.horizontal, showsIndicators: false) {
                     SelectableText(text: body(lines, matches: matches), wraps: false)
+                        .id(colorScheme)
                         .padding(.trailing, 12)
                 }
             }
@@ -92,8 +96,8 @@ struct BodySection: View {
                     .padding([.horizontal, .bottom], 12)
             }
         }
-        .background(Color(hex: 0x0F1411), in: RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(Color(hex: 0x1A221E)))
+        .background(Theme.codeBackground, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(Theme.divider))
     }
 
     private func note(_ text: String) -> some View {
@@ -147,7 +151,7 @@ struct BodySection: View {
     private func gutter(count: Int, matches: Set<Int>) -> NSAttributedString {
         let result = NSMutableAttributedString()
         for index in 0..<count {
-            let color = matches.contains(index) ? Theme.accent : Color(hex: 0x4E5F55)
+            let color = matches.contains(index) ? Theme.accent : Theme.faint
             let line = "\(index + 1)" + (index < count - 1 ? "\n" : "")
             result.append(NSAttributedString(string: line, attributes: Self.attributes(color, alignment: .right)))
         }

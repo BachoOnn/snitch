@@ -84,7 +84,7 @@ struct TimelineRow: View {
                 if let duration = entry.displayDuration {
                     Text(duration)
                         .font(Theme.mono(10))
-                        .foregroundStyle(entry.isSlow ? Theme.warning : Color(hex: 0x5C6E64))
+                        .foregroundStyle(entry.isSlow ? Theme.warning : Theme.faint)
                 }
             }
         }
@@ -122,9 +122,9 @@ struct PauseDivider: View {
 
             HStack(spacing: 0) {
                 Text(pause.start.formatted(date: .omitted, time: .standard))
-                    .foregroundStyle(Color(hex: 0xC3CCC7))
+                    .foregroundStyle(Theme.textMuted)
                 Text(" · \(pause.durationText)")
-                    .foregroundStyle(Color(hex: 0x6A7A71))
+                    .foregroundStyle(Theme.tertiary)
             }
             .font(Theme.mono(10))
             .tracking(0.6)

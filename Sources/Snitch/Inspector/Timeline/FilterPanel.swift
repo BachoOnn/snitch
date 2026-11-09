@@ -50,10 +50,10 @@ struct FilterPanel: View {
                 Button { askingForCode = true } label: {
                     Label("Code", systemImage: "plus")
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(Color(hex: 0xC3CCC7))
+                        .foregroundStyle(Theme.textMuted)
                         .padding(.horizontal, 10)
                         .frame(height: 30)
-                        .overlay(Capsule().strokeBorder(Color.white.opacity(0.22), style: StrokeStyle(lineWidth: 1, dash: [3, 2])))
+                        .overlay(Capsule().strokeBorder(Theme.veil(0.22), style: StrokeStyle(lineWidth: 1, dash: [3, 2])))
                 }
                 .accessibilityLabel("Add a custom status code")
             }
@@ -83,7 +83,7 @@ struct FilterPanel: View {
                     Image(systemName: "arrow.counterclockwise")
                 }
                 .font(.system(size: 15))
-                .foregroundStyle(Color(hex: 0xFF8A80))
+                .foregroundStyle(Theme.danger)
                 .padding(.horizontal, 14)
                 .frame(height: 40)
                 .contentShape(Rectangle())
@@ -118,16 +118,16 @@ struct FilterPanel: View {
     }
 
     private var divider: some View {
-        Rectangle().fill(Color.white.opacity(0.10)).frame(height: 1).padding(.top, 8)
+        Rectangle().fill(Theme.veil(0.10)).frame(height: 1).padding(.top, 8)
     }
 
     private func toggleCell<Content: View>(isOn: Bool, accessibility: String, action: @escaping () -> Void, @ViewBuilder content: () -> Content) -> some View {
         Button(action: action) {
             content()
                 .frame(maxWidth: .infinity)
-                .foregroundStyle(isOn ? Theme.accent : Color(hex: 0xD3DED7))
-                .background(isOn ? Theme.accent.opacity(0.10) : Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(isOn ? Theme.accent.opacity(0.45) : Color.white.opacity(0.08)))
+                .foregroundStyle(isOn ? Theme.accent : Theme.textMuted)
+                .background(isOn ? Theme.accent.opacity(0.10) : Theme.veil(0.04), in: RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(isOn ? Theme.accent.opacity(0.45) : Theme.veil(0.08)))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibility)

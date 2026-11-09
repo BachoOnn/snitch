@@ -16,7 +16,6 @@ struct InspectorView: View {
             TimelineView(model: model, onClose: onClose)
         }
         .tint(Theme.text)
-        .preferredColorScheme(.dark)
         .task { await model.observe() }
     }
 }

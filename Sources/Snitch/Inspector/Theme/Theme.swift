@@ -1,26 +1,56 @@
 #if os(iOS)
 import SwiftUI
+import UIKit
 
-/// Colors and type used across the inspector. The inspector is always dark.
+/// Colors and type used across the inspector. Every color has a dark and a light
+/// value and follows the system appearance.
 enum Theme {
-    static let background = Color(hex: 0x0B0F0D)
-    static let surface = Color(hex: 0x121815)
-    static let border = Color(hex: 0x1F2A24)
-    static let text = Color(hex: 0xE8F0EB)
-    static let secondary = Color(hex: 0x8FA398)
-    static let tertiary = Color(hex: 0x6F8378)
+    static let background = adaptive(dark: 0x0B0F0D, light: 0xF5F7F6)
+    static let surface = adaptive(dark: 0x121815, light: 0xFFFFFF)
+    static let border = adaptive(dark: 0x1F2A24, light: 0xDCE4DF)
+    static let divider = adaptive(dark: 0x1A221E, light: 0xE6ECE8)
+    /// Fills for selected segments and small separators.
+    static let control = adaptive(dark: 0x24302A, light: 0xE4EBE7)
+    static let codeBackground = adaptive(dark: 0x0F1411, light: 0xF0F4F1)
 
-    /// The one brand color. Used for live, successful and selected states.
-    static let accent = Color(hex: 0x7CF0A9)
-    static let warning = Color(hex: 0xF5B860)
-    static let danger = Color(hex: 0xFF7A70)
-    static let info = Color(hex: 0x9CC8FF)
+    static let text = adaptive(dark: 0xE8F0EB, light: 0x0E1512)
+    /// Supporting text that still needs to read clearly, such as stats and inactive tabs.
+    static let textMuted = adaptive(dark: 0xC9D6CE, light: 0x34423A)
+    static let secondary = adaptive(dark: 0x8FA398, light: 0x56675D)
+    static let tertiary = adaptive(dark: 0x6F8378, light: 0x6C7D73)
+    /// The quietest text, such as line numbers and fast durations.
+    static let faint = adaptive(dark: 0x5C6E64, light: 0x8E9B93)
+
+    /// The brand color as text and strokes. Darker in light mode so it stays readable on white.
+    static let accent = adaptive(dark: 0x7CF0A9, light: 0x14864A)
+    /// The brand color as a solid fill. The same in both modes; pair it with ``onAccent``.
+    static let accentFill = Color(hex: 0x7CF0A9)
+    static let onAccent = Color(hex: 0x06210F)
+
+    static let warning = adaptive(dark: 0xF5B860, light: 0xAD6500)
+    static let danger = adaptive(dark: 0xFF7A70, light: 0xCC3A2F)
+    static let info = adaptive(dark: 0x9CC8FF, light: 0x2D6BC9)
     /// Pauses and other neutral markers.
-    static let silver = Color(hex: 0xAEB9B3)
+    static let silver = adaptive(dark: 0xAEB9B3, light: 0x76837C)
+    /// The floating button's error badge.
+    static let badge = Color(hex: 0xFF5A4E)
 
-    static let jsonKey = Color(hex: 0x9FD8B5)
-    static let jsonString = Color(hex: 0xF2D49B)
-    static let jsonNumber = Color(hex: 0x9CC8FF)
+    static let jsonKey = adaptive(dark: 0x9FD8B5, light: 0x18764A)
+    static let jsonString = adaptive(dark: 0xF2D49B, light: 0x955A00)
+    static let jsonNumber = adaptive(dark: 0x9CC8FF, light: 0x2B5FBF)
+
+    /// A translucent wash for chips and hairlines: white over dark, black over light.
+    static func veil(_ opacity: Double) -> Color {
+        Color(UIColor { traits in
+            UIColor(white: traits.userInterfaceStyle == .dark ? 1 : 0, alpha: opacity)
+        })
+    }
+
+    private static func adaptive(dark: UInt32, light: UInt32) -> Color {
+        Color(UIColor { traits in
+            UIColor(Color(hex: traits.userInterfaceStyle == .dark ? dark : light))
+        })
+    }
 
     static func mono(_ size: CGFloat, _ weight: Font.Weight = .medium) -> Font {
         .system(size: size, weight: weight, design: .monospaced)

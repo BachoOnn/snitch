@@ -18,7 +18,7 @@ extension View {
 
     private func materialGlass<S: Shape>(in shape: S) -> some View {
         background(.ultraThinMaterial, in: shape)
-            .overlay(shape.stroke(Color.white.opacity(0.10), lineWidth: 1))
+            .overlay(shape.stroke(Theme.veil(0.10), lineWidth: 1))
     }
 }
 
@@ -37,9 +37,9 @@ struct GlassCircle: View {
                 if badge > 0 {
                     Text("\(badge)")
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(Color(hex: 0x06210F))
+                        .foregroundStyle(Theme.onAccent)
                         .frame(minWidth: 16, minHeight: 16)
-                        .background(Theme.accent, in: Capsule())
+                        .background(Theme.accentFill, in: Capsule())
                         .offset(x: -9, y: 9)
                 }
             }

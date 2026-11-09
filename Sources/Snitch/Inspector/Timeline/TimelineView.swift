@@ -89,7 +89,7 @@ struct TimelineView: View {
                         .frame(width: 7, height: 7)
                     Text("\(model.entries.count)")
                         .font(Theme.mono(12, .semibold))
-                        .foregroundStyle(model.isPaused ? Theme.silver : Color(hex: 0xA9BBB0))
+                        .foregroundStyle(model.isPaused ? Theme.silver : Theme.secondary)
                 }
             }
             .accessibilityElement(children: .ignore)
@@ -126,7 +126,7 @@ struct TimelineView: View {
         HStack(spacing: 10) {
             HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundStyle(Color(hex: 0xC9D6CE))
+                    .foregroundStyle(Theme.secondary)
                 TextField("Search URL, method, status", text: $model.search)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -145,7 +145,6 @@ struct TimelineView: View {
             .popover(isPresented: $showsFilters, arrowEdge: .bottom) {
                 FilterPanel(filter: $model.filter, methods: model.methods, hosts: model.hosts)
                     .compactPopover()
-                    .preferredColorScheme(.dark)
             }
         }
         .padding(.horizontal, 16)
@@ -166,7 +165,7 @@ struct ActiveFilters: View {
                 Spacer()
                 Button("Clear") { filter = EntryFilter() }
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Color(hex: 0xA9BBB0))
+                    .foregroundStyle(Theme.secondary)
             }
             FlowLayout(spacing: 6) {
                 ForEach(filter.tokens, id: \.self) { token in
@@ -178,12 +177,12 @@ struct ActiveFilters: View {
                                 .foregroundStyle(Theme.tertiary)
                         }
                         .font(Theme.mono(11))
-                        .foregroundStyle(Color(hex: 0xC3CCC7))
+                        .foregroundStyle(Theme.textMuted)
                         .padding(.leading, 10)
                         .padding(.trailing, 8)
                         .frame(height: 28)
-                        .background(Color.white.opacity(0.04), in: Capsule())
-                        .overlay(Capsule().strokeBorder(Color.white.opacity(0.09)))
+                        .background(Theme.veil(0.04), in: Capsule())
+                        .overlay(Capsule().strokeBorder(Theme.veil(0.09)))
                     }
                     .accessibilityLabel("Remove filter \(token.label)")
                 }
@@ -192,7 +191,7 @@ struct ActiveFilters: View {
         .padding(.vertical, 4)
         .padding(.bottom, 12)
         .overlay(alignment: .bottom) {
-            Rectangle().fill(Color.white.opacity(0.07)).frame(height: 1)
+            Rectangle().fill(Theme.veil(0.07)).frame(height: 1)
         }
     }
 }

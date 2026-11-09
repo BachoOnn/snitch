@@ -46,7 +46,7 @@ struct HeadersSection: View {
     }
 
     private var divider: some View {
-        Rectangle().fill(Color(hex: 0x1A221E)).frame(height: 1)
+        Rectangle().fill(Theme.divider).frame(height: 1)
     }
 
     private func row(_ name: String, _ value: String) -> some View {

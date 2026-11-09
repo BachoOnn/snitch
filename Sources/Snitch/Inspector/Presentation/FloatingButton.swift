@@ -165,16 +165,16 @@ struct FloatingDot: View {
     var body: some View {
         Image(systemName: "arrow.up.arrow.down")
             .font(.system(size: 15, weight: .bold))
-            .foregroundStyle(Color(hex: 0x06210F))
+            .foregroundStyle(Theme.onAccent)
             .frame(width: 32, height: 32)
-            .background(Theme.accent, in: Circle())
+            .background(Theme.accentFill, in: Circle())
             .overlay(Circle().strokeBorder(Color.white.opacity(0.35)))
             .shadow(color: .black.opacity(0.22), radius: 6, y: 4)
             .scaleEffect(pulse ? 1.12 : 1)
             .overlay(alignment: .topTrailing) {
                 if model.hasNewErrors {
                     Circle()
-                        .fill(Color(hex: 0xFF5A4E))
+                        .fill(Theme.badge)
                         .frame(width: 10, height: 10)
                         .overlay(Circle().stroke(Color.white.opacity(0.9), lineWidth: 2))
                         .offset(x: 2, y: -2)
