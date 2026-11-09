@@ -1,8 +1,8 @@
 import Foundation
 
 /// A colored piece of a formatted body.
-struct BodyToken: Equatable {
-    enum Kind: Equatable { case key, string, number, literal, punctuation, plain }
+struct BodyToken: Equatable, Sendable {
+    enum Kind: Equatable, Sendable { case key, string, number, literal, punctuation, plain }
 
     var kind: Kind
     var text: String
@@ -29,18 +29,14 @@ enum BodyFormatter {
         lines.map { $0.map(\.text).joined() }.joined(separator: "\n")
     }
 
-    /// The indices of the lines that contain `query`, ignoring case and surrounding spaces.
-    static func lines(matching query: String, in lines: [[BodyToken]]) -> Set<Int> {
-        let needle = query.trimmingCharacters(in: .whitespaces)
-        guard !needle.isEmpty else { return [] }
-        return Set(lines.indices.filter { lines[$0].map(\.text).joined().localizedCaseInsensitiveContains(needle) })
+    /// Whether `data` is valid JSON.
+    static func isJSON(_ data: Data) -> Bool {
+        (try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)) != nil
     }
 
     /// Re-indents valid JSON two spaces per level, keeping the original key order.
     static func prettyJSON(_ data: Data) -> [[BodyToken]]? {
-        guard (try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)) != nil else {
-            return nil
-        }
+        guard isJSON(data) else { return nil }
         let bytes = [UInt8](data)
         var lines: [[BodyToken]] = []
         var line: [BodyToken] = []

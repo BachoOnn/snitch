@@ -15,7 +15,7 @@ struct BodyFindField: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
             if !query.isEmpty {
-                Text("\(matchCount) lines")
+                Text(matchCount == 1 ? "1 line" : "\(matchCount) lines")
                     .font(.system(size: 12))
                     .foregroundStyle(Theme.secondary)
             }

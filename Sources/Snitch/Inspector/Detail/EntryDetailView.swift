@@ -53,14 +53,20 @@ struct EntryDetailView: View {
         }
     }
 
+    /// The headers and body as separate views, so the lazy stack only builds the body
+    /// rows that are on screen.
+    @ViewBuilder
     private func sections(_ entry: NetworkEntry) -> some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.section) {
-            HeadersSection(headers: entry.headers(on: side), onCopy: copy)
-            BodySection(data: entry.body(on: side), size: entry.bodySize(on: side), onCopy: copy)
-        }
-        // Fresh state, such as find text, for each side.
-        .id(side)
-        .padding(.top, Theme.Spacing.s)
+        HeadersSection(headers: entry.headers(on: side), onCopy: copy)
+            // Fresh state, such as an expanded list, for each side.
+            .id(side)
+            .padding(.top, Theme.Spacing.s)
+        BodySection(
+            data: entry.body(on: side),
+            size: entry.bodySize(on: side),
+            owner: "\(entry.id)-\(side.rawValue)",
+            onCopy: copy
+        )
     }
 
     @ToolbarContentBuilder
