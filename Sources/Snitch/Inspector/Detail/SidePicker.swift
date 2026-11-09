@@ -1,29 +1,22 @@
 import SwiftUI
 
 /// The Request · Response switch pinned above the headers and body.
+///
+/// A native segmented control, which shows the new selection the moment it is
+/// tapped, before the content below has been rebuilt.
 struct SidePicker: View {
     @Binding var selection: EntrySide
 
-    private static let height: CGFloat = 36
-
     var body: some View {
-        HStack(spacing: Theme.Spacing.xxs) {
-            ForEach(EntrySide.allCases, id: \.self, content: option)
+        Picker("Side", selection: $selection) {
+            ForEach(EntrySide.allCases, id: \.self) { side in
+                Text(side.rawValue).tag(side)
+            }
         }
-        .padding(Theme.Spacing.xxs)
-        .snitchGlass(in: Capsule())
+        .pickerStyle(.segmented)
+        .labelsHidden()
         .padding(.vertical, Theme.Spacing.m)
         // Opaque so content scrolling under the pinned picker stays hidden.
         .background(Theme.background)
-    }
-
-    private func option(_ side: EntrySide) -> some View {
-        let isSelected = selection == side
-        return Button(side.rawValue) { selection = side }
-            .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(isSelected ? Theme.onAccent : Theme.textMuted)
-            .frame(maxWidth: .infinity, minHeight: Self.height)
-            .background(isSelected ? Theme.accentFill : .clear, in: Capsule())
-            .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
