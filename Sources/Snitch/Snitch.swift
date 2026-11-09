@@ -48,7 +48,7 @@ public enum Snitch {
         if started {
             DispatchQueue.main.async {
                 if showsButton { FloatingButton.shared.install() }
-                if opensOnShake { ShakeToOpen.enable() }
+                if opensOnShake { ShakeToOpen.isEnabled = true }
             }
         }
         #endif
@@ -68,7 +68,7 @@ public enum Snitch {
         }
         DispatchQueue.main.async {
             FloatingButton.shared.uninstall()
-            ShakeToOpen.disable()
+            ShakeToOpen.isEnabled = false
         }
         #endif
     }
