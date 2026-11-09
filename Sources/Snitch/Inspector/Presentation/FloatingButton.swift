@@ -97,15 +97,14 @@ final class FloatingButton: NSObject {
         guard let scene = window.windowScene else { return }
         let bounds = scene.coordinateSpace.bounds
         let insets = scene.windows.first { !($0 is FloatingButtonWindow) }?.safeAreaInsets ?? .zero
-        let half = Self.size / 2
-        let x = window.center.x < bounds.midX
-            ? bounds.minX + insets.left + Self.margin + half
-            : bounds.maxX - insets.right - Self.margin - half
-        let minY = bounds.minY + insets.top + Self.margin + half
-        let maxY = bounds.maxY - insets.bottom - Self.margin - half
-        let y = min(max(window.center.y, minY), maxY)
+        let target = FloatingSnap.snap(
+            window.center,
+            size: CGSize(width: Self.size, height: Self.size),
+            in: bounds.inset(by: insets),
+            margin: Self.margin
+        )
         UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5) {
-            window.center = CGPoint(x: x, y: y)
+            window.center = target
         }
     }
 }
