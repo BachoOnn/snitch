@@ -9,9 +9,20 @@ struct SelectableText: UIViewRepresentable {
     /// the view is as wide as the longest one.
     var wraps = true
     var selectable = true
+    /// The size to use when not wrapping. Pass it for long text, which is slow to measure.
+    var size: CGSize?
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    /// Remembers the text last shown.
+    final class Coordinator {
+        var text: NSAttributedString?
+    }
 
     func makeUIView(context: Context) -> UITextView {
-        let view = UITextView()
+        // TextKit 1 draws long text in one view; TextKit 2 makes a view for every line,
+        // which takes seconds for a large body.
+        let view = UITextView(usingTextLayoutManager: false)
         view.isEditable = false
         view.isScrollEnabled = false
         view.backgroundColor = .clear
@@ -30,7 +41,9 @@ struct SelectableText: UIViewRepresentable {
         if !wraps {
             view.textContainer.size = CGSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude)
         }
-        if view.attributedText != text {
+        // Compared by identity: comparing the contents of a long text is itself slow.
+        if context.coordinator.text !== text {
+            context.coordinator.text = text
             view.attributedText = text
         }
     }
@@ -41,6 +54,7 @@ struct SelectableText: UIViewRepresentable {
             let height = uiView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude)).height
             return CGSize(width: width, height: ceil(height))
         }
+        if let size { return size }
         let bounds = text.boundingRect(
             with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: .greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin, .usesFontLeading],

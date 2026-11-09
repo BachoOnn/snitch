@@ -23,8 +23,8 @@ struct FloatingDot: View {
             .frame(width: Theme.Size.touchTarget, height: Theme.Size.touchTarget)
             .accessibilityElement(children: .ignore)
             .accessibilityAddTraits(.isButton)
-            .accessibilityLabel(model.hasNewErrors ? "Network inspector, new errors" : "Network inspector")
-            .accessibilityAction { InspectorPresenter.toggle() }
+            .accessibilityLabel(model.hasNewErrors ? "Open network inspector, new errors" : "Open network inspector")
+            .accessibilityAction { InspectorPresenter.present() }
             .onChange(of: model.activity) { _ in pulseOnce() }
     }
 

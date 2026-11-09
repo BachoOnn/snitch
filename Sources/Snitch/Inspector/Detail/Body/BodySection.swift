@@ -35,6 +35,8 @@ struct BodySection: View {
                 BodyCodeView(lines: lines, storedSize: data.count, fullSize: size) {
                     onCopy($0, "Body copied")
                 }
+                // New lines for pretty or raw, so the body is drawn again.
+                .id(pretty)
             } else {
                 DetailNote("Binary data · \(NetworkEntry.format(bytes: size))")
             }

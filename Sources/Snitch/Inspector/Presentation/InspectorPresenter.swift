@@ -7,7 +7,7 @@ enum InspectorPresenter {
     private static weak var sheet: UIViewController?
     private static let dismissObserver = DismissObserver()
 
-    /// Called when the inspector opens or closes.
+    /// Called when the inspector opens or closes, so the floating button can hide.
     static var onVisibilityChange: ((Bool) -> Void)?
 
     static var isPresented: Bool { sheet != nil }
@@ -22,19 +22,18 @@ enum InspectorPresenter {
         }
         host.presentationController?.delegate = dismissObserver
         KeyboardDismissal.shared.install(on: host.view)
-        presenter.present(host, animated: true)
         sheet = host
+        // The button goes away before the sheet starts sliding up.
         onVisibilityChange?(true)
-    }
-
-    /// Opens the inspector, or closes it when it is already open.
-    static func toggle() {
-        isPresented ? dismiss() : present()
+        presenter.present(host, animated: true)
     }
 
     static func dismiss() {
-        sheet?.dismiss(animated: true) { onVisibilityChange?(false) }
-        sheet = nil
+        guard let sheet else { return }
+        sheet.dismiss(animated: true)
+        self.sheet = nil
+        // The button comes back right away rather than after the sheet has slid down.
+        onVisibilityChange?(false)
     }
 
     /// The scene the user is looking at.
