@@ -2,13 +2,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "Tapwire",
+    name: "Snitch",
     platforms: [.iOS(.v16), .macOS(.v13)],
     products: [
-        .library(name: "Tapwire", targets: ["Tapwire"]),
+        .library(name: "Snitch", targets: ["Snitch"]),
     ],
     targets: [
-        .target(name: "Tapwire"),
-        .testTarget(name: "TapwireTests", dependencies: ["Tapwire"]),
+        .target(name: "Snitch"),
+        .testTarget(name: "SnitchTests", dependencies: ["Snitch"]),
     ]
 )

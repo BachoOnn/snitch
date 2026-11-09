@@ -1,4 +1,4 @@
-# Tapwire
+# Snitch
 
 See what your iOS app sends and logs: network requests and analytics events, side by side, in one timeline.
 
@@ -6,13 +6,13 @@ See what your iOS app sends and logs: network requests and analytics events, sid
 
 ## What it is
 
-Tapwire is an in-app debugging tool for iOS. It records your app's own `URLSession` traffic and, with optional adapters, the analytics events your app emits (PostHog, AppsFlyer). Both show up in a single SwiftUI inspector.
+Snitch is an in-app debugging tool for iOS. It records your app's own `URLSession` traffic and, with optional adapters, the analytics events your app emits (PostHog, AppsFlyer). Both show up in a single SwiftUI inspector.
 
 ## What it is not
 
-- **Not a proxy.** Tapwire does not intercept or decrypt traffic on the network and does not break TLS. It observes requests made by your own app, from inside your app.
+- **Not a proxy.** Snitch does not intercept or decrypt traffic on the network and does not break TLS. It observes requests made by your own app, from inside your app.
 - **Not for production.** It is built for debug builds and is designed to be easy to exclude from release builds.
-- **No telemetry.** Nothing leaves the device. Tapwire does not phone home.
+- **No telemetry.** Nothing leaves the device. Snitch does not phone home.
 
 ## Features
 
@@ -29,7 +29,7 @@ Tapwire is an in-app debugging tool for iOS. It records your app's own `URLSessi
 ## Planned
 
 **v1.1: analytics timeline**
-- Optional adapters as separate products: `TapwirePostHog`, `TapwireAppsFlyer`
+- Optional adapters as separate products: `SnitchPostHog`, `SnitchAppsFlyer`
 - Network calls and analytics events in one timeline, filterable by source
 
 **v1.2**
@@ -42,44 +42,44 @@ Tapwire is an in-app debugging tool for iOS. It records your app's own `URLSessi
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/tapwire", from: "0.1.0")
+.package(url: "https://github.com/BachoOnn/snitch", from: "0.1.0")
 ```
 
 ## Quick start
 
-Start Tapwire as early as possible, for example in your app's `init`:
+Start Snitch as early as possible, for example in your app's `init`:
 
 ```swift
-import Tapwire
+import Snitch
 
 @main
 struct MyApp: App {
     init() {
-        Tapwire.start()
+        Snitch.start()
     }
     // ...
 }
 ```
 
 Tap the floating button or shake the device to open the inspector. In builds without
-`DEBUG`, every Tapwire call does nothing.
+`DEBUG`, every Snitch call does nothing.
 
-`Tapwire.start()` covers `URLSession.shared`. For your own sessions, add Tapwire to the
+`Snitch.start()` covers `URLSession.shared`. For your own sessions, add Snitch to the
 configuration before creating the session:
 
 ```swift
 let configuration = URLSessionConfiguration.default
-Tapwire.install(in: configuration)
+Snitch.install(in: configuration)
 let session = URLSession(configuration: configuration)
 ```
 
 Other options:
 
 ```swift
-Tapwire.start(showsButton: false, opensOnShake: true) // choose how the inspector opens
-Tapwire.present()                                       // open it from your own debug menu
-Tapwire.pause()                                         // stop recording until resume()
-Tapwire.resume()
+Snitch.start(showsButton: false, opensOnShake: true) // choose how the inspector opens
+Snitch.present()                                       // open it from your own debug menu
+Snitch.pause()                                         // stop recording until resume()
+Snitch.resume()
 ```
 
 ## Requirements

@@ -1,4 +1,4 @@
-# Tapwire
+# Snitch
 
 Debugging tool for iOS: network requests and analytics events in one SwiftUI timeline.
 

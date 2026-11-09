@@ -12,7 +12,7 @@ Reports are acknowledged as soon as possible. Please include the affected versio
 
 ## Design guarantees
 
-- Tapwire is intended for debug builds only.
+- Snitch is intended for debug builds only.
 - It does not intercept or decrypt network traffic and does not modify TLS behavior.
 - It sends no telemetry and makes no network calls of its own.
 - Captured data stays in memory on the device unless you export it yourself.
