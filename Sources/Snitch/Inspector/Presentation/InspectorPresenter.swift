@@ -22,6 +22,7 @@ enum InspectorPresenter {
             controller.prefersGrabberVisible = true
         }
         host.presentationController?.delegate = dismissObserver
+        KeyboardDismissal.shared.install(on: host.view)
         presenter.present(host, animated: true)
         sheet = host
         onVisibilityChange?(true)

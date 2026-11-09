@@ -67,6 +67,7 @@ struct EntryDetailView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 100)
         }
+        .scrollDismissesKeyboard(.interactively)
         .coordinateSpace(name: Self.space)
         .onPreferenceChange(SummaryBottomKey.self) { bottom in
             let visible = bottom > 0
@@ -90,6 +91,8 @@ struct EntryDetailView: View {
         .overlay {
             copyButton(entry)
                 .floatingDrag(center: $copyButtonCenter, isDragging: $draggingCopyButton, size: CGSize(width: 52, height: 52))
+                // The keyboard should not push the button up over the content.
+                .ignoresSafeArea(.keyboard)
         }
         .onChange(of: copyButtonCenter) { Self.lastCopyButtonCenter = $0 }
     }
