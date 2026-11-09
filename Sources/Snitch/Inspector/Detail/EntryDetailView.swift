@@ -14,6 +14,11 @@ struct EntryDetailView: View {
     @State private var side: Side = .request
     @State private var summaryVisible = true
     @State private var toast: Toast?
+    @State private var copyButtonCenter: CGPoint? = Self.lastCopyButtonCenter
+    @State private var draggingCopyButton = false
+
+    /// Where the copy button was last left, so it stays put across detail screens.
+    private static var lastCopyButtonCenter: CGPoint?
 
     var body: some View {
         Group {
@@ -82,11 +87,11 @@ struct EntryDetailView: View {
                 .accessibilityLabel("Share as cURL")
             }
         }
-        .overlay(alignment: .bottomTrailing) {
+        .overlay {
             copyButton(entry)
-                .padding(.trailing, 16)
-                .padding(.bottom, 8)
+                .floatingDrag(center: $copyButtonCenter, isDragging: $draggingCopyButton, size: CGSize(width: 52, height: 52))
         }
+        .onChange(of: copyButtonCenter) { Self.lastCopyButtonCenter = $0 }
     }
 
     private var sidePicker: some View {
@@ -107,11 +112,15 @@ struct EntryDetailView: View {
     }
 
     private func copyButton(_ entry: NetworkEntry) -> some View {
-        Button { copyBody(of: entry) } label: {
+        Button {
+            // A drag that ends on the button must not also copy.
+            guard !draggingCopyButton else { return }
+            copyBody(of: entry)
+        } label: {
             GlassCircle(systemImage: "doc.on.doc")
         }
         .accessibilityLabel("Copy")
-        .accessibilityHint("Long press for more options")
+        .accessibilityHint("Long press for more options. Drag to move.")
         .contextMenu {
             Button { copyBody(of: entry) } label: {
                 Label("Copy", systemImage: "doc.on.doc")
