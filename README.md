@@ -23,7 +23,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 - Sensitive headers such as `Authorization` and `Cookie` hidden until you tap to reveal them
 - Copy a one-line summary, a body, or the whole request as cURL
 - Pause recording, with the paused gaps marked on the timeline
-- A small floating button and shake-to-open, both optional
+- A small floating button and shake-to-open (on a device; the Simulator has no accelerometer), both optional
 - Native Liquid Glass on iOS 26, with a material fallback on iOS 16 to 25
 
 ## Planned

@@ -68,7 +68,7 @@ public enum Snitch {
         }
         DispatchQueue.main.async {
             FloatingButton.shared.uninstall()
-            ShakeToOpen.isEnabled = false
+            ShakeToOpen.disable()
         }
         #endif
     }
