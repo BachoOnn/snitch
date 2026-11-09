@@ -1,5 +1,6 @@
 #if os(iOS)
 import SwiftUI
+import UIKit
 
 /// A request or response body: pretty or raw, with find and line numbers.
 struct BodySection: View {
@@ -75,23 +76,16 @@ struct BodySection: View {
             .frame(height: 38)
             Rectangle().fill(Color(hex: 0x1A221E)).frame(height: 1)
 
-            LazyVStack(alignment: .leading, spacing: 0) {
-                ForEach(lines.indices, id: \.self) { index in
-                    HStack(alignment: .top, spacing: 0) {
-                        Text("\(index + 1)")
-                            .foregroundStyle(Color(hex: 0x4E5F55))
-                            .frame(width: 34, alignment: .trailing)
-                            .padding(.trailing, 12)
-                        Text(attributed(lines[index]))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .font(Theme.mono(12, .regular))
-                    .padding(.vertical, 2)
-                    .background(matches.contains(index) ? Theme.accent.opacity(0.10) : .clear)
+            HStack(alignment: .top, spacing: 12) {
+                SelectableText(text: gutter(count: lines.count, matches: matches), wraps: false, selectable: false)
+                    .frame(width: 34, alignment: .trailing)
+                    .accessibilityHidden(true)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    SelectableText(text: body(lines, matches: matches), wraps: false)
+                        .padding(.trailing, 12)
                 }
             }
-            .padding(.vertical, 8)
-            .textSelection(.enabled)
+            .padding(.vertical, 10)
 
             if let truncated {
                 note("Showing the first \(NetworkEntry.format(bytes: truncated)) of \(NetworkEntry.format(bytes: size))")
@@ -117,12 +111,47 @@ struct BodySection: View {
         return Set(lines.indices.filter { lines[$0].map(\.text).joined().localizedCaseInsensitiveContains(needle) })
     }
 
-    private func attributed(_ tokens: [BodyToken]) -> AttributedString {
-        tokens.reduce(into: AttributedString()) { result, token in
-            var piece = AttributedString(token.text)
-            piece.foregroundColor = color(for: token.kind)
-            result += piece
+    /// Every body line is exactly this tall, so the line numbers stay aligned.
+    private static let lineHeight: CGFloat = 20
+
+    private static func attributes(_ color: Color, alignment: NSTextAlignment = .natural) -> [NSAttributedString.Key: Any] {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.minimumLineHeight = lineHeight
+        paragraph.maximumLineHeight = lineHeight
+        paragraph.alignment = alignment
+        return [
+            .font: UIFont.monospacedSystemFont(ofSize: 12, weight: .regular),
+            .foregroundColor: UIColor(color),
+            .paragraphStyle: paragraph,
+        ]
+    }
+
+    /// The whole body as one selectable text, colored by token, with matching lines highlighted.
+    private func body(_ lines: [[BodyToken]], matches: Set<Int>) -> NSAttributedString {
+        let result = NSMutableAttributedString()
+        for (index, tokens) in lines.enumerated() {
+            let start = result.length
+            for token in tokens {
+                result.append(NSAttributedString(string: token.text, attributes: Self.attributes(color(for: token.kind))))
+            }
+            if matches.contains(index) {
+                result.addAttribute(.backgroundColor, value: UIColor(Theme.accent.opacity(0.18)), range: NSRange(location: start, length: result.length - start))
+            }
+            if index < lines.count - 1 {
+                result.append(NSAttributedString(string: "\n", attributes: Self.attributes(Theme.text)))
+            }
         }
+        return result
+    }
+
+    private func gutter(count: Int, matches: Set<Int>) -> NSAttributedString {
+        let result = NSMutableAttributedString()
+        for index in 0..<count {
+            let color = matches.contains(index) ? Theme.accent : Color(hex: 0x4E5F55)
+            let line = "\(index + 1)" + (index < count - 1 ? "\n" : "")
+            result.append(NSAttributedString(string: line, attributes: Self.attributes(color, alignment: .right)))
+        }
+        return result
     }
 
     private func color(for kind: BodyToken.Kind) -> Color {
