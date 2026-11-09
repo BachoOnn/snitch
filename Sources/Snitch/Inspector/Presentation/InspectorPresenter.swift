@@ -14,7 +14,7 @@ enum InspectorPresenter {
 
     static func present() {
         guard sheet == nil, let presenter = topViewController() else { return }
-        let host = InspectorHostingController(rootView: InspectorView(onClose: { dismiss() }))
+        let host = UIHostingController(rootView: InspectorView(onClose: { dismiss() }))
         host.modalPresentationStyle = .pageSheet
         if let controller = host.sheetPresentationController {
             controller.detents = [.large()]
