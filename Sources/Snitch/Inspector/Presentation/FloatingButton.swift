@@ -82,30 +82,42 @@ final class FloatingButton: NSObject {
         InspectorPresenter.present()
     }
 
+    /// The finger's offset from the button's center when the drag began.
+    private var grabOffset: CGPoint = .zero
+
     @objc private func drag(_ pan: UIPanGestureRecognizer) {
-        guard let window else { return }
-        let delta = pan.translation(in: nil)
-        window.center = CGPoint(x: window.center.x + delta.x, y: window.center.y + delta.y)
-        pan.setTranslation(.zero, in: nil)
-        if pan.state == .ended || pan.state == .cancelled {
-            snapToEdge(window)
+        // Measure the finger against the app's own window, which never moves, so the
+        // button follows the finger exactly.
+        guard let window, let anchor = appWindow(of: window) else { return }
+        let finger = pan.location(in: anchor)
+        switch pan.state {
+        case .began:
+            grabOffset = CGPoint(x: window.center.x - finger.x, y: window.center.y - finger.y)
+        case .changed:
+            window.center = CGPoint(x: finger.x + grabOffset.x, y: finger.y + grabOffset.y)
+        case .ended, .cancelled:
+            window.center = CGPoint(x: finger.x + grabOffset.x, y: finger.y + grabOffset.y)
+            keepOnScreen(window)
+        default:
+            break
         }
     }
 
-    /// Moves the button to the nearest side, inside the safe area.
-    private func snapToEdge(_ window: UIWindow) {
+    private func appWindow(of window: UIWindow) -> UIWindow? {
+        window.windowScene?.windows.first { !($0 is FloatingButtonWindow) }
+    }
+
+    /// Leaves the button where it was dropped, only pulling it back inside the safe area.
+    private func keepOnScreen(_ window: UIWindow) {
         guard let scene = window.windowScene else { return }
         let bounds = scene.coordinateSpace.bounds
         let insets = scene.windows.first { !($0 is FloatingButtonWindow) }?.safeAreaInsets ?? .zero
-        let target = FloatingSnap.snap(
+        window.center = FloatingSnap.clamp(
             window.center,
             size: CGSize(width: Self.size, height: Self.size),
             in: bounds.inset(by: insets),
             margin: Self.margin
         )
-        UIView.animate(withDuration: 0.35, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5) {
-            window.center = target
-        }
     }
 }
 

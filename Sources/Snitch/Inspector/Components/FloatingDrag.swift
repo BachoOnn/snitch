@@ -1,8 +1,8 @@
 #if os(iOS)
 import SwiftUI
 
-/// Lets a floating control be dragged anywhere inside its container. When released it
-/// settles on the nearest side, fully inside the container.
+/// Lets a floating control be dragged anywhere inside its container. It stays exactly
+/// where it is released, only kept fully inside the container.
 private struct FloatingDrag: ViewModifier {
     /// The resting center, or `nil` for the bottom-right corner.
     @Binding var center: CGPoint?
@@ -16,7 +16,7 @@ private struct FloatingDrag: ViewModifier {
     func body(content: Content) -> some View {
         GeometryReader { proxy in
             let bounds = CGRect(origin: .zero, size: proxy.size)
-            let resting = center.map { FloatingSnap.snap($0, size: size, in: bounds, margin: margin) }
+            let resting = center.map { FloatingSnap.clamp($0, size: size, in: bounds, margin: margin) }
                 ?? FloatingSnap.bottomTrailing(size: size, in: bounds, margin: margin)
 
             content
@@ -29,9 +29,7 @@ private struct FloatingDrag: ViewModifier {
                         .onEnded { value in
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { isDragging = false }
                             let dropped = CGPoint(x: resting.x + value.translation.width, y: resting.y + value.translation.height)
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                                center = FloatingSnap.snap(dropped, size: size, in: bounds, margin: margin)
-                            }
+                            center = FloatingSnap.clamp(dropped, size: size, in: bounds, margin: margin)
                         }
                 )
         }
@@ -39,7 +37,7 @@ private struct FloatingDrag: ViewModifier {
 }
 
 extension View {
-    /// Makes this control draggable within its container; it snaps to the nearest side on release.
+    /// Makes this control draggable within its container; it stays where it is released.
     func floatingDrag(center: Binding<CGPoint?>, isDragging: Binding<Bool>, size: CGSize, margin: CGFloat = 16) -> some View {
         modifier(FloatingDrag(center: center, isDragging: isDragging, size: size, margin: margin))
     }

@@ -2,17 +2,14 @@ import CoreGraphics
 
 /// Where floating controls come to rest after being dragged.
 enum FloatingSnap {
-    /// Moves a control's center to the nearest left or right side of `bounds`,
-    /// keeping it fully inside with `margin` to spare.
-    static func snap(_ center: CGPoint, size: CGSize, in bounds: CGRect, margin: CGFloat) -> CGPoint {
-        let halfWidth = size.width / 2
-        let halfHeight = size.height / 2
-        let x = center.x < bounds.midX
-            ? bounds.minX + margin + halfWidth
-            : bounds.maxX - margin - halfWidth
-        let minY = bounds.minY + margin + halfHeight
-        let maxY = max(minY, bounds.maxY - margin - halfHeight)
-        return CGPoint(x: x, y: min(max(center.y, minY), maxY))
+    /// Keeps a control exactly where it was dropped, only moving it the least needed
+    /// to stay fully inside `bounds` with `margin` to spare.
+    static func clamp(_ center: CGPoint, size: CGSize, in bounds: CGRect, margin: CGFloat) -> CGPoint {
+        let minX = bounds.minX + margin + size.width / 2
+        let maxX = max(minX, bounds.maxX - margin - size.width / 2)
+        let minY = bounds.minY + margin + size.height / 2
+        let maxY = max(minY, bounds.maxY - margin - size.height / 2)
+        return CGPoint(x: min(max(center.x, minX), maxX), y: min(max(center.y, minY), maxY))
     }
 
     /// The default resting place: the bottom-right corner.
