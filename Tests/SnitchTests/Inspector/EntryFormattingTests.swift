@@ -43,6 +43,11 @@ struct EntryFormattingTests {
         #expect(entry(status: 201, duration: 0.1).reasonPhrase == "Created")
     }
 
+    @Test(arguments: [(200, "OK"), (304, "Not Modified"), (429, "Too Many Requests"), (503, "Service Unavailable")])
+    func reasonPhrases(code: Int, phrase: String) {
+        #expect(entry(status: code, duration: 0.1).reasonPhrase == phrase)
+    }
+
     @Test(arguments: [(0.088, "88 ms"), (0.9996, "1000 ms"), (1.4, "1.4 s"), (12.0, "12.0 s")])
     func duration(seconds: TimeInterval, text: String) {
         #expect(NetworkEntry.format(duration: seconds) == text)

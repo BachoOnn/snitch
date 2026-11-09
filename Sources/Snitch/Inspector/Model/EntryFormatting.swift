@@ -28,9 +28,20 @@ extension NetworkEntry {
     /// The standard reason phrase for the status code, such as `Created`.
     var reasonPhrase: String? {
         guard let statusCode else { return nil }
+        if let phrase = Self.reasonPhrases[statusCode] { return phrase }
+        // The system's wording is unusual for some codes (200 is "no error"), so it is only a fallback.
         let phrase = HTTPURLResponse.localizedString(forStatusCode: statusCode)
         return phrase.prefix(1).uppercased() + phrase.dropFirst()
     }
+
+    /// Standard reason phrases for the most common status codes.
+    private static let reasonPhrases: [Int: String] = [
+        200: "OK", 201: "Created", 202: "Accepted", 204: "No Content",
+        301: "Moved Permanently", 302: "Found", 304: "Not Modified", 307: "Temporary Redirect", 308: "Permanent Redirect",
+        400: "Bad Request", 401: "Unauthorized", 403: "Forbidden", 404: "Not Found", 405: "Method Not Allowed",
+        409: "Conflict", 410: "Gone", 415: "Unsupported Media Type", 422: "Unprocessable Content", 429: "Too Many Requests",
+        500: "Internal Server Error", 501: "Not Implemented", 502: "Bad Gateway", 503: "Service Unavailable", 504: "Gateway Timeout",
+    ]
 
     var displayDuration: String? {
         duration.map(Self.format(duration:))
