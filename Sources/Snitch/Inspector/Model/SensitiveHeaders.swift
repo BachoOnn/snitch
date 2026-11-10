@@ -7,8 +7,18 @@ enum SensitiveHeaders {
         "x-api-key", "api-key", "x-auth-token", "x-csrf-token",
     ]
 
+    /// What a sensitive value is replaced with in shared text.
+    static let redacted = "<redacted>"
+
     static func contains(_ name: String) -> Bool {
         names.contains(name.lowercased())
+    }
+
+    /// The same headers with every sensitive value replaced by ``redacted``.
+    static func masked(_ headers: [String: String]) -> [String: String] {
+        headers.reduce(into: [:]) { result, header in
+            result[header.key] = contains(header.key) ? redacted : header.value
+        }
     }
 
     /// Headers sorted by name, case-insensitively, so lists are stable.

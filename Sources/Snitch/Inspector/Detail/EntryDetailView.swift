@@ -77,10 +77,7 @@ struct EntryDetailView: View {
                 .accessibilityHidden(summaryVisible)
         }
         ToolbarItem(placement: .primaryAction) {
-            ShareLink(item: entry.curlCommand) {
-                Image(systemName: "square.and.arrow.up")
-            }
-            .accessibilityLabel("Share as cURL")
+            ShareMenu(entry: entry)
         }
     }
 

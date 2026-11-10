@@ -42,7 +42,8 @@ enum InspectorPresenter {
         return scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
     }
 
-    private static func topViewController() -> UIViewController? {
+    /// The screen on top of everything the app is showing, such as the inspector sheet.
+    static func topViewController() -> UIViewController? {
         guard let scene = activeScene else { return nil }
         let appWindows = scene.windows.filter { $0.windowLevel == .normal }
         let window = appWindows.first(where: \.isKeyWindow) ?? appWindows.first
