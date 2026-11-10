@@ -6,7 +6,7 @@ import Foundation
 /// so Snitch cannot record traffic in a release build by accident.
 public enum Snitch {
     /// The library version.
-    public static let version = "0.0.1"
+    public static let version = "1.0.0"
 
     /// The store that receives every captured entry.
     public static let store = NetworkStore()
