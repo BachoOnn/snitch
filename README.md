@@ -42,7 +42,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/snitch", from: "1.0.0")
+.package(url: "https://github.com/BachoOnn/snitch", from: "1.0.1")
 ```
 
 ## Quick start
@@ -72,6 +72,12 @@ let configuration = URLSessionConfiguration.default
 Snitch.install(in: configuration)
 let session = URLSession(configuration: configuration)
 ```
+
+If the code that builds the session takes a list of protocol classes instead, pass
+`Snitch.urlProtocolClasses` (it is empty in builds without `DEBUG`).
+
+Certificate checks and login challenges still go to your session's delegate, so SSL
+pinning and custom trust handling keep working while Snitch records.
 
 Other options:
 

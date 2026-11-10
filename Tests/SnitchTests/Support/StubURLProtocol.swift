@@ -7,6 +7,9 @@ final class StubURLProtocol: URLProtocol {
         case success(status: Int, headers: [String: String] = [:], body: Data = Data())
         case redirect(to: URL, status: Int = 302)
         case failure(URLError.Code)
+        /// Asks for a login first, then replies 200 with the answer it got as the body:
+        /// `credential:<user>`, `none`, or `default`. A cancelled challenge fails.
+        case challenge(method: String = NSURLAuthenticationMethodHTTPBasic)
         case hang
     }
 
@@ -54,10 +57,49 @@ final class StubURLProtocol: URLProtocol {
             client?.urlProtocol(self, wasRedirectedTo: URLRequest(url: target), redirectResponse: response)
         case let .failure(code):
             client?.urlProtocol(self, didFailWithError: URLError(code))
+        case let .challenge(method):
+            let space = URLProtectionSpace(
+                host: url.host ?? "", port: 443, protocol: "https",
+                realm: nil, authenticationMethod: method
+            )
+            let challenge = URLAuthenticationChallenge(
+                protectionSpace: space, proposedCredential: nil, previousFailureCount: 0,
+                failureResponse: nil, error: nil, sender: self
+            )
+            client?.urlProtocol(self, didReceive: challenge)
         case .hang:
             break
         }
     }
 
+    private func reply(_ answer: String) {
+        let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: [:])!
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: Data(answer.utf8))
+        client?.urlProtocolDidFinishLoading(self)
+    }
+
     override func stopLoading() {}
+}
+
+extension StubURLProtocol: URLAuthenticationChallengeSender {
+    func use(_ credential: URLCredential, for challenge: URLAuthenticationChallenge) {
+        reply("credential:\(credential.user ?? "")")
+    }
+
+    func continueWithoutCredential(for challenge: URLAuthenticationChallenge) {
+        reply("none")
+    }
+
+    func cancel(_ challenge: URLAuthenticationChallenge) {
+        client?.urlProtocol(self, didFailWithError: URLError(.userCancelledAuthentication))
+    }
+
+    func performDefaultHandling(for challenge: URLAuthenticationChallenge) {
+        reply("default")
+    }
+
+    func rejectProtectionSpaceAndContinue(with challenge: URLAuthenticationChallenge) {
+        reply("rejected")
+    }
 }

@@ -54,6 +54,22 @@ final class Forwarder: NSObject, URLSessionDataDelegate {
         completionHandler(nil)
     }
 
+    /// Hands certificate checks and logins back to the session that made the request,
+    /// so the app's SSL pinning or custom trust handling still decides. Server trust
+    /// challenges arrive here too, since there is no session-level handler.
+    func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard let owner = owner(of: task) else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        owner.didReceive(challenge, completionHandler: completionHandler)
+    }
+
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         let owner = lock.withLock { owners.removeValue(forKey: task.taskIdentifier) }
         owner?.didComplete(error: error)

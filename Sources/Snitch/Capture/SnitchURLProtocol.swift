@@ -22,6 +22,10 @@ final class SnitchURLProtocol: URLProtocol {
     private var clientThread: ClientThread?
     private var stopped = false
 
+    // The forwarder's answer for a challenge the app's session has not answered yet.
+    private let challengeLock = NSLock()
+    private var pendingChallenge: ((URLSession.AuthChallengeDisposition, URLCredential?) -> Void)?
+
     override class func canInit(with request: URLRequest) -> Bool {
         Snitch.isCapturing && request.isHTTP && !request.isForwardedBySnitch
     }
@@ -49,6 +53,7 @@ final class SnitchURLProtocol: URLProtocol {
 
     override func stopLoading() {
         stopped = true
+        answerChallenge(.cancelAuthenticationChallenge, nil)
         forwardedTask?.cancel()
     }
 
@@ -84,6 +89,22 @@ final class SnitchURLProtocol: URLProtocol {
         }
     }
 
+    /// Passes a challenge to the app's session. Its delegate answers through the
+    /// `URLAuthenticationChallengeSender` methods below.
+    func didReceive(
+        _ challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        challengeLock.withLock { pendingChallenge = completionHandler }
+        let forwarded = URLAuthenticationChallenge(authenticationChallenge: challenge, sender: self)
+        clientThread?.perform { [self] in
+            guard !stopped, let client else {
+                return answerChallenge(.cancelAuthenticationChallenge, nil)
+            }
+            client.urlProtocol(self, didReceive: forwarded)
+        }
+    }
+
     func didComplete(error: Error?) {
         guard !finished else { return }
         complete(error: error)
@@ -96,6 +117,15 @@ final class SnitchURLProtocol: URLProtocol {
         }
     }
 
+    /// Answers the waiting challenge once; later answers are ignored.
+    private func answerChallenge(_ disposition: URLSession.AuthChallengeDisposition, _ credential: URLCredential?) {
+        let handler = challengeLock.withLock {
+            defer { pendingChallenge = nil }
+            return pendingChallenge
+        }
+        handler?(disposition, credential)
+    }
+
     // MARK: Recording
 
     private func complete(error: Error?) {
@@ -105,7 +135,7 @@ final class SnitchURLProtocol: URLProtocol {
         record {
             $0.responseBody = body.data.isEmpty ? nil : body.data
             $0.responseBodySize = body.totalSize
-            $0.error = error?.localizedDescription
+            $0.error = error.map(Self.describe)
             $0.duration = duration
         }
     }
@@ -124,11 +154,41 @@ final class SnitchURLProtocol: URLProtocol {
         Snitch.store.update(entry)
     }
 
+    /// The error's message plus its domain and code, such as `NSURLErrorDomain -1200`,
+    /// so a TLS or connection failure can be told apart at a glance.
+    static func describe(_ error: Error) -> String {
+        let error = error as NSError
+        return "\(error.localizedDescription) (\(error.domain) \(error.code))"
+    }
+
     /// Runs `body` on the client thread unless loading has been stopped.
     private func onClient(_ body: @escaping (URLProtocolClient) -> Void) {
         clientThread?.perform { [self] in
             guard !stopped, let client else { return }
             body(client)
         }
+    }
+}
+
+// The app's session answers forwarded challenges through these.
+extension SnitchURLProtocol: URLAuthenticationChallengeSender {
+    func use(_ credential: URLCredential, for challenge: URLAuthenticationChallenge) {
+        answerChallenge(.useCredential, credential)
+    }
+
+    func continueWithoutCredential(for challenge: URLAuthenticationChallenge) {
+        answerChallenge(.useCredential, nil)
+    }
+
+    func cancel(_ challenge: URLAuthenticationChallenge) {
+        answerChallenge(.cancelAuthenticationChallenge, nil)
+    }
+
+    func performDefaultHandling(for challenge: URLAuthenticationChallenge) {
+        answerChallenge(.performDefaultHandling, nil)
+    }
+
+    func rejectProtectionSpaceAndContinue(with challenge: URLAuthenticationChallenge) {
+        answerChallenge(.rejectProtectionSpace, nil)
     }
 }
