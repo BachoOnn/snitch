@@ -22,9 +22,9 @@ final class SnitchURLProtocol: URLProtocol {
     private var clientThread: ClientThread?
     private var stopped = false
 
-    // The forwarder's answer for a challenge the app's session has not answered yet.
+    // A challenge the app's session has not answered yet.
     private let challengeLock = NSLock()
-    private var pendingChallenge: ((URLSession.AuthChallengeDisposition, URLCredential?) -> Void)?
+    private var pendingChallenge: ChallengeAnswer?
 
     override class func canInit(with request: URLRequest) -> Bool {
         Snitch.isCapturing && request.isHTTP && !request.isForwardedBySnitch
@@ -53,7 +53,7 @@ final class SnitchURLProtocol: URLProtocol {
 
     override func stopLoading() {
         stopped = true
-        answerChallenge(.cancelAuthenticationChallenge, nil)
+        challengeLock.withLock { pendingChallenge }?.answer(.cancelAuthenticationChallenge, nil)
         forwardedTask?.cancel()
     }
 
@@ -89,17 +89,18 @@ final class SnitchURLProtocol: URLProtocol {
         }
     }
 
-    /// Passes a challenge to the app's session. Its delegate answers through the
-    /// `URLAuthenticationChallengeSender` methods below.
+    /// Passes a challenge to the app's session. Its delegate's answer comes back
+    /// through a ``ChallengeAnswer``.
     func didReceive(
         _ challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        challengeLock.withLock { pendingChallenge = completionHandler }
-        let forwarded = URLAuthenticationChallenge(authenticationChallenge: challenge, sender: self)
+        let answer = ChallengeAnswer(completionHandler)
+        challengeLock.withLock { pendingChallenge = answer }
+        let forwarded = URLAuthenticationChallenge(authenticationChallenge: challenge, sender: answer)
         clientThread?.perform { [self] in
             guard !stopped, let client else {
-                return answerChallenge(.cancelAuthenticationChallenge, nil)
+                return answer.answer(.cancelAuthenticationChallenge, nil)
             }
             client.urlProtocol(self, didReceive: forwarded)
         }
@@ -115,15 +116,6 @@ final class SnitchURLProtocol: URLProtocol {
                 client.urlProtocolDidFinishLoading(self)
             }
         }
-    }
-
-    /// Answers the waiting challenge once; later answers are ignored.
-    private func answerChallenge(_ disposition: URLSession.AuthChallengeDisposition, _ credential: URLCredential?) {
-        let handler = challengeLock.withLock {
-            defer { pendingChallenge = nil }
-            return pendingChallenge
-        }
-        handler?(disposition, credential)
     }
 
     // MARK: Recording
@@ -170,25 +162,3 @@ final class SnitchURLProtocol: URLProtocol {
     }
 }
 
-// The app's session answers forwarded challenges through these.
-extension SnitchURLProtocol: URLAuthenticationChallengeSender {
-    func use(_ credential: URLCredential, for challenge: URLAuthenticationChallenge) {
-        answerChallenge(.useCredential, credential)
-    }
-
-    func continueWithoutCredential(for challenge: URLAuthenticationChallenge) {
-        answerChallenge(.useCredential, nil)
-    }
-
-    func cancel(_ challenge: URLAuthenticationChallenge) {
-        answerChallenge(.cancelAuthenticationChallenge, nil)
-    }
-
-    func performDefaultHandling(for challenge: URLAuthenticationChallenge) {
-        answerChallenge(.performDefaultHandling, nil)
-    }
-
-    func rejectProtectionSpaceAndContinue(with challenge: URLAuthenticationChallenge) {
-        answerChallenge(.rejectProtectionSpace, nil)
-    }
-}

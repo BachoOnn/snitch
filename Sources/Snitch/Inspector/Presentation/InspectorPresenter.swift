@@ -14,6 +14,10 @@ enum InspectorPresenter {
 
     static func present() {
         guard sheet == nil, let presenter = topViewController() else { return }
+        // Hide the button on screen now, before building the inspector keeps the main
+        // thread busy, so it vanishes the moment it is tapped.
+        onVisibilityChange?(true)
+        CATransaction.flush()
         let host = InspectorHostingController(rootView: InspectorView(onClose: { dismiss() }))
         host.modalPresentationStyle = .pageSheet
         if let controller = host.sheetPresentationController {
@@ -23,8 +27,6 @@ enum InspectorPresenter {
         host.presentationController?.delegate = dismissObserver
         KeyboardDismissal.shared.install(on: host.view)
         sheet = host
-        // The button goes away before the sheet starts sliding up.
-        onVisibilityChange?(true)
         presenter.present(host, animated: true)
     }
 
@@ -57,6 +59,14 @@ enum InspectorPresenter {
     /// Notices when the user swipes the sheet away.
     @MainActor
     private final class DismissObserver: NSObject, UIAdaptivePresentationControllerDelegate {
+        /// Brings the button back as soon as the finger lets go of a swipe that closes
+        /// the sheet, rather than after the sheet has finished sliding down.
+        func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+            presentationController.presentedViewController.transitionCoordinator?.notifyWhenInteractionChanges { context in
+                if !context.isCancelled { InspectorPresenter.onVisibilityChange?(false) }
+            }
+        }
+
         func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
             InspectorPresenter.sheet = nil
             InspectorPresenter.onVisibilityChange?(false)
