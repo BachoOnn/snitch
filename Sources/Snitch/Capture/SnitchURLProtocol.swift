@@ -5,10 +5,14 @@ import Foundation
 /// Forwarded requests carry a marker property so they are never captured twice.
 /// Client callbacks are delivered on the thread that called `startLoading()`, as
 /// `URLProtocolClient` requires.
-final class SnitchURLProtocol: URLProtocol {
+///
+/// Not final: ``SessionProtocols`` makes a subclass for each configuration passed to
+/// `Snitch.install(in:)`, so its requests are re-sent with that configuration's settings.
+class SnitchURLProtocol: URLProtocol {
     static let handledKey = "dev.snitch.handled"
 
-    /// The session that performs the real requests. Replaceable in tests.
+    /// The session that performs requests from `URLSession.shared` and from code that
+    /// added ``Snitch/urlProtocolClasses`` itself. Replaceable in tests.
     static var forwarder = Forwarder(configuration: .default)
 
     // Set in startLoading, then touched only on the forwarder's serial delegate queue.
@@ -49,7 +53,8 @@ final class SnitchURLProtocol: URLProtocol {
         self.entry = entry
         startUptime = ProcessInfo.processInfo.systemUptime
         Snitch.store.insert(entry)
-        forwardedTask = Self.forwarder.start(request.forwardedBySnitch(body: body), for: self)
+        let forwarder = SessionProtocols.forwarder(for: object_getClass(self) ?? SnitchURLProtocol.self) ?? SnitchURLProtocol.forwarder
+        forwardedTask = forwarder.start(request.forwardedBySnitch(body: body), for: self)
     }
 
     override func stopLoading() {

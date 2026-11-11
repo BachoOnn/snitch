@@ -50,8 +50,8 @@ final class SnitchURLProtocolTests {
         Snitch.install(in: configuration)
         Snitch.install(in: configuration)
         let classes = configuration.protocolClasses ?? []
-        #expect(classes.first == SnitchURLProtocol.self)
-        #expect(classes.filter { $0 == SnitchURLProtocol.self }.count == 1)
+        #expect(classes.first is SnitchURLProtocol.Type)
+        #expect(classes.filter { $0 is SnitchURLProtocol.Type }.count == 1)
     }
 
     @Test(arguments: [

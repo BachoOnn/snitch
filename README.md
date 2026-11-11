@@ -73,11 +73,15 @@ Snitch.install(in: configuration)
 let session = URLSession(configuration: configuration)
 ```
 
-If the code that builds the session takes a list of protocol classes instead, pass
-`Snitch.urlProtocolClasses` (it is empty in builds without `DEBUG`).
+Requests from that session keep its own settings while Snitch records: its cookie
+store and cookie rules, cache, credentials and network policies. Certificate checks
+and login challenges still go to your session's delegate, so SSL pinning and custom
+trust handling keep working.
 
-Certificate checks and login challenges still go to your session's delegate, so SSL
-pinning and custom trust handling keep working while Snitch records.
+If the code that builds the session takes a list of protocol classes instead, pass
+`Snitch.urlProtocolClasses` (it is empty in builds without `DEBUG`). Requests captured
+this way use default settings, so cookies go to the shared cookie store; prefer
+`install(in:)` where you can.
 
 ### Leaving out third-party traffic
 
