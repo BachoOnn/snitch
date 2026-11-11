@@ -42,7 +42,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/snitch", from: "1.0.2")
+.package(url: "https://github.com/BachoOnn/snitch", from: "1.1.0")
 ```
 
 ## Quick start
@@ -78,6 +78,23 @@ If the code that builds the session takes a list of protocol classes instead, pa
 
 Certificate checks and login challenges still go to your session's delegate, so SSL
 pinning and custom trust handling keep working while Snitch records.
+
+### Leaving out third-party traffic
+
+SDKs such as AppsFlyer often use `URLSession.shared` too, so their requests show up
+alongside yours. To skip some hosts, list them. Each one also covers its subdomains,
+and skipped requests are never touched by Snitch:
+
+```swift
+Snitch.ignoredHosts = ["appsflyersdk.com"]
+```
+
+To record only your own sessions, leave `URLSession.shared` out and add your sessions
+with `install(in:)` or `urlProtocolClasses`:
+
+```swift
+Snitch.start(capturesSharedSession: false)
+```
 
 Other options:
 

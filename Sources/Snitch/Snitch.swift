@@ -6,7 +6,7 @@ import Foundation
 /// so Snitch cannot record traffic in a release build by accident.
 public enum Snitch {
     /// The library version.
-    public static let version = "1.0.2"
+    public static let version = "1.1.0"
 
     /// The store that receives every captured entry.
     public static let store = NetworkStore()
@@ -14,6 +14,8 @@ public enum Snitch {
     private static let lock = NSLock()
     private static var running = false
     private static var paused = false
+    private static var coversShared = false
+    private static var ignored: Set<String> = []
 
     /// Whether capture is currently on.
     public static var isRunning: Bool {
@@ -31,18 +33,54 @@ public enum Snitch {
         lock.withLock { running && !paused }
     }
 
-    /// Starts capturing requests made through `URLSession.shared` and through any
-    /// configuration passed to ``install(in:)``.
+    /// Whether `URLSession.shared` is being captured.
+    static var isCapturingSharedSession: Bool {
+        lock.withLock { coversShared }
+    }
+
+    /// Hosts whose requests Snitch leaves alone, such as analytics SDKs you don't
+    /// want in the timeline. Each entry also covers its subdomains, so
+    /// `"appsflyersdk.com"` skips `events.appsflyersdk.com` too.
+    ///
+    /// Skipped requests are never intercepted: they go straight to the network as if
+    /// Snitch were not there. Set this before or after ``start(showsButton:opensOnShake:capturesSharedSession:)``.
+    public static var ignoredHosts: Set<String> {
+        get { lock.withLock { ignored } }
+        set {
+            let hosts = newValue.map { String($0.lowercased().drop { $0 == "." }) }.filter { !$0.isEmpty }
+            lock.withLock { ignored = Set(hosts) }
+        }
+    }
+
+    /// Whether requests to `host` are skipped by ``ignoredHosts``.
+    static func isIgnored(host: String?) -> Bool {
+        guard let host = host?.lowercased() else { return false }
+        let ignored = ignoredHosts
+        guard !ignored.isEmpty else { return false }
+        return ignored.contains { host == $0 || host.hasSuffix("." + $0) }
+    }
+
+    /// Starts capturing requests.
     ///
     /// - Parameters:
     ///   - showsButton: Shows a small floating button that opens the inspector.
     ///   - opensOnShake: Opens the inspector when the device is shaken.
-    public static func start(showsButton: Bool = true, opensOnShake: Bool = true) {
+    ///   - capturesSharedSession: Captures `URLSession.shared`, which third-party SDKs
+    ///     often use too. Pass `false` to record only the sessions you add with
+    ///     ``install(in:)`` or ``urlProtocolClasses``.
+    public static func start(
+        showsButton: Bool = true,
+        opensOnShake: Bool = true,
+        capturesSharedSession: Bool = true
+    ) {
         #if DEBUG
         let started: Bool = lock.withLock {
             guard !running else { return false }
             running = true
-            URLProtocol.registerClass(SnitchURLProtocol.self)
+            coversShared = capturesSharedSession
+            if capturesSharedSession {
+                URLProtocol.registerClass(SnitchURLProtocol.self)
+            }
             return true
         }
         if started {
@@ -60,7 +98,10 @@ public enum Snitch {
         lock.withLock {
             guard running else { return }
             running = false
-            URLProtocol.unregisterClass(SnitchURLProtocol.self)
+            if coversShared {
+                URLProtocol.unregisterClass(SnitchURLProtocol.self)
+                coversShared = false
+            }
             if paused {
                 paused = false
                 store.endPause()
@@ -122,7 +163,7 @@ public enum Snitch {
 
     /// Adds Snitch to a custom session configuration.
     ///
-    /// `start()` only covers `URLSession.shared`. Call this on a configuration before
+    /// `start()` covers only `URLSession.shared`. Call this on a configuration before
     /// creating a `URLSession` from it; the session copies the configuration.
     /// Requests are captured only while ``isRunning`` is `true`.
     public static func install(in configuration: URLSessionConfiguration) {

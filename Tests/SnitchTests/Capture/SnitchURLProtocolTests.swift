@@ -20,6 +20,7 @@ final class SnitchURLProtocolTests {
         Self.forwarder
         StubURLProtocol.reset()
         Snitch.store.clear()
+        Snitch.ignoredHosts = []
         Snitch.start()
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [StubURLProtocol.self]
@@ -30,6 +31,7 @@ final class SnitchURLProtocolTests {
     deinit {
         session.invalidateAndCancel()
         Snitch.stop()
+        Snitch.ignoredHosts = []
     }
 
     /// Polls the store until `count` entries are complete.
@@ -67,6 +69,46 @@ final class SnitchURLProtocolTests {
         let marked = NSMutableURLRequest(url: Self.base)
         URLProtocol.setProperty(true, forKey: SnitchURLProtocol.handledKey, in: marked)
         #expect(!SnitchURLProtocol.canInit(with: marked as URLRequest), "forwarded requests must not loop")
+    }
+
+    @Test(arguments: [
+        ("https://appsflyersdk.com/a", false),
+        ("https://rexiop.skadsdkless.APPSFLYERSDK.com/a", false),
+        ("https://notappsflyersdk.com/a", true),
+        ("https://api.snitch.test/a", true),
+    ])
+    func ignoredHostsAndTheirSubdomainsAreSkipped(url: String, captured: Bool) throws {
+        Snitch.ignoredHosts = [".AppsFlyerSDK.com"]
+        let request = URLRequest(url: try #require(URL(string: url)))
+        #expect(SnitchURLProtocol.canInit(with: request) == captured)
+    }
+
+    @Test func ignoredRequestsStillLoadAndAreNotRecorded() async throws {
+        Snitch.ignoredHosts = ["snitch.test"]
+        StubURLProtocol.handler = { _ in .success(status: 200, headers: [:], body: Data("ok".utf8)) }
+        let (data, _) = try await session.data(from: Self.base)
+        #expect(data == Data("ok".utf8))
+        #expect(Snitch.store.entries.isEmpty)
+    }
+
+    @Test func capturesTheSharedSessionByDefault() async throws {
+        #expect(Snitch.isCapturingSharedSession)
+        StubURLProtocol.handler = { _ in .success(status: 200, headers: [:], body: Data()) }
+        _ = try await URLSession.shared.data(from: Self.base)
+        let entry = try #require(try await completed(1).first)
+        #expect(entry.statusCode == 200)
+    }
+
+    @Test func canLeaveTheSharedSessionAlone() async throws {
+        Snitch.stop()
+        Snitch.start(showsButton: false, opensOnShake: false, capturesSharedSession: false)
+        #expect(!Snitch.isCapturingSharedSession)
+
+        // Sessions added with install(in:) are still captured.
+        StubURLProtocol.handler = { _ in .success(status: 204, headers: [:], body: Data()) }
+        _ = try await session.data(from: Self.base)
+        let entry = try #require(try await completed(1).first)
+        #expect(entry.statusCode == 204)
     }
 
     @Test func ignoresRequestsWhenStopped() {

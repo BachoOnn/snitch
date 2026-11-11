@@ -28,6 +28,7 @@ final class SnitchURLProtocol: URLProtocol {
 
     override class func canInit(with request: URLRequest) -> Bool {
         Snitch.isCapturing && request.isHTTP && !request.isForwardedBySnitch
+            && !Snitch.isIgnored(host: request.url?.host)
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
