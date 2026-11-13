@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo.png" width="120" alt="Snitch">
+  <img src="docs/banner.png" width="600" alt="Snitch — catches every request your app makes. One line to install, nothing leaves your device.">
 </p>
 
 <p align="center">
@@ -8,8 +8,6 @@
   <img alt="Swift" src="https://img.shields.io/badge/swift-5.9%2B-orange">
   <a href="https://github.com/BachoOnn/snitch/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
 </p>
-
-# Snitch
 
 See what your iOS app sends and logs: network requests and analytics events, side by side, in one timeline.
 
