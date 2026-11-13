@@ -16,11 +16,10 @@ struct FloatingDot: View {
     private static let restingOpacity: Double = 0.5
 
     var body: some View {
-        SFlowMark()
-            .stroke(
-                Theme.onAccent,
-                style: StrokeStyle(lineWidth: SFlowMark.lineWidth(for: Self.diameter), lineCap: .round, lineJoin: .round)
-            )
+        Image("SFlowMark", bundle: .module)
+            .renderingMode(.template)
+            .resizable()
+            .foregroundStyle(Theme.onAccent)
             .frame(width: Self.diameter, height: Self.diameter)
             .background(Theme.accentFill, in: Circle())
             .shadow(color: .black.opacity(0.22), radius: 6, y: 4)

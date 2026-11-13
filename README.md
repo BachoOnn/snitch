@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" width="120" alt="Snitch">
+</p>
+
 # Snitch
 
 See what your iOS app sends and logs: network requests and analytics events, side by side, in one timeline.
