@@ -1,14 +1,19 @@
+//
+//  FloatingDot.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import SwiftUI
 
-/// The green button with Snitch's S mark. It pulses on each new request and shows a badge after errors.
 struct FloatingDot: View {
     @ObservedObject var model: FloatingButtonModel
     @State private var pulse = false
 
-    /// The size of the dot, which is also its tap area.
     static let frameSize: CGFloat = 40
     private static let diameter = frameSize
-    private static let badgeDiameter: CGFloat = 10
+    private static let restingOpacity: Double = 0.5
 
     var body: some View {
         SFlowMark()
@@ -20,6 +25,9 @@ struct FloatingDot: View {
             .background(Theme.accentFill, in: Circle())
             .shadow(color: .black.opacity(0.22), radius: 6, y: 4)
             .scaleEffect(pulse ? 1.12 : 1)
+            .compositingGroup()
+            .opacity(model.isResting ? Self.restingOpacity : 1)
+            .animation(.easeInOut(duration: model.isResting ? 0.6 : 0.15), value: model.isResting)
             .overlay(alignment: .topTrailing) {
                 if model.hasNewErrors { badge }
             }
@@ -34,7 +42,7 @@ struct FloatingDot: View {
     private var badge: some View {
         Circle()
             .fill(Theme.badge)
-            .frame(width: Self.badgeDiameter, height: Self.badgeDiameter)
+            .frame(width: Theme.Size.errorBadge, height: Theme.Size.errorBadge)
             .overlay(Circle().stroke(Color.white.opacity(0.9), lineWidth: 2))
             .offset(x: 1, y: -1)
     }

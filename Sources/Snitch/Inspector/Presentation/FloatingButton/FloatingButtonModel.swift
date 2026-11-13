@@ -1,17 +1,25 @@
+//
+//  FloatingButtonModel.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import Foundation
 
-/// Watches the store for the button's pulse and error badge.
 @MainActor
 final class FloatingButtonModel: ObservableObject {
-    /// Changes every time a new request is recorded.
+    static let restDelay: TimeInterval = 5
     @Published private(set) var activity = 0
-    /// Whether a request failed or returned an error since the inspector was last opened.
     @Published private(set) var hasNewErrors = false
+    @Published private(set) var isResting = false
 
     private var lastSeen = Date()
     private var lastID: UUID?
+    private var restTimer: RestTimer?
 
-    init() {
+    init(restDelay: TimeInterval = FloatingButtonModel.restDelay) {
+        restTimer = RestTimer(delay: restDelay) { [weak self] in self?.isResting = true }
         Task { [weak self] in
             for await entries in Snitch.store.changes() {
                 guard let self else { return }
@@ -20,7 +28,11 @@ final class FloatingButtonModel: ObservableObject {
         }
     }
 
-    /// Clears the error badge; called when the inspector opens.
+    func wake() {
+        isResting = false
+        restTimer?.poke()
+    }
+
     func markSeen() {
         lastSeen = Date()
         hasNewErrors = false
