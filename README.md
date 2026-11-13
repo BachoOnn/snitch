@@ -2,11 +2,27 @@
   <img src="docs/logo.png" width="120" alt="Snitch">
 </p>
 
+<p align="center">
+  <a href="https://github.com/BachoOnn/snitch/tags"><img alt="Version" src="https://img.shields.io/github/v/tag/BachoOnn/snitch?label=version&color=green"></a>
+  <img alt="Platform" src="https://img.shields.io/badge/platform-iOS%2016%2B-lightgrey">
+  <img alt="Swift" src="https://img.shields.io/badge/swift-5.9%2B-orange">
+  <a href="https://github.com/BachoOnn/snitch/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
+</p>
+
 # Snitch
 
 See what your iOS app sends and logs: network requests and analytics events, side by side, in one timeline.
 
 > **Status:** early development. The network inspector (v1) works; the API may still change before 1.0.
+
+### Overview
+
+<table>
+<tr>
+<td align="center"><img src="docs/overview-timeline.png" width="260" alt="The request timeline"><br><sub>Timeline</sub></td>
+<td align="center"><img src="docs/overview-detail.png" width="260" alt="A request's detail screen"><br><sub>Request detail</sub></td>
+</tr>
+</table>
 
 ## What it is
 
