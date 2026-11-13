@@ -1,10 +1,13 @@
+//
+//  CurlCommand.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import Foundation
 
 extension NetworkEntry {
-    /// A shell command that replays this request with curl.
-    ///
-    /// Headers are sorted so the output is stable. A body that is not UTF-8 text, or
-    /// that was truncated when captured, is noted in a leading comment line.
     var curlCommand: String {
         var notes: [String] = []
         var parts = ["curl"]
@@ -25,7 +28,6 @@ extension NetworkEntry {
         return (notes + [command]).joined(separator: "\n")
     }
 
-    /// Wraps a value in single quotes for a POSIX shell.
     static func shellQuoted(_ value: String) -> String {
         "'" + value.replacingOccurrences(of: "'", with: "'\\''") + "'"
     }

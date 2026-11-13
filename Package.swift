@@ -1,4 +1,11 @@
 // swift-tools-version: 5.9
+//
+//  Package.swift
+//  Snitch
+//
+//  Created by BOniani on 04/11/2026.
+//
+
 import PackageDescription
 
 let package = Package(

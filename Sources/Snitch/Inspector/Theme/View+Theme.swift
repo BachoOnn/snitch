@@ -1,14 +1,18 @@
+//
+//  View+Theme.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import SwiftUI
 
 extension View {
-    /// Gives the navigation bar the inspector's background, so scrolled content
-    /// never shows through behind the title. Toolbar buttons keep their glass.
     func inspectorBarBackground() -> some View {
         toolbarBackground(Theme.background, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
     }
 
-    /// A filled, outlined rounded rectangle behind the view, the shape of every card.
     func cardStyle(
         radius: CGFloat = Theme.Radius.card,
         fill: Color = Theme.surface,
@@ -18,7 +22,6 @@ extension View {
         return background(fill, in: shape).overlay(shape.strokeBorder(stroke))
     }
 
-    /// Applies the small uppercase section-label style.
     func sectionLabelStyle() -> some View {
         font(Theme.sectionLabel)
             .tracking(0.8)

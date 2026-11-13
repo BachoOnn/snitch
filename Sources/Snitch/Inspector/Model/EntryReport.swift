@@ -1,11 +1,13 @@
+//
+//  EntryReport.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import Foundation
 
 extension NetworkEntry {
-    /// The whole exchange as readable text: a summary, then the request and response,
-    /// each with every header and a pretty-printed body.
-    ///
-    /// Header values are included in full, sensitive ones too: this is what the user
-    /// copies on purpose to share or paste elsewhere.
     var reportText: String {
         var lines = [
             "\(method) \(url?.absoluteString ?? "?")",

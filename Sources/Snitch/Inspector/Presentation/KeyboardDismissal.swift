@@ -1,10 +1,12 @@
+//
+//  KeyboardDismissal.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import UIKit
 
-/// Hides the keyboard when the user taps anywhere outside a text field.
-///
-/// The tap is observed alongside everything else, so buttons, rows and menus keep
-/// working. Taps on text fields and selectable text are ignored, so focusing a field or
-/// selecting text never dismisses the keyboard.
 @MainActor
 final class KeyboardDismissal: NSObject, UIGestureRecognizerDelegate {
     static let shared = KeyboardDismissal()

@@ -1,14 +1,18 @@
+//
+//  StubURLProtocol.swift
+//  SnitchTests
+//
+//  Created by BOniani on 04/11/2026.
+//
+
 import Foundation
 @testable import Snitch
 
-/// Serves canned replies in place of the network, so tests never leave the process.
 final class StubURLProtocol: URLProtocol {
     enum Reply {
         case success(status: Int, headers: [String: String] = [:], body: Data = Data())
         case redirect(to: URL, status: Int = 302)
         case failure(URLError.Code)
-        /// Asks for a login first, then replies 200 with the answer it got as the body:
-        /// `credential:<user>`, `none`, or `default`. A cancelled challenge fails.
         case challenge(method: String = NSURLAuthenticationMethodHTTPBasic)
         case hang
     }
@@ -17,13 +21,11 @@ final class StubURLProtocol: URLProtocol {
     private static var _handler: (URLRequest) -> Reply = { _ in .success(status: 200) }
     private static var _receivedBodies: [Data] = []
 
-    /// Decides the reply for each request.
     static var handler: (URLRequest) -> Reply {
         get { lock.withLock { _handler } }
         set { lock.withLock { _handler = newValue } }
     }
 
-    /// Bodies of all requests the stub has received.
     static var receivedBodies: [Data] {
         lock.withLock { _receivedBodies }
     }

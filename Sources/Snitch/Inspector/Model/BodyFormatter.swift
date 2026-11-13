@@ -1,6 +1,12 @@
+//
+//  BodyFormatter.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import Foundation
 
-/// A colored piece of a formatted body.
 struct BodyToken: Equatable, Sendable {
     enum Kind: Equatable, Sendable { case key, string, number, literal, punctuation, plain }
 
@@ -8,33 +14,26 @@ struct BodyToken: Equatable, Sendable {
     var text: String
 }
 
-/// Turns captured bodies into lines for display.
 enum BodyFormatter {
-    /// Lines for a body: pretty, colored JSON when `pretty` is on and the body is JSON,
-    /// otherwise the text as is. Returns `nil` for bodies that are not UTF-8 text.
     static func lines(for data: Data, pretty: Bool) -> [[BodyToken]]? {
         if pretty, let json = prettyJSON(data) { return json }
         guard let text = String(data: data, encoding: .utf8) else { return nil }
         return text.components(separatedBy: .newlines).map { [BodyToken(kind: .plain, text: $0)] }
     }
 
-    /// The body as text for copying: pretty JSON when possible, otherwise the raw text.
     static func copyText(for data: Data) -> String? {
         if let json = prettyJSON(data) { return text(of: json) }
         return String(data: data, encoding: .utf8)
     }
 
-    /// Joins formatted lines back into plain text.
     static func text(of lines: [[BodyToken]]) -> String {
         lines.map { $0.map(\.text).joined() }.joined(separator: "\n")
     }
 
-    /// Whether `data` is valid JSON.
     static func isJSON(_ data: Data) -> Bool {
         (try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)) != nil
     }
 
-    /// Re-indents valid JSON two spaces per level, keeping the original key order.
     static func prettyJSON(_ data: Data) -> [[BodyToken]]? {
         guard isJSON(data) else { return nil }
         let bytes = [UInt8](data)

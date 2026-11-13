@@ -1,9 +1,12 @@
+//
+//  TextShare.swift
+//  Snitch
+//
+//  Created by BOniani on 10/11/2026.
+//
+
 import UIKit
 
-/// Opens the system share sheet for text that is only built once an app is picked.
-///
-/// A report can include a body of up to 1 MB, too slow to build up front. The sheet
-/// still sees plain text, so it offers Copy, Messages, Mail, and other text apps.
 @MainActor
 enum TextShare {
     static func present(title: String, make: @escaping @Sendable () -> String) {
@@ -15,7 +18,6 @@ enum TextShare {
         top.present(sheet, animated: true)
     }
 
-    /// Hands the text to the share sheet when it is needed, away from the main thread.
     private final class Provider: UIActivityItemProvider, @unchecked Sendable {
         private let title: String
         private let make: @Sendable () -> String

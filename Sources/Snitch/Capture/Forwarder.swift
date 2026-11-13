@@ -1,7 +1,12 @@
+//
+//  Forwarder.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import Foundation
 
-/// One shared internal session that performs forwarded requests and routes its
-/// delegate callbacks back to the protocol instance that owns each task.
 final class Forwarder: NSObject, URLSessionDataDelegate {
     private let lock = NSLock()
     private var owners: [Int: SnitchURLProtocol] = [:]
@@ -25,8 +30,6 @@ final class Forwarder: NSObject, URLSessionDataDelegate {
     private func owner(of task: URLSessionTask) -> SnitchURLProtocol? {
         lock.withLock { owners[task.taskIdentifier] }
     }
-
-    // MARK: URLSessionDataDelegate
 
     func urlSession(
         _ session: URLSession,
@@ -54,9 +57,7 @@ final class Forwarder: NSObject, URLSessionDataDelegate {
         completionHandler(nil)
     }
 
-    /// Hands certificate checks and logins back to the session that made the request,
-    /// so the app's SSL pinning or custom trust handling still decides. Server trust
-    /// challenges arrive here too, since there is no session-level handler.
+    // Server trust arrives here too, since there is no session-level handler.
     func urlSession(
         _ session: URLSession,
         task: URLSessionTask,

@@ -1,11 +1,13 @@
+//
+//  InspectorHostingController.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import SwiftUI
 import UIKit
 
-/// Hosts the inspector sheet.
-///
-/// Native controls inside it, such as the Request · Response switch, get the
-/// inspector's brand colors. The styling is scoped to this controller, so the same
-/// controls elsewhere in the app keep their own look.
 final class InspectorHostingController: UIHostingController<InspectorView> {
     override init(rootView: InspectorView) {
         _ = Self.styleControls
@@ -19,8 +21,6 @@ final class InspectorHostingController: UIHostingController<InspectorView> {
 
     private static let styleControls: Void = {
         let segmented = UISegmentedControl.appearance(whenContainedInInstancesOf: [InspectorHostingController.self])
-        // Only the selection is colored; the track stays native, with Liquid Glass.
-        // The brand green is dark in light mode and light in dark mode.
         segmented.selectedSegmentTintColor = color("Accent")
         segmented.setTitleTextAttributes([
             .foregroundColor: color("TextMuted"),
@@ -32,12 +32,10 @@ final class InspectorHostingController: UIHostingController<InspectorView> {
         ], for: .selected)
     }()
 
-    /// Text on the brand green: white on the dark green, dark on the light green.
     private static let onAccent = UIColor { traits in
         traits.userInterfaceStyle == .dark ? color("OnAccent") : .white
     }
 
-    /// An asset color as a `UIColor` that still follows light and dark mode.
     private static func color(_ name: String) -> UIColor {
         UIColor(named: name, in: .module, compatibleWith: nil) ?? .label
     }

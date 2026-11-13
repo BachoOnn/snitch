@@ -1,11 +1,13 @@
+//
+//  LocalHTTPServer.swift
+//  SnitchTests
+//
+//  Created by BOniani on 11/11/2026.
+//
+
 import Foundation
 import Network
 
-/// A tiny HTTP server on 127.0.0.1, for behavior the stub can't show, such as how
-/// URLSession itself stores and sends cookies. Nothing leaves the device.
-///
-/// - `/set` replies with `Set-Cookie: probe=1`.
-/// - `/echo` replies with the request's `Cookie` header, or `none`.
 final class LocalHTTPServer {
     private let listener: NWListener
     private let queue = DispatchQueue(label: "dev.snitch.tests.server")
@@ -17,7 +19,6 @@ final class LocalHTTPServer {
         listener = try NWListener(using: parameters)
     }
 
-    /// Starts listening and waits until the port is known.
     func start() async throws {
         let ready = AsyncStream<Void> { continuation in
             listener.stateUpdateHandler = { state in

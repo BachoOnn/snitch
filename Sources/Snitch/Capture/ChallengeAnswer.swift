@@ -1,7 +1,12 @@
+//
+//  ChallengeAnswer.swift
+//  Snitch
+//
+//  Created by BOniani on 11/11/2026.
+//
+
 import Foundation
 
-/// Carries the app's answer to a forwarded challenge back to the forwarding session.
-/// The first answer wins; later ones are ignored.
 final class ChallengeAnswer: NSObject, URLAuthenticationChallengeSender, @unchecked Sendable {
     typealias Handler = (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
 

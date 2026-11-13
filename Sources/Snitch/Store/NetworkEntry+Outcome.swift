@@ -1,7 +1,13 @@
+//
+//  NetworkEntry+Outcome.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import Foundation
 
 extension NetworkEntry {
-    /// How a request ended, as shown by the inspector's colors and filters.
     enum Outcome: Equatable {
         case pending
         case success
@@ -9,7 +15,6 @@ extension NetworkEntry {
         case serverError
         case failed
 
-        /// Whether the request went wrong: an error status or no response at all.
         var isError: Bool {
             switch self {
             case .clientError, .serverError, .failed: return true

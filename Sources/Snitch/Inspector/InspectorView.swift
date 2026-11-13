@@ -1,6 +1,12 @@
+//
+//  InspectorView.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import SwiftUI
 
-/// The inspector's root: a navigation stack that starts on the timeline.
 struct InspectorView: View {
     @StateObject private var model: InspectorModel
     let onClose: () -> Void

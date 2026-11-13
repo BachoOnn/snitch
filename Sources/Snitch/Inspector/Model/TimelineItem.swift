@@ -1,6 +1,12 @@
+//
+//  TimelineItem.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import Foundation
 
-/// One row of the timeline: a request or a pause gap.
 enum TimelineItem: Identifiable, Equatable {
     case entry(NetworkEntry)
     case pause(NetworkStore.Pause)
@@ -20,7 +26,6 @@ enum TimelineItem: Identifiable, Equatable {
     }
 }
 
-/// A day's worth of timeline rows, newest first.
 struct TimelineSection: Identifiable, Equatable {
     let day: Date
     let items: [TimelineItem]
@@ -29,8 +34,6 @@ struct TimelineSection: Identifiable, Equatable {
 }
 
 enum Timeline {
-    /// Builds the timeline, newest first and grouped by day. Pause gaps are shown only
-    /// when nothing is filtered or searched, since they are not requests.
     static func sections(
         entries: [NetworkEntry],
         pauses: [NetworkStore.Pause],
@@ -55,7 +58,6 @@ enum Timeline {
         return sections
     }
 
-    /// `Today`, `Yesterday`, or a short date.
     static func title(for day: Date, now: Date = Date(), calendar: Calendar = .current) -> String {
         if calendar.isDate(day, inSameDayAs: now) { return "Today" }
         if let yesterday = calendar.date(byAdding: .day, value: -1, to: now), calendar.isDate(day, inSameDayAs: yesterday) {
@@ -66,7 +68,6 @@ enum Timeline {
 }
 
 extension NetworkStore.Pause {
-    /// How long the pause lasted, such as `47 s` or `3 min`, or `now` while it is in progress.
     var durationText: String {
         guard let end else { return "now" }
         let seconds = Int(end.timeIntervalSince(start).rounded())

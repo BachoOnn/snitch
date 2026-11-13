@@ -1,6 +1,12 @@
+//
+//  ShakeToOpen.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import UIKit
 
-/// Opens the inspector when the device is shaken, on a device or in the Simulator.
 @MainActor
 enum ShakeToOpen {
     static var isEnabled = false

@@ -1,3 +1,10 @@
+//
+//  NetworkEntry.swift
+//  Snitch
+//
+//  Created by BOniani on 04/11/2026.
+//
+
 import Foundation
 
 /// One HTTP request and its response, as captured by Snitch.
@@ -5,8 +12,6 @@ import Foundation
 /// An entry is recorded as soon as the request starts and is updated when it
 /// completes, fails, or is cancelled. Use ``isComplete`` to tell the two apart.
 public struct NetworkEntry: Identifiable, Equatable, Sendable {
-    /// The largest request or response body Snitch keeps in memory, in bytes.
-    /// Longer bodies are truncated; their full size is still reported.
     static let maxStoredBodySize = 1_048_576
 
     /// A unique identifier for this entry.
@@ -64,7 +69,7 @@ public struct NetworkEntry: Identifiable, Equatable, Sendable {
     }
 }
 
-/// Keeps headers, bodies, and query strings out of `print`, string interpolation, and logs.
+/// Keeps headers, bodies and query strings out of `print`, interpolation and logs.
 extension NetworkEntry: CustomStringConvertible, CustomDebugStringConvertible {
     /// A short summary such as `GET api.example.com/users 200`, without query, headers, or bodies.
     public var description: String {

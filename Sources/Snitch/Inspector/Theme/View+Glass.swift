@@ -1,7 +1,13 @@
+//
+//  View+Glass.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import SwiftUI
 
 extension View {
-    /// Native Liquid Glass on iOS 26 and later; a frosted material on earlier versions.
     @ViewBuilder
     func snitchGlass<S: Shape>(in shape: S) -> some View {
         #if compiler(>=6.2)

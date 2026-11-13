@@ -1,6 +1,12 @@
+//
+//  InspectorModel.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import SwiftUI
 
-/// State shared by the inspector's screens. Mirrors the store and holds the filters.
 @MainActor
 final class InspectorModel: ObservableObject {
     @Published private(set) var entries: [NetworkEntry] = []
@@ -17,7 +23,6 @@ final class InspectorModel: ObservableObject {
         pauses = store.pauses
     }
 
-    /// Follows the store until the calling task is cancelled.
     func observe() async {
         for await snapshot in store.changes() {
             entries = snapshot
@@ -34,10 +39,8 @@ final class InspectorModel: ObservableObject {
         entries.last { $0.id == id }
     }
 
-    /// Methods seen so far, for the filter menu.
     var methods: [String] { Array(Set(entries.map(\.method))).sorted() }
 
-    /// Hosts seen so far, for the filter menu.
     var hosts: [String] { Array(Set(entries.map(\.displayHost))).filter { !$0.isEmpty }.sorted() }
 
     func togglePause() {

@@ -1,22 +1,26 @@
+//
+//  InspectorPresenter.swift
+//  Snitch
+//
+//  Created by BOniani on 05/11/2026.
+//
+
 import SwiftUI
 import UIKit
 
-/// Presents the inspector as a full-height sheet over whatever the app is showing.
 @MainActor
 enum InspectorPresenter {
     private static weak var sheet: UIViewController?
     private static let dismissObserver = DismissObserver()
 
-    /// Called when the inspector opens or closes, so the floating button can hide.
     static var onVisibilityChange: ((Bool) -> Void)?
 
     static var isPresented: Bool { sheet != nil }
 
     static func present() {
         guard sheet == nil, let presenter = topViewController() else { return }
-        // Hide the button on screen now, before building the inspector keeps the main
-        // thread busy, so it vanishes the moment it is tapped.
         onVisibilityChange?(true)
+        // Commit the hide now; building the inspector blocks the main thread.
         CATransaction.flush()
         let host = InspectorHostingController(rootView: InspectorView(onClose: { dismiss() }))
         host.modalPresentationStyle = .pageSheet
@@ -34,17 +38,14 @@ enum InspectorPresenter {
         guard let sheet else { return }
         sheet.dismiss(animated: true)
         self.sheet = nil
-        // The button comes back right away rather than after the sheet has slid down.
         onVisibilityChange?(false)
     }
 
-    /// The scene the user is looking at.
     static var activeScene: UIWindowScene? {
         let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
         return scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
     }
 
-    /// The screen on top of everything the app is showing, such as the inspector sheet.
     static func topViewController() -> UIViewController? {
         guard let scene = activeScene else { return nil }
         let appWindows = scene.windows.filter { $0.windowLevel == .normal }
@@ -56,11 +57,8 @@ enum InspectorPresenter {
         return top
     }
 
-    /// Notices when the user swipes the sheet away.
     @MainActor
     private final class DismissObserver: NSObject, UIAdaptivePresentationControllerDelegate {
-        /// Brings the button back as soon as the finger lets go of a swipe that closes
-        /// the sheet, rather than after the sheet has finished sliding down.
         func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
             presentationController.presentedViewController.transitionCoordinator?.notifyWhenInteractionChanges { context in
                 if !context.isCancelled { InspectorPresenter.onVisibilityChange?(false) }

@@ -1,3 +1,10 @@
+//
+//  URLRequest+Capture.swift
+//  Snitch
+//
+//  Created by BOniani on 09/11/2026.
+//
+
 import Foundation
 
 extension URLRequest {
@@ -6,18 +13,15 @@ extension URLRequest {
         return scheme == "http" || scheme == "https"
     }
 
-    /// Whether Snitch already forwarded this request, so it must not be captured again.
     var isForwardedBySnitch: Bool {
         URLProtocol.property(forKey: SnitchURLProtocol.handledKey, in: self) != nil
     }
 
-    /// The body, whether it was set directly or as a stream.
-    /// URLSession often hands protocols a stream instead of `httpBody`.
     func readBody() -> Data? {
         httpBody ?? httpBodyStream?.readAll()
     }
 
-    /// A copy marked as forwarded, carrying `body` directly since a stream can be read only once.
+    /// A stream can be read only once, so the body is carried as data.
     func forwardedBySnitch(body: Data?) -> URLRequest {
         let copy = (self as NSURLRequest).mutableCopy() as! NSMutableURLRequest
         if let body, httpBody == nil {
@@ -27,7 +31,6 @@ extension URLRequest {
         return copy as URLRequest
     }
 
-    /// A copy without Snitch's marker, so it can be captured again.
     func withoutSnitchMarker() -> URLRequest {
         let copy = (self as NSURLRequest).mutableCopy() as! NSMutableURLRequest
         URLProtocol.removeProperty(forKey: SnitchURLProtocol.handledKey, in: copy)
@@ -36,7 +39,6 @@ extension URLRequest {
 }
 
 extension InputStream {
-    /// Reads the whole stream into memory.
     func readAll() -> Data {
         open()
         defer { close() }
@@ -52,7 +54,6 @@ extension InputStream {
 }
 
 extension HTTPURLResponse {
-    /// Response headers as plain strings.
     var stringHeaders: [String: String] {
         var headers: [String: String] = [:]
         for (key, value) in allHeaderFields {
