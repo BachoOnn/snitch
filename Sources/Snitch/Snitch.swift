@@ -1,3 +1,10 @@
+//
+//  Snitch.swift
+//  Snitch
+//
+//  Created by BOniani on 04/11/2026.
+//
+
 import Foundation
 
 /// Entry point for Snitch's network capture.
@@ -11,11 +18,10 @@ public enum Snitch {
     /// The store that receives every captured entry.
     public static let store = NetworkStore()
 
-    private static let lock = NSLock()
-    private static var running = false
-    private static var paused = false
-    private static var coversShared = false
-    private static var ignored: Set<String> = []
+    static let lock = NSLock()
+    static var running = false
+    static var paused = false
+    static var coversShared = false
 
     /// Whether capture is currently on.
     public static var isRunning: Bool {
@@ -28,36 +34,12 @@ public enum Snitch {
         lock.withLock { paused }
     }
 
-    /// Whether a new request should be recorded right now.
     static var isCapturing: Bool {
         lock.withLock { running && !paused }
     }
 
-    /// Whether `URLSession.shared` is being captured.
     static var isCapturingSharedSession: Bool {
         lock.withLock { coversShared }
-    }
-
-    /// Hosts whose requests Snitch leaves alone, such as analytics SDKs you don't
-    /// want in the timeline. Each entry also covers its subdomains, so
-    /// `"appsflyersdk.com"` skips `events.appsflyersdk.com` too.
-    ///
-    /// Skipped requests are never intercepted: they go straight to the network as if
-    /// Snitch were not there. Set this before or after ``start(showsButton:opensOnShake:capturesSharedSession:)``.
-    public static var ignoredHosts: Set<String> {
-        get { lock.withLock { ignored } }
-        set {
-            let hosts = newValue.map { String($0.lowercased().drop { $0 == "." }) }.filter { !$0.isEmpty }
-            lock.withLock { ignored = Set(hosts) }
-        }
-    }
-
-    /// Whether requests to `host` are skipped by ``ignoredHosts``.
-    static func isIgnored(host: String?) -> Bool {
-        guard let host = host?.lowercased() else { return false }
-        let ignored = ignoredHosts
-        guard !ignored.isEmpty else { return false }
-        return ignored.contains { host == $0 || host.hasSuffix("." + $0) }
     }
 
     /// Starts capturing requests.
@@ -145,41 +127,6 @@ public enum Snitch {
     public static func present() {
         #if DEBUG
         InspectorPresenter.present()
-        #endif
-    }
-
-    /// The `URLProtocol` classes that capture traffic, for code that builds its own
-    /// `protocolClasses` list and can't call ``install(in:)``, such as a networking
-    /// package that doesn't depend on Snitch. Put them first in the list.
-    ///
-    /// Requests captured this way are re-sent with default settings, so cookies go to
-    /// the shared cookie store. Prefer ``install(in:)`` where you can.
-    ///
-    /// Empty in non-`DEBUG` builds.
-    public static var urlProtocolClasses: [AnyClass] {
-        #if DEBUG
-        [SnitchURLProtocol.self]
-        #else
-        []
-        #endif
-    }
-
-    /// Adds Snitch to a custom session configuration.
-    ///
-    /// `start()` covers only `URLSession.shared`. Call this on a configuration before
-    /// creating a `URLSession` from it; the session copies the configuration.
-    /// Requests are captured only while ``isRunning`` is `true`.
-    ///
-    /// Captured requests are re-sent with this configuration's own settings, so its
-    /// cookie store, cache, credentials and network policies behave as without Snitch.
-    /// Background configurations are left alone, since they don't run protocol classes.
-    public static func install(in configuration: URLSessionConfiguration) {
-        #if DEBUG
-        guard configuration.identifier == nil else { return }
-        var classes = configuration.protocolClasses ?? []
-        guard !classes.contains(where: { $0 is SnitchURLProtocol.Type }) else { return }
-        classes.insert(SessionProtocols.makeClass(for: configuration), at: 0)
-        configuration.protocolClasses = classes
         #endif
     }
 }
