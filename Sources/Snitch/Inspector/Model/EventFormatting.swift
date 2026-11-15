@@ -12,7 +12,6 @@ extension AnalyticsEvent {
         TimeText.string(from: date)
     }
 
-    /// The detail, else the property names such as `product_id · price`, else the user.
     var subtitle: String {
         if let detail, !detail.isEmpty { return detail }
         if !propertyNames.isEmpty { return propertyNames.joined(separator: " · ") }
@@ -26,7 +25,29 @@ extension AnalyticsEvent {
             .contains { $0.range(of: needle, options: .caseInsensitive) != nil }
     }
 
-    /// The whole event as pretty-printed JSON, for copying.
+    var reportText: String {
+        var lines = [
+            name,
+            "\(source) · \(isAutomatic ? "\(source)'s own event" : "Your event")",
+            "Time: \(date.formatted(date: .abbreviated, time: .omitted)) \(displayTime)",
+        ]
+        if let userID { lines.append("User: \(userID)") }
+        lines += ["", "Properties", propertyCount == 0 ? "None" : prettyProperties]
+        if !sdkProperties.isEmpty {
+            lines += ["", "\(source) properties"]
+            lines += sdkProperties.keys.sorted().map { "\($0): \(sdkProperties[$0] ?? "")" }
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    private var prettyProperties: String {
+        let data = try? JSONSerialization.data(
+            withJSONObject: JSONProperties.decode(properties),
+            options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        )
+        return data.map { String(decoding: $0, as: UTF8.self) } ?? "{}"
+    }
+
     var copyText: String {
         let all = JSONProperties.decode(properties)
             .merging(JSONProperties.decode(sdkPropertiesJSON)) { own, _ in own }

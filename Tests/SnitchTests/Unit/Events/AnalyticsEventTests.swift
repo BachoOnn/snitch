@@ -73,6 +73,19 @@ struct AnalyticsEventTests {
         #expect((object["properties"] as? [String: Any])?.count == 2)
     }
 
+    @Test func reportListsTheEventsDetailsAndBothKindsOfProperties() {
+        let event = AnalyticsEvent(
+            source: "PostHog", name: "add_to_cart", userID: "user_1",
+            properties: ["sku": "TW-1"], sdkProperties: ["$os": "iOS"]
+        )
+        let report = event.reportText
+        #expect(report.hasPrefix("add_to_cart\nPostHog · Your event\nTime: "))
+        #expect(report.contains("User: user_1"))
+        #expect(report.contains(#""sku" : "TW-1""#))
+        #expect(report.hasSuffix("PostHog properties\n$os: iOS"))
+        #expect(AnalyticsEvent(source: "PostHog", name: "e").reportText.contains("Properties\nNone"))
+    }
+
     @Test func descriptionLeavesOutProperties() {
         let event = AnalyticsEvent(source: "PostHog", name: "login", properties: ["email": "secret@shop.test"])
         #expect("\(event)" == "PostHog login")

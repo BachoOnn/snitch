@@ -55,6 +55,11 @@ struct EventDetailView: View {
             .padding(.bottom, Theme.Spacing.floatingClearance)
         }
         .scrollDismissesKeyboard(.interactively)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                EventShareMenu(event: event)
+            }
+        }
         .overlay {
             DetailCopyButton(accessibilityLabel: "Copy event as JSON") {
                 copy(event.copyText, confirmation: "Event copied as JSON")
