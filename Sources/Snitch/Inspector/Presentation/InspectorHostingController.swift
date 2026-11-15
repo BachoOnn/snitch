@@ -30,6 +30,18 @@ final class InspectorHostingController: UIHostingController<InspectorView> {
             .foregroundColor: onAccent,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold),
         ], for: .selected)
+
+        // Before iOS 26 the bar draws a separator line; SwiftUI has no way to turn it off.
+        if #unavailable(iOS 26) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = color("Background")
+            appearance.shadowColor = .clear
+            let bar = UINavigationBar.appearance(whenContainedInInstancesOf: [InspectorHostingController.self])
+            bar.standardAppearance = appearance
+            bar.scrollEdgeAppearance = appearance
+            bar.compactAppearance = appearance
+        }
     }()
 
     private static let onAccent = UIColor { traits in

@@ -8,9 +8,15 @@
 import SwiftUI
 
 extension View {
+    /// On earlier versions the bar is styled by `InspectorHostingController`, without a separator.
+    @ViewBuilder
     func inspectorBarBackground() -> some View {
-        toolbarBackground(Theme.background, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+        if #available(iOS 26, *) {
+            toolbarBackground(Theme.background, for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+        } else {
+            self
+        }
     }
 
     func cardStyle(
