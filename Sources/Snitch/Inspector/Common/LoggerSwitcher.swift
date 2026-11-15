@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Rounded, equal-width tabs, one per logger, each with its logo and count.
 struct LoggerSwitcher: View {
     let selection: InspectorScreen
     let screens: [InspectorScreen]

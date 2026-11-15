@@ -27,7 +27,6 @@ enum JSONProperties {
         (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
     }
 
-    /// A value as display text: strings as they are, anything else as compact JSON.
     static func text(_ value: Any) -> String {
         let safe = jsonSafe(value)
         if let string = safe as? String { return string }

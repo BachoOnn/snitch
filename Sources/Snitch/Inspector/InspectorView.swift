@@ -48,7 +48,6 @@ struct InspectorView: View {
         InspectorScreen.available(sources: events.sources)
     }
 
-    /// The selected screen, or Network if its source is gone.
     private var current: InspectorScreen {
         screens.contains(screen) ? screen : .network
     }

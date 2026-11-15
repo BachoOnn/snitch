@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// An analytics SDK's logo. Single-color template logos take `tint`; others keep their colors.
 struct SourceLogo: View {
     let image: UIImage
     let tint: Color

@@ -11,7 +11,6 @@ enum InspectorScreen: Hashable {
     case network
     case events(String)
 
-    /// The screen to open next time, kept for the life of the app.
     @MainActor static var last: InspectorScreen = .network
 
     var title: String {

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// The SNITCH wordmark and recording dot. With a count, the dot and count sit on a second line.
 struct RecordingTitle: View {
     let isPaused: Bool
     var count: Int?

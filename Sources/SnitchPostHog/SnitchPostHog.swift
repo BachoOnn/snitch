@@ -83,7 +83,6 @@ public enum SnitchPostHog {
         )
     }
 
-    /// PostHog prefixes the events and properties it adds itself with `$`.
     private static func isPostHogOwn(_ name: String) -> Bool {
         name.hasPrefix("$")
     }

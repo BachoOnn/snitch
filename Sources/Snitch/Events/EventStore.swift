@@ -21,12 +21,10 @@ final class EventStore: @unchecked Sendable {
         self.maxCount = maxCount
     }
 
-    /// All events, oldest first.
     var events: [AnalyticsEvent] {
         lock.withLock { items }
     }
 
-    /// Registered sources, in the order they were first seen.
     var sources: [String] {
         lock.withLock { sourceNames }
     }
@@ -63,7 +61,6 @@ final class EventStore: @unchecked Sendable {
         }
     }
 
-    /// Emits once right away, then after every change.
     func changes() -> AsyncStream<Void> {
         AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
             let id = UUID()

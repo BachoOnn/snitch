@@ -23,7 +23,6 @@ final class EventLogModel: ObservableObject {
         refresh()
     }
 
-    /// How many filter settings differ from the default, for the filter button's badge.
     var activeFilterCount: Int {
         (showsAppEvents ? 0 : 1) + (showsAutomatic ? 1 : 0)
     }
@@ -47,8 +46,6 @@ final class EventLogModel: ObservableObject {
         events(from: source).filter(\.isAutomatic).count
     }
 
-    /// Events newest first, grouped by day. Pauses are marked like on the Network screen,
-    /// unless a search or filter is narrowing the list.
     func sections(
         from source: String,
         pauses: [NetworkStore.Pause] = [],

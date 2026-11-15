@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// One toolbar for every screen, so switching screens updates it instead of rebuilding it.
 struct InspectorToolbar: ToolbarContent {
     let screen: InspectorScreen
     let screens: [InspectorScreen]
