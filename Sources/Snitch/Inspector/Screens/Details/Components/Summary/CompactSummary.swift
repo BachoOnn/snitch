@@ -14,7 +14,12 @@ struct CompactSummary: View {
         let color = Theme.color(for: entry.outcome)
         HStack(spacing: Theme.Spacing.spacing8) {
             Circle().fill(color).frame(width: Theme.Size.statusDot, height: Theme.Size.statusDot)
-            Text(entry.displayStatus).foregroundStyle(color)
+            Text(entry.displayStatus)
+                .foregroundStyle(color)
+                .opacity(entry.outcome == .pending ? 0 : 1)
+                .overlay {
+                    if entry.outcome == .pending { PendingDots(color: color) }
+                }
             Text(entry.method).foregroundStyle(Theme.textMuted)
             Text(entry.displayPath)
                 .foregroundStyle(Theme.text)

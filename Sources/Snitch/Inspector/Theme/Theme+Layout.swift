@@ -66,5 +66,8 @@ extension Theme {
         /// The pause marker's icon and minimum row height.
         static let pauseIcon: CGFloat = 16
         static let pauseMinHeight: CGFloat = 32
+        /// The animated dots of a pending request, in a row and on the detail page.
+        static let pendingDot: CGFloat = 4
+        static let pendingDotLarge: CGFloat = 6
     }
 }

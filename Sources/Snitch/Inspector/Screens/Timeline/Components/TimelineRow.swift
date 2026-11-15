@@ -41,19 +41,20 @@ struct TimelineRow: View {
         VStack(alignment: .trailing, spacing: Theme.Spacing.spacing2) {
             Text(entry.displayStatus)
                 .font(Theme.mono(13, .semibold))
-                .foregroundStyle(entry.outcome == .pending ? Theme.secondary : Theme.color(for: entry.outcome))
-            if let duration = entry.displayDuration {
-                Text(duration)
-                    .font(Theme.mono(10))
-                    .foregroundStyle(entry.isSlow ? Theme.warning : Theme.faint)
-            }
+                .foregroundStyle(Theme.color(for: entry.outcome))
+                .opacity(entry.outcome == .pending ? 0 : 1)
+                .overlay(alignment: .trailing) {
+                    if entry.outcome == .pending { PendingDots() }
+                }
+            Text(entry.displayTime)
+                .font(Theme.mono(10))
+                .foregroundStyle(Theme.faint)
         }
     }
 
     private var accessibilityText: String {
-        var parts = [entry.method, entry.displayPath, entry.displayHost, outcomeText]
-        if let duration = entry.displayDuration { parts.append(duration) }
-        return parts.joined(separator: ", ")
+        [entry.method, entry.displayPath, entry.displayHost, outcomeText, entry.displayTime]
+            .joined(separator: ", ")
     }
 
     private var outcomeText: String {

@@ -34,7 +34,11 @@ struct SummaryCard: View {
             MethodPill(method: entry.method, outcome: entry.outcome)
             Text(entry.displayStatus)
                 .font(Theme.mono(20, .bold))
-                .foregroundStyle(entry.outcome == .pending ? Theme.secondary : Theme.color(for: entry.outcome))
+                .foregroundStyle(Theme.color(for: entry.outcome))
+                .opacity(entry.outcome == .pending ? 0 : 1)
+                .overlay(alignment: .leading) {
+                    if entry.outcome == .pending { PendingDots(dotSize: Theme.Size.pendingDotLarge) }
+                }
             if let phrase = entry.reasonPhrase, entry.outcome != .failed {
                 Text(phrase)
                     .font(.system(size: 14, weight: .medium))
