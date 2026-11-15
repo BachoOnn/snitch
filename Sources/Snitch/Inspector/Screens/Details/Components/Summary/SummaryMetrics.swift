@@ -13,10 +13,11 @@ struct SummaryMetrics: View {
     var body: some View {
         HStack(spacing: Theme.Spacing.spacing14) {
             Text(entry.displayDuration ?? "pending")
+                .foregroundStyle(entry.isSlow ? Theme.warning : Theme.textMuted)
             separator
             Text(NetworkEntry.format(bytes: entry.responseBodySize))
             separator
-            Text(entry.startDate.formatted(date: .omitted, time: .standard))
+            Text(entry.displayTime)
         }
         .font(Theme.mono(12))
         .foregroundStyle(Theme.textMuted)

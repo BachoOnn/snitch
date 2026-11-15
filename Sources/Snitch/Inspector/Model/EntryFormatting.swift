@@ -47,6 +47,17 @@ extension NetworkEntry {
         duration.map(Self.format(duration:))
     }
 
+    var displayTime: String {
+        Self.timeFormatter.string(from: startDate)
+    }
+
+    private static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "HH:mm:ss"
+        return formatter
+    }()
+
     var isSlow: Bool {
         (duration ?? 0) >= Self.slowThreshold
     }

@@ -72,6 +72,12 @@ struct EntryFormattingTests {
         #expect(NetworkEntry.format(bytes: bytes) == text)
     }
 
+    @Test func time() {
+        var e = entry()
+        e.startDate = Calendar.current.date(from: DateComponents(year: 2026, month: 11, day: 15, hour: 14, minute: 32, second: 5))!
+        #expect(e.displayTime == "14:32:05")
+    }
+
     @Test func slow() {
         #expect(!entry(status: 200, duration: 0.9).isSlow)
         #expect(entry(status: 200, duration: 1.0).isSlow)
