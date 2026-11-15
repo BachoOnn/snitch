@@ -9,9 +9,9 @@
   <a href="https://github.com/BachoOnn/snitch/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
 </p>
 
-See what your iOS app sends and logs: network requests and analytics events, side by side, in one timeline.
+See what your iOS app sends and logs: network requests and analytics events, each on its own screen in one inspector.
 
-> **Status:** early development. The network inspector (v1) works; the API may still change before 1.0.
+> **Status:** early development. The network inspector and PostHog events work; the API may still change.
 
 ### Overview
 
@@ -24,7 +24,7 @@ See what your iOS app sends and logs: network requests and analytics events, sid
 
 ## What it is
 
-Snitch is an in-app debugging tool for iOS. It records your app's own `URLSession` traffic and, with optional adapters, the analytics events your app emits (PostHog, AppsFlyer). Both show up in a single SwiftUI inspector.
+Snitch is an in-app debugging tool for iOS. It records your app's own `URLSession` traffic and, with optional adapters, the analytics events your app emits (PostHog today, AppsFlyer later). Each shows up on its own screen in a single SwiftUI inspector.
 
 ## What it is not
 
@@ -44,13 +44,16 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 - A small floating button and shake-to-open, both optional
 - Native Liquid Glass on iOS 26, with a material fallback on iOS 16 to 25
 
+**v2: PostHog events**
+- An optional `SnitchPostHog` product that shows every event your app sends to PostHog
+- A screen per logger: switch between Network and PostHog under the title
+- PostHog's own events (`$screen`, `$identify`, app lifecycle) hidden until you turn them on in the filters
+- Event properties in the same Pretty/Raw JSON view as request bodies, with PostHog's own properties listed apart
+- Pauses marked on the PostHog timeline too
+
 ## Planned
 
-**v1.1: analytics timeline**
-- Optional adapters as separate products: `SnitchPostHog`, `SnitchAppsFlyer`
-- Network calls and analytics events in one timeline, filterable by source
-
-**v1.2**
+- An optional `SnitchAppsFlyer` product
 - HAR export
 - Header and body redaction
 - Labeling of batched analytics requests
@@ -118,6 +121,39 @@ with `install(in:)` or `urlProtocolClasses`:
 Snitch.start(capturesSharedSession: false)
 ```
 
+### PostHog events
+
+Add the `SnitchPostHog` product to your app target (it needs PostHog for iOS 3.28 or
+later), then add Snitch's hook to your PostHog configuration:
+
+```swift
+import SnitchPostHog
+
+config.setBeforeSend(SnitchPostHog.beforeSend)
+PostHogSDK.shared.setup(config)
+```
+
+A PostHog screen appears in the inspector, with each event and its properties as the
+app captured them. The hook returns events unchanged. If you already use `beforeSend`
+blocks to change or drop events, put Snitch's last so it shows what is actually sent:
+
+```swift
+config.setBeforeSend(myRedaction, SnitchPostHog.beforeSend)
+```
+
+To also see PostHog's uploads on the Network screen, give PostHog a session
+configuration with Snitch installed:
+
+```swift
+let session = URLSessionConfiguration.default
+Snitch.install(in: session)
+config.urlSessionConfiguration = session
+```
+
+PostHog's automatic screen views of Snitch's own screens, such as its floating button
+or the open inspector, are dropped so Snitch doesn't add to your analytics. Session
+replay frames are never shown.
+
 Other options:
 
 ```swift
@@ -140,3 +176,6 @@ See [SECURITY.md](SECURITY.md).
 ## License
 
 Apache 2.0. See [LICENSE](LICENSE).
+
+PostHog and the PostHog logo are trademarks of PostHog, Inc. `SnitchPostHog` shows the
+unmodified logo only to label PostHog's screen. Snitch isn't made or endorsed by PostHog.

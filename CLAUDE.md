@@ -16,7 +16,7 @@ Debugging tool for iOS: network requests and analytics events in one SwiftUI tim
 ## Workflow
 
 - Work in small tasks, one feature at a time.
-- Run the tests on the simulator after each change: `xcodebuild test -scheme Snitch -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -derivedDataPath .build/xcode -quiet`.
+- Run the tests on the simulator after each change: `xcodebuild test -scheme Snitch-Package -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -derivedDataPath .build/xcode -quiet`.
 - Add a test for every new behavior.
 
 ## Roadmap
