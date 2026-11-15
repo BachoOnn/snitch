@@ -35,8 +35,8 @@ struct Wire: View {
 }
 
 extension View {
-    func onWire(dashed: Bool = false) -> some View {
-        frame(width: Theme.Size.methodPill.width)
+    func onWire(dashed: Bool = false, width: CGFloat = Theme.Size.methodPill.width) -> some View {
+        frame(width: width)
             .frame(maxHeight: .infinity)
             .background(Wire(dashed: dashed))
     }

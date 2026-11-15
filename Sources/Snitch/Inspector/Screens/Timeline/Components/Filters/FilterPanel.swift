@@ -26,26 +26,10 @@ struct FilterPanel: View {
             ChoiceMenu(title: "Host", options: hosts, selection: filter.hosts, onToggle: { filter.toggleHost($0) })
 
             FilterDivider()
-            resetButton
+            ResetFiltersButton { filter = EntryFilter() }
         }
         .padding(.vertical, Theme.Spacing.spacing6)
         .frame(width: Theme.Size.filterPanelWidth)
         .foregroundStyle(Theme.text)
-    }
-
-    private var resetButton: some View {
-        Button(role: .destructive) { filter = EntryFilter() } label: {
-            HStack {
-                Text("Reset filters")
-                Spacer()
-                Image(systemName: "arrow.counterclockwise")
-            }
-            .font(.system(size: 15))
-            .foregroundStyle(Theme.danger)
-            .padding(.horizontal, Theme.Spacing.spacing14)
-            .frame(height: Theme.Size.row)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
     }
 }

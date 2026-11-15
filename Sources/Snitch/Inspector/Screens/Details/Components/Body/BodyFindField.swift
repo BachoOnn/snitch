@@ -10,13 +10,14 @@ import SwiftUI
 struct BodyFindField: View {
     @Binding var query: String
     let matchCount: Int
+    var placeholder = "Find in body"
 
     var body: some View {
         HStack(spacing: Theme.Spacing.spacing8) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 13))
                 .foregroundStyle(Theme.tertiary)
-            TextField("Find in body", text: $query)
+            TextField(placeholder, text: $query)
                 .font(.system(size: 13))
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()

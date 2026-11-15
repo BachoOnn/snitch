@@ -11,6 +11,7 @@ struct BodySection: View {
     let data: Data?
     let size: Int
     let owner: String
+    var name = "Body"
     var onCopy: (_ text: String, _ confirmation: String) -> Void = { _, _ in }
 
     @State var pretty = true
@@ -57,15 +58,15 @@ struct BodySection: View {
                     .background(Theme.codeBackground, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
             }
         } else {
-            DetailNote("No body")
+            DetailNote("No \(name.lowercased())")
         }
     }
 
     private func findBar(_ document: BodyDocument) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                BodyFindField(query: $query, matchCount: matches.count)
-                CopyChip(accessibilityLabel: "Copy body") { onCopy(document.text, "Body copied") }
+                BodyFindField(query: $query, matchCount: matches.count, placeholder: "Find in \(name.lowercased())")
+                CopyChip(accessibilityLabel: "Copy \(name.lowercased())") { onCopy(document.text, "\(name) copied") }
                     .padding(.trailing, Theme.Spacing.spacing10)
             }
             Hairline()
@@ -97,13 +98,13 @@ struct BodySection: View {
     }
 
     private var title: String {
-        guard let data, !data.isEmpty else { return "Body" }
+        guard let data, !data.isEmpty else { return name }
         let kind: String
         switch result {
         case .text(let document)?: kind = document.isJSON ? "JSON · " : "Text · "
         case .binary?: kind = "Binary · "
         case nil: kind = ""
         }
-        return "Body · \(kind)\(NetworkEntry.format(bytes: size))"
+        return "\(name) · \(kind)\(NetworkEntry.format(bytes: size))"
     }
 }

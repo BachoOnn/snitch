@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HeadersSection: View {
     let headers: [String: String]
+    var title = "Headers"
+    var noun = "headers"
     var onCopy: (_ text: String, _ confirmation: String) -> Void = { _, _ in }
 
     @State private var showsAll = false
@@ -20,10 +22,10 @@ struct HeadersSection: View {
         let shown = showsAll ? all : Array(all.prefix(Self.collapsedCount))
 
         VStack(alignment: .leading, spacing: Theme.Spacing.spacing8) {
-            Text("Headers · \(all.count)").sectionLabelStyle()
+            Text("\(title) · \(all.count)").sectionLabelStyle()
             VStack(spacing: 0) {
                 if all.isEmpty {
-                    DetailNote("No headers")
+                    DetailNote("No \(noun)")
                 }
                 ForEach(Array(shown.enumerated()), id: \.element.name) { index, header in
                     if index > 0 { Hairline() }
@@ -39,7 +41,7 @@ struct HeadersSection: View {
     }
 
     private func showAllButton(count: Int) -> some View {
-        Button(showsAll ? "Show fewer" : "Show all \(count) headers") {
+        Button(showsAll ? "Show fewer" : "Show all \(count) \(noun)") {
             withAnimation(.easeInOut(duration: 0.2)) { showsAll.toggle() }
         }
         .font(.system(size: 13, weight: .semibold))

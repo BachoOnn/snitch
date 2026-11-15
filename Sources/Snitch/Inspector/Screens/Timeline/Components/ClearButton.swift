@@ -10,6 +10,7 @@ import SwiftUI
 struct ClearButton: View {
     let count: Int
     let isEnabled: Bool
+    var noun = "Request"
     let onClear: () -> Void
 
     @State private var confirming = false
@@ -18,7 +19,7 @@ struct ClearButton: View {
         Button { confirming = true } label: {
             Image(systemName: "trash")
         }
-        .accessibilityLabel("Clear all requests")
+        .accessibilityLabel("Clear all \(noun.lowercased())s")
         .disabled(!isEnabled)
         .confirmationDialog(title, isPresented: $confirming, titleVisibility: .visible) {
             Button(confirmTitle, role: .destructive, action: onClear)
@@ -29,10 +30,10 @@ struct ClearButton: View {
     }
 
     private var title: String {
-        count == 1 ? "Clear 1 request?" : "Clear all \(count) requests?"
+        count == 1 ? "Clear 1 \(noun.lowercased())?" : "Clear all \(count) \(noun.lowercased())s?"
     }
 
     private var confirmTitle: String {
-        count == 1 ? "Clear Request" : "Clear \(count) Requests"
+        count == 1 ? "Clear \(noun)" : "Clear \(count) \(noun)s"
     }
 }

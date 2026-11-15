@@ -9,10 +9,12 @@ import SwiftUI
 
 struct PauseDivider: View {
     let pause: NetworkStore.Pause
+    var wireWidth = Theme.Size.methodPill.width
+    var noun = "requests"
 
     var body: some View {
         HStack(spacing: Theme.Spacing.spacing12) {
-            icon.onWire(dashed: true)
+            icon.onWire(dashed: true, width: wireWidth)
             label
             fadingLine
         }
@@ -53,7 +55,7 @@ struct PauseDivider: View {
 
     private var accessibilityText: String {
         pause.end == nil
-            ? "Paused since \(pause.start.formatted(date: .omitted, time: .shortened)), new requests are not recorded"
-            : "Paused for \(pause.durationText), requests were not recorded"
+            ? "Paused since \(pause.start.formatted(date: .omitted, time: .shortened)), new \(noun) are not recorded"
+            : "Paused for \(pause.durationText), \(noun) were not recorded"
     }
 }

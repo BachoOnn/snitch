@@ -14,27 +14,11 @@ struct TimelineBottomBar: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.spacing10) {
-            searchField
+            SearchField(placeholder: "Search URL, method, status", text: $model.search)
             filterButton
         }
         .padding(.horizontal, Theme.Spacing.screen)
         .padding(.bottom, Theme.Spacing.spacing8)
-    }
-
-    private var searchField: some View {
-        HStack(spacing: Theme.Spacing.spacing10) {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(Theme.secondary)
-            TextField("Search URL, method, status", text: $model.search)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .submitLabel(.search)
-                .foregroundStyle(Theme.text)
-        }
-        .font(.system(size: 16))
-        .padding(.horizontal, Theme.Spacing.spacing16)
-        .frame(height: Theme.Size.floatingControl)
-        .snitchGlass(in: Capsule())
     }
 
     private var filterButton: some View {
