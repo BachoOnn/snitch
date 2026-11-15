@@ -28,8 +28,18 @@ enum BodyDocumentLoader {
         "\(owner)|\(data.count)|\(pretty)"
     }
 
+    /// Bodies up to this size are formatted right away, so the page is complete on its first frame.
+    static let immediateLimit = 16_384
+
     static func cached(_ key: String) -> Result? {
         cache.object(forKey: key as NSString)?.result
+    }
+
+    static func loadNow(_ data: Data, pretty: Bool, key: String) -> Result {
+        if let cached = cached(key) { return cached }
+        let result = BodyDocument.make(from: data, pretty: pretty).map(Result.text) ?? .binary
+        cache.setObject(Entry(result), forKey: key as NSString)
+        return result
     }
 
     static func load(_ data: Data, pretty: Bool, key: String) async -> Result {

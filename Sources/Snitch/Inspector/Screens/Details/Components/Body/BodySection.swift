@@ -94,6 +94,9 @@ struct BodySection: View {
 
     var result: BodyDocumentLoader.Result? {
         if let loaded, loaded.key == key { return loaded.result }
+        if let data, data.count <= BodyDocumentLoader.immediateLimit {
+            return BodyDocumentLoader.loadNow(data, pretty: pretty, key: key)
+        }
         return BodyDocumentLoader.cached(key)
     }
 

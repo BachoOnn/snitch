@@ -17,6 +17,18 @@ import Testing
         #expect(document.rows.map(\.text) == ["{", #"  "a": 1,"#, #"  "b": "x""#, "}"])
     }
 
+    @Test func smallBodiesLoadRightAwayAndAreCached() throws {
+        let data = Data(#"{"a":1}"#.utf8)
+        let key = BodyDocumentLoader.key(owner: UUID().uuidString, data: data, pretty: true)
+        #expect(BodyDocumentLoader.cached(key) == nil)
+        guard case .text(let document) = BodyDocumentLoader.loadNow(data, pretty: true, key: key) else {
+            Issue.record("expected a text document")
+            return
+        }
+        #expect(document.rows.count == 3)
+        #expect(BodyDocumentLoader.cached(key) != nil)
+    }
+
     @Test func rawJSONStaysOnOneLineButKnowsItIsJSON() throws {
         let document = try #require(BodyDocument.make(from: Data(#"{"a":1}"#.utf8), pretty: false))
         #expect(document.isJSON)
