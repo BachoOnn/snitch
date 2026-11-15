@@ -7,25 +7,40 @@
 
 import SwiftUI
 
+/// The SNITCH wordmark and recording dot. With a count, the dot and count sit on a second line.
 struct RecordingTitle: View {
-    let count: Int
     let isPaused: Bool
+    var count: Int?
 
     var body: some View {
-        VStack(spacing: Theme.Spacing.spacing2) {
-            Text("SNITCH")
-                .font(Theme.title)
-                .tracking(2)
-                .foregroundStyle(Theme.text)
-            HStack(spacing: Theme.Spacing.spacing6) {
-                statusDot
-                Text("\(count)")
-                    .font(Theme.mono(12, .semibold))
-                    .foregroundStyle(isPaused ? Theme.silver : Theme.secondary)
+        Group {
+            if let count {
+                VStack(spacing: Theme.Spacing.spacing2) {
+                    wordmark
+                    HStack(spacing: Theme.Spacing.spacing6) {
+                        statusDot
+                        Text("\(count)")
+                            .font(Theme.mono(12, .semibold))
+                            .foregroundStyle(isPaused ? Theme.silver : Theme.secondary)
+                    }
+                }
+            } else {
+                HStack(spacing: Theme.Spacing.spacing6) {
+                    statusDot
+                    wordmark
+                }
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Snitch, \(isPaused ? "paused" : "recording"), \(count) requests")
+        .accessibilityLabel("Snitch, \(isPaused ? "paused" : "recording")\(count.map { ", \($0) requests" } ?? "")")
+        .accessibilityAddTraits(.isHeader)
+    }
+
+    private var wordmark: some View {
+        Text("SNITCH")
+            .font(Theme.title)
+            .tracking(2)
+            .foregroundStyle(Theme.text)
     }
 
     private var statusDot: some View {

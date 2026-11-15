@@ -25,6 +25,8 @@ extension Theme {
         static let emptyStateTop: CGFloat = 80
         /// How far below the top safe area the floating button first appears.
         static let floatingButtonInitialTop: CGFloat = 64
+        /// How far a screen slides while switching between Network and an analytics source.
+        static let switchSlide: CGFloat = 28
     }
 
     enum Radius {
@@ -69,5 +71,16 @@ extension Theme {
         /// The animated dots of a pending request, in a row and on the detail page.
         static let pendingDot: CGFloat = 4
         static let pendingDotLarge: CGFloat = 6
+        /// The dot that marks an analytics event on the timeline, and the column it sits in.
+        static let eventDot: CGFloat = 10
+        static let eventDotColumn: CGFloat = 22
+        /// One tab of the Network/analytics switcher, and the height of the logo inside it.
+        static let switcherSegment: CGFloat = 32
+        static let switcherSegmentWidth: CGFloat = 76
+        static let switcherIcon: CGFloat = 22
+        /// An analytics SDK's logo at the top of an event's summary card.
+        static let sourceLogo: CGFloat = 30
+        /// The label column in an event's summary rows.
+        static let infoLabelColumn: CGFloat = 76
     }
 }

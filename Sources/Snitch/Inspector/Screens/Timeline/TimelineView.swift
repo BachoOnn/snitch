@@ -9,7 +9,6 @@ import SwiftUI
 
 struct TimelineView: View {
     @ObservedObject var model: InspectorModel
-    let onClose: () -> Void
 
     @State private var toast: Toast?
 
@@ -22,9 +21,6 @@ struct TimelineView: View {
         .scrollDismissesKeyboard(.interactively)
         .background(Theme.background.ignoresSafeArea())
         .safeAreaInset(edge: .bottom) { TimelineBottomBar(model: model) }
-        .navigationBarTitleDisplayMode(.inline)
-        .inspectorBarBackground()
-        .toolbar { toolbar }
         .navigationDestination(for: UUID.self) { id in
             EntryDetailView(model: model, id: id)
         }
@@ -49,30 +45,6 @@ struct TimelineView: View {
                     TimelineItemView(item: item, toast: $toast)
                 }
             }
-        }
-    }
-
-    @ToolbarContentBuilder
-    private var toolbar: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button(action: onClose) {
-                Image(systemName: "xmark")
-            }
-            .accessibilityLabel("Close")
-        }
-        ToolbarItem(placement: .principal) {
-            RecordingTitle(count: model.entries.count, isPaused: model.isPaused)
-        }
-        ToolbarItemGroup(placement: .primaryAction) {
-            Button(action: model.togglePause) {
-                Image(systemName: model.isPaused ? "play.fill" : "pause.fill")
-            }
-            .accessibilityLabel(model.isPaused ? "Resume recording" : "Pause recording")
-            ClearButton(
-                count: model.entries.count,
-                isEnabled: !model.entries.isEmpty || !model.pauses.isEmpty,
-                onClear: model.clear
-            )
         }
     }
 }
