@@ -14,14 +14,17 @@ final class FloatingButtonModel: ObservableObject {
     @Published private(set) var hasNewErrors = false
     @Published private(set) var isResting = false
 
-    private var lastSeen = Date()
+    private var entries: [NetworkEntry] = []
+    // Failures are tracked by ID, not time: a request can start before the inspector
+    // was last opened and still fail after it was closed.
+    private var seenErrors: Set<UUID> = []
     private var lastID: UUID?
     private var restTimer: RestTimer?
 
-    init(restDelay: TimeInterval = FloatingButtonModel.restDelay) {
+    init(store: NetworkStore = Snitch.store, restDelay: TimeInterval = FloatingButtonModel.restDelay) {
         restTimer = RestTimer(delay: restDelay) { [weak self] in self?.isResting = true }
         Task { [weak self] in
-            for await entries in Snitch.store.changes() {
+            for await entries in store.changes() {
                 guard let self else { return }
                 self.update(entries)
             }
@@ -34,15 +37,16 @@ final class FloatingButtonModel: ObservableObject {
     }
 
     func markSeen() {
-        lastSeen = Date()
+        seenErrors = Set(entries.filter(\.outcome.isError).map(\.id))
         hasNewErrors = false
     }
 
     private func update(_ entries: [NetworkEntry]) {
+        self.entries = entries
         if let last = entries.last?.id, last != lastID {
             lastID = last
             activity += 1
         }
-        hasNewErrors = entries.contains { $0.startDate > lastSeen && $0.outcome.isError }
+        hasNewErrors = entries.contains { $0.outcome.isError && !seenErrors.contains($0.id) }
     }
 }
