@@ -31,6 +31,7 @@ enum InspectorPresenter {
         host.presentationController?.delegate = dismissObserver
         KeyboardDismissal.shared.install(on: host.view)
         sheet = host
+        Snitch.setInspectorVisible(true)
         presenter.present(host, animated: true)
     }
 
@@ -38,6 +39,7 @@ enum InspectorPresenter {
         guard let sheet else { return }
         sheet.dismiss(animated: true)
         self.sheet = nil
+        Snitch.setInspectorVisible(false)
         onVisibilityChange?(false)
     }
 
@@ -67,6 +69,7 @@ enum InspectorPresenter {
 
         func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
             InspectorPresenter.sheet = nil
+            Snitch.setInspectorVisible(false)
             InspectorPresenter.onVisibilityChange?(false)
         }
     }
