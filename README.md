@@ -20,6 +20,10 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 <td align="center"><img src="docs/overview-timeline.png" width="260" alt="The request timeline"><br><sub>Timeline</sub></td>
 <td align="center"><img src="docs/overview-detail.png" width="260" alt="A request's detail screen"><br><sub>Request detail</sub></td>
 </tr>
+<tr>
+<td align="center"><img src="docs/overview-events.png" width="260" alt="The PostHog event timeline"><br><sub>PostHog events</sub></td>
+<td align="center"><img src="docs/overview-event-detail.png" width="260" alt="An event's detail screen"><br><sub>Event detail</sub></td>
+</tr>
 </table>
 
 ## What it is
