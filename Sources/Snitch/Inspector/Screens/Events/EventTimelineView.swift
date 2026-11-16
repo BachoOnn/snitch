@@ -23,9 +23,6 @@ struct EventTimelineView: View {
         .scrollDismissesKeyboard(.interactively)
         .background(Theme.background.ignoresSafeArea())
         .safeAreaInset(edge: .bottom) { EventBottomBar(events: events, source: source) }
-        .navigationDestination(for: EventRoute.self) { route in
-            EventDetailView(events: events, id: route.id)
-        }
         .toast($toast)
     }
 

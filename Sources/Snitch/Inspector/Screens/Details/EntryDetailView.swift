@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EntryDetailView: View {
     @ObservedObject var model: InspectorModel
+    @ObservedObject var events: EventLogModel
     let id: UUID
 
     @State private var side: EntrySide = .request
@@ -34,6 +35,10 @@ struct EntryDetailView: View {
             VStack(alignment: .leading, spacing: 0) {
                 SummaryCard(entry: entry, onCopy: copy)
                     .reportsSummaryBottom(in: Self.space)
+                let uploaded = events.events(in: entry)
+                if !uploaded.isEmpty {
+                    UploadEventsSection(events: uploaded)
+                }
                 LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
                     Section {
                         sections(entry)
@@ -63,9 +68,10 @@ struct EntryDetailView: View {
             .id(side)
             .padding(.top, Theme.Spacing.spacing8)
         BodySection(
-            data: entry.body(on: side),
-            size: entry.bodySize(on: side),
+            data: entry.readableBody(on: side),
+            size: entry.readableBodySize(on: side),
             owner: "\(entry.id)-\(side.rawValue)",
+            name: entry.isUnzipped(on: side) ? "Unzipped body" : "Body",
             onCopy: copy
         )
     }

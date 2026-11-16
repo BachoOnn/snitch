@@ -78,6 +78,12 @@ final class EventLogModel: ObservableObject {
         all.last { $0.id == id }
     }
 
+    /// The events a captured request uploaded, newest first.
+    func events(in entry: NetworkEntry) -> [AnalyticsEvent] {
+        guard !entry.requestBodyIDs.isEmpty else { return [] }
+        return all.filter { entry.requestBodyIDs.contains($0.id) }.sorted { $0.date > $1.date }
+    }
+
     func clear(source: String) {
         store.clear(source: source)
     }

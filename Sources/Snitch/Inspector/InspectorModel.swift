@@ -39,6 +39,12 @@ final class InspectorModel: ObservableObject {
         entries.last { $0.id == id }
     }
 
+    /// The newest captured request whose body lists the event, such as the analytics
+    /// upload that sent it.
+    func upload(carrying eventID: UUID) -> NetworkEntry? {
+        entries.last { $0.requestBodyIDs.contains(eventID) }
+    }
+
     var methods: [String] { Array(Set(entries.map(\.method))).sorted() }
 
     var hosts: [String] { Array(Set(entries.map(\.displayHost))).filter { !$0.isEmpty }.sorted() }

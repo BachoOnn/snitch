@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EventDetailView: View {
     @ObservedObject var events: EventLogModel
+    @ObservedObject var network: InspectorModel
     let id: UUID
 
     @State private var toast: Toast?
@@ -41,6 +42,9 @@ struct EventDetailView: View {
                     name: "Properties",
                     onCopy: copy
                 )
+                if let upload = network.upload(carrying: event.id) {
+                    SentInSection(entry: upload, otherEventCount: max(events.events(in: upload).count - 1, 0))
+                }
                 if event.sdkPropertyCount > 0 {
                     HeadersSection(
                         headers: event.sdkProperties,

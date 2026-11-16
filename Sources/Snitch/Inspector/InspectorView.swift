@@ -69,6 +69,13 @@ struct InspectorView: View {
             }
         }
         .background(SwipeReader(isEnabled: screens.count > 1, onSwipe: swiped))
+        // Here rather than on each screen, so requests and events can link to each other.
+        .navigationDestination(for: UUID.self) { id in
+            EntryDetailView(model: model, events: events, id: id)
+        }
+        .navigationDestination(for: EventRoute.self) { route in
+            EventDetailView(events: events, network: model, id: route.id)
+        }
     }
 
     private func swiped(translation: CGPoint, velocity: CGPoint) {

@@ -24,4 +24,17 @@ extension NetworkEntry {
     func bodySize(on side: EntrySide) -> Int {
         side == .request ? requestBodySize : responseBodySize
     }
+
+    /// The body as shown on screen: a gzip request body, such as an analytics upload, unzipped.
+    func readableBody(on side: EntrySide) -> Data? {
+        side == .request ? unzippedRequestBody ?? requestBody : responseBody
+    }
+
+    func readableBodySize(on side: EntrySide) -> Int {
+        side == .request ? unzippedRequestBody?.count ?? requestBodySize : responseBodySize
+    }
+
+    func isUnzipped(on side: EntrySide) -> Bool {
+        side == .request && unzippedRequestBody != nil
+    }
 }

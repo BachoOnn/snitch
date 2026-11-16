@@ -44,6 +44,10 @@ public struct NetworkEntry: Identifiable, Equatable, Sendable {
     /// Whether the request has finished, successfully or not.
     public var isComplete: Bool { duration != nil }
 
+    // Worked out once when the request starts, so the screens never unzip or scan while drawing.
+    let unzippedRequestBody: Data?
+    let requestBodyIDs: Set<UUID>
+
     init(
         id: UUID = UUID(),
         url: URL?,
@@ -59,6 +63,8 @@ public struct NetworkEntry: Identifiable, Equatable, Sendable {
         let body = requestBody?.isEmpty == false ? requestBody : nil
         self.requestBody = body.map { $0.prefix(Self.maxStoredBodySize) }
         self.requestBodySize = body?.count ?? 0
+        self.unzippedRequestBody = Self.unzipped(self.requestBody)
+        self.requestBodyIDs = Self.ids(in: unzippedRequestBody ?? self.requestBody)
         self.statusCode = nil
         self.responseHeaders = [:]
         self.responseBody = nil

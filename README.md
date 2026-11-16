@@ -53,6 +53,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 - A screen per logger: switch between Network and PostHog under the title, or swipe sideways
 - PostHog's own events (`$screen`, `$identify`, app lifecycle) hidden until you turn them on in the filters
 - Event properties in the same Pretty/Raw JSON view as request bodies, with PostHog's own properties listed apart
+- Each event links to the upload that sent it, and each upload lists its events, with its gzip body unzipped
 - Pauses marked on the PostHog timeline too
 
 ## Planned
@@ -60,7 +61,6 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 - An optional `SnitchAppsFlyer` product
 - HAR export
 - Header and body redaction
-- Labeling of batched analytics requests
 
 ## Installation
 
@@ -146,8 +146,8 @@ blocks to change or drop events, put Snitch's last so it shows what is actually 
 config.setBeforeSend(myRedaction, SnitchPostHog.beforeSend)
 ```
 
-To also see PostHog's uploads on the Network screen, give PostHog a session
-configuration with Snitch installed:
+To also see PostHog's uploads on the Network screen, and link each event to the
+upload that sent it, give PostHog a session configuration with Snitch installed:
 
 ```swift
 let session = URLSessionConfiguration.default

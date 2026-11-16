@@ -21,9 +21,6 @@ struct TimelineView: View {
         .scrollDismissesKeyboard(.interactively)
         .background(Theme.background.ignoresSafeArea())
         .safeAreaInset(edge: .bottom) { TimelineBottomBar(model: model) }
-        .navigationDestination(for: UUID.self) { id in
-            EntryDetailView(model: model, id: id)
-        }
         .toast($toast)
     }
 
