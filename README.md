@@ -137,8 +137,9 @@ config.setBeforeSend(SnitchPostHog.beforeSend)
 PostHogSDK.shared.setup(config)
 ```
 
-A PostHog screen appears in the inspector, with each event and its properties as the
-app captured them. The hook returns events unchanged. If you already use `beforeSend`
+Once the hook is set, a PostHog screen and a switcher between it and Network appear
+in the inspector, with each event and its properties as the app captured them.
+`Snitch.start()` alone shows only the Network screen. The hook returns events unchanged. If you already use `beforeSend`
 blocks to change or drop events, put Snitch's last so it shows what is actually sent:
 
 ```swift
@@ -157,6 +158,20 @@ config.urlSessionConfiguration = session
 PostHog's automatic screen views of Snitch's own screens, such as its floating button
 or the open inspector, are dropped so Snitch doesn't add to your analytics. Session
 replay frames are never shown.
+
+#### PostHog versions
+
+`SnitchPostHog` accepts any PostHog for iOS from 3.28 up to, but not including, 4.0.
+Swift Package Manager picks one PostHog version for the whole app, so Snitch uses
+whichever version your app already has in that range and never changes it:
+
+- **3.28 to 3.x:** works with your current version.
+- **Older than 3.28:** package resolution fails. Update PostHog; 3.28 added the
+  `beforeSend` hook Snitch relies on.
+- **4.0 or later:** not supported until a Snitch release adds it.
+
+Swift Package Manager downloads PostHog when you add Snitch, even if you only use the
+`Snitch` product. It is only built into apps that add `SnitchPostHog`.
 
 Other options:
 
