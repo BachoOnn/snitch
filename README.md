@@ -67,7 +67,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/snitch", from: "2.0.1")
+.package(url: "https://github.com/BachoOnn/snitch", from: "2.0.2")
 ```
 
 ## Quick start
