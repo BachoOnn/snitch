@@ -68,6 +68,12 @@ struct InspectorView: View {
                     .zIndex(isCurrent ? 1 : 0)
             }
         }
+        .background(SwipeReader(isEnabled: screens.count > 1, onSwipe: swiped))
+    }
+
+    private func swiped(translation: CGPoint, velocity: CGPoint) {
+        let target = ScreenSwipe.target(from: current, in: screens, translation: translation, velocity: velocity)
+        if let target { select(target) }
     }
 
     @ViewBuilder

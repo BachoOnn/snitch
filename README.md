@@ -50,7 +50,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 
 **v2: PostHog events**
 - An optional `SnitchPostHog` product that shows every event your app sends to PostHog
-- A screen per logger: switch between Network and PostHog under the title
+- A screen per logger: switch between Network and PostHog under the title, or swipe sideways
 - PostHog's own events (`$screen`, `$identify`, app lifecycle) hidden until you turn them on in the filters
 - Event properties in the same Pretty/Raw JSON view as request bodies, with PostHog's own properties listed apart
 - Pauses marked on the PostHog timeline too
