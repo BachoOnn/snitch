@@ -32,13 +32,13 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 
 <table>
 <tr>
-<td align="center" valign="top" width="33%"><img src="docs/demo-network.gif" width="200" alt="Opening the inspector, searching, filtering and reading a request"><br><sub><b>Find requests</b><br>Search, filters, hidden headers, pretty or raw bodies, find in body</sub></td>
-<td align="center" valign="top" width="33%"><img src="docs/demo-copy.gif" width="200" alt="Copying a request, a header and a cURL command"><br><sub><b>Copy and share</b><br>Long press to copy, a copy button you can drag, cURL</sub></td>
-<td align="center" valign="top" width="33%"><img src="docs/demo-events.gif" width="200" alt="Swiping between screens and following an event to its upload"><br><sub><b>Follow events</b><br>Swipe between screens, open an event's upload and its other events</sub></td>
+<td valign="top" width="33%"><p align="center"><img src="docs/demo-network.gif" width="200" alt="Opening the inspector, searching, filtering and reading a request"></p><sub><b>Find requests</b><br>Search, filters, hidden headers, pretty or raw bodies, find in body</sub></td>
+<td valign="top" width="33%"><p align="center"><img src="docs/demo-copy.gif" width="200" alt="Copying a request, a header and a cURL command"></p><sub><b>Copy and share</b><br>Long press to copy, a copy button you can drag, cURL</sub></td>
+<td valign="top" width="33%"><p align="center"><img src="docs/demo-events.gif" width="200" alt="Swiping between screens and following an event to its upload"></p><sub><b>Follow events</b><br>Swipe between screens, open an event's upload and its other events</sub></td>
 </tr>
 <tr>
-<td align="center" valign="top"><img src="docs/demo-pause.gif" width="200" alt="Pausing, resuming and clearing the timeline"><br><sub><b>Pause and clear</b><br>Paused time shows as a gap; clearing leaves your app alone</sub></td>
-<td align="center" valign="top"><img src="docs/demo-theme.gif" width="200" alt="The inspector switching between light and dark mode"><br><sub><b>Light and dark</b><br>Follows the device's appearance</sub></td>
+<td valign="top"><p align="center"><img src="docs/demo-pause.gif" width="200" alt="Pausing, resuming and clearing the timeline"></p><sub><b>Pause and clear</b><br>Paused time shows as a gap; clearing leaves your app alone</sub></td>
+<td valign="top"><p align="center"><img src="docs/demo-theme.gif" width="200" alt="The inspector switching between light and dark mode"></p><sub><b>Light and dark</b><br>Follows the device's appearance</sub></td>
 <td></td>
 </tr>
 </table>
