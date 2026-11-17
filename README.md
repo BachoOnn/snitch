@@ -30,6 +30,70 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 </tr>
 </table>
 
+### See it in action
+
+<table>
+<tr>
+<td align="center" width="300"><img src="docs/demo-network.gif" width="260" alt="Opening the inspector, searching, filtering by status and reading a request"></td>
+<td>
+<b>Find any request</b>
+<ul>
+<li>Open the inspector from the floating button, or shake the device</li>
+<li>Search by URL, method or status</li>
+<li>Filter by status code, result, method and host, with chips to remove each filter</li>
+<li>Switch between the request and the response</li>
+<li>Tap the eye to reveal hidden headers such as <code>Authorization</code></li>
+<li>Read bodies as pretty or raw JSON, and find text in them</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/demo-copy.gif" width="260" alt="Copying a request, a header and a cURL command"></td>
+<td>
+<b>Copy and share</b>
+<ul>
+<li>Long press a request or event to copy a one-line summary</li>
+<li>Long press a header to copy its value or the whole header</li>
+<li>Drag the copy button anywhere it's out of your way</li>
+<li>Tap it to copy the request and response, or long press it to copy as cURL</li>
+<li>Share the request and response, or the cURL command, from the share menu</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/demo-events.gif" width="260" alt="Swiping between screens and following an event to its upload"></td>
+<td>
+<b>Follow events to their upload</b>
+<ul>
+<li>Swipe sideways to move between Network, AppsFlyer and PostHog</li>
+<li>Show PostHog's own events, such as <code>$screen</code>, from the filters</li>
+<li>See which upload sent an event, and every event in that upload</li>
+<li>Read the upload's gzip body unzipped</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/demo-pause.gif" width="260" alt="Pausing, resuming and clearing the timeline"></td>
+<td>
+<b>Pause and clear</b>
+<ul>
+<li>Pause recording while you do something you don't need to see</li>
+<li>The time it was paused shows as a gap in the timeline</li>
+<li>Clear a screen when you want to start fresh; your app isn't affected</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/demo-theme.gif" width="260" alt="The inspector switching between light and dark mode"></td>
+<td>
+<b>Light and dark</b>
+<ul>
+<li>Follows the device's appearance, on every screen</li>
+</ul>
+</td>
+</tr>
+</table>
+
 ## What it is
 
 Snitch is an in-app debugging tool for iOS. It records your app's own `URLSession` traffic and, with optional adapters, the analytics events your app emits (PostHog and AppsFlyer). Each shows up on its own screen in a single SwiftUI inspector.
