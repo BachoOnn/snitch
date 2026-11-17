@@ -11,7 +11,7 @@
 
 See what your iOS app sends and logs: network requests and analytics events, each on its own screen in one inspector.
 
-> **Status:** early development. The network inspector and PostHog events work; the API may still change.
+> **Status:** early development. The network inspector, PostHog events and AppsFlyer events work; the API may still change.
 
 ### Overview
 
@@ -28,7 +28,7 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 
 ## What it is
 
-Snitch is an in-app debugging tool for iOS. It records your app's own `URLSession` traffic and, with optional adapters, the analytics events your app emits (PostHog today, AppsFlyer later). Each shows up on its own screen in a single SwiftUI inspector.
+Snitch is an in-app debugging tool for iOS. It records your app's own `URLSession` traffic and, with optional adapters, the analytics events your app emits (PostHog and AppsFlyer). Each shows up on its own screen in a single SwiftUI inspector.
 
 ## What it is not
 
@@ -56,9 +56,12 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 - Each event links to the upload that sent it, and each upload lists its events, with its gzip body unzipped
 - Pauses marked on the PostHog timeline too
 
+**v2.2: AppsFlyer events**
+- An optional `SnitchAppsFlyer` product that shows every in-app event your app logs to AppsFlyer
+- One line to set up: your app's own AppsFlyer calls stay as they are
+
 ## Planned
 
-- An optional `SnitchAppsFlyer` product
 - HAR export
 - Header and body redaction
 
@@ -110,12 +113,12 @@ this way use default settings, so cookies go to the shared cookie store; prefer
 
 ### Leaving out third-party traffic
 
-SDKs such as AppsFlyer often use `URLSession.shared` too, so their requests show up
+Third-party SDKs often use `URLSession.shared` too, so their requests show up
 alongside yours. To skip some hosts, list them. Each one also covers its subdomains,
 and skipped requests are never touched by Snitch:
 
 ```swift
-Snitch.ignoredHosts = ["appsflyersdk.com"]
+Snitch.ignoredHosts = ["ads.example.com"]
 ```
 
 To record only your own sessions, leave `URLSession.shared` out and add your sessions
@@ -173,7 +176,38 @@ whichever version your app already has in that range and never changes it:
 Swift Package Manager downloads PostHog when you add Snitch, even if you only use the
 `Snitch` product. It is only built into apps that add `SnitchPostHog`.
 
-Other options:
+### AppsFlyer events
+
+Add the `SnitchAppsFlyer` product to your app target (it needs AppsFlyer for iOS 6.1 or
+later), then start it next to Snitch:
+
+```swift
+import SnitchAppsFlyer
+
+Snitch.start()
+SnitchAppsFlyer.start()
+```
+
+That's all: the code that logs your events doesn't change. An AppsFlyer screen and a
+switcher appear in the inspector, with each event and its values as the app logged them.
+
+AppsFlyer has no hook that sees events before they are sent, so in `DEBUG` builds Snitch
+wraps AppsFlyer's two public `logEvent` methods. Each call is recorded, then passed on to
+AppsFlyer unchanged. In other builds `start()` does nothing and AppsFlyer is untouched.
+
+What it shows and doesn't:
+
+- **Shown:** every event logged through `logEvent`, from your code or from a wrapper or
+  plugin that calls it.
+- **Not shown:** what AppsFlyer sends on its own, such as installs and app opens.
+- **No uploads on the Network screen:** AppsFlyer encrypts its requests and sends them
+  through its own `URLSession`, so they can't be shown or linked to their events.
+
+`SnitchAppsFlyer` accepts AppsFlyer for iOS from 6.1 up to, but not including, 8.0, and uses
+whichever version your app already has. Like PostHog, Swift Package Manager downloads
+AppsFlyer when you add Snitch, but it is only built into apps that add `SnitchAppsFlyer`.
+
+### Other options
 
 ```swift
 Snitch.start(showsButton: false, opensOnShake: true) // choose how the inspector opens
@@ -198,3 +232,7 @@ Apache 2.0. See [LICENSE](LICENSE).
 
 PostHog and the PostHog logo are trademarks of PostHog, Inc. `SnitchPostHog` shows the
 unmodified logo only to label PostHog's screen. Snitch isn't made or endorsed by PostHog.
+
+AppsFlyer and the AppsFlyer logo are trademarks of AppsFlyer Ltd. `SnitchAppsFlyer` shows the
+logo in one color, with the mark above the wordmark, only to label AppsFlyer's screen.
+Snitch isn't made or endorsed by AppsFlyer.
