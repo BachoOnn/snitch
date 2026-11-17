@@ -17,12 +17,16 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 
 <table>
 <tr>
-<td align="center"><img src="docs/overview-timeline.png" width="260" alt="The request timeline"><br><sub>Timeline</sub></td>
-<td align="center"><img src="docs/overview-detail.png" width="260" alt="A request's detail screen"><br><sub>Request detail</sub></td>
+<td align="center"><img src="docs/overview-timeline.png" width="260" alt="The request timeline"><br><sub>Network timeline (v1)</sub></td>
+<td align="center"><img src="docs/overview-detail.png" width="260" alt="A request's detail screen"><br><sub>Request detail (v1)</sub></td>
 </tr>
 <tr>
-<td align="center"><img src="docs/overview-events.png" width="260" alt="The PostHog event timeline"><br><sub>PostHog events</sub></td>
-<td align="center"><img src="docs/overview-event-detail.png" width="260" alt="An event's detail screen"><br><sub>Event detail</sub></td>
+<td align="center"><img src="docs/overview-events.png" width="260" alt="The PostHog event timeline"><br><sub>PostHog events (v2)</sub></td>
+<td align="center"><img src="docs/overview-event-detail.png" width="260" alt="A PostHog event's detail screen"><br><sub>PostHog event detail (v2)</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="docs/overview-appsflyer.png" width="260" alt="The AppsFlyer event timeline"><br><sub>AppsFlyer events (v3)</sub></td>
+<td align="center"><img src="docs/overview-appsflyer-detail.png" width="260" alt="An AppsFlyer event's detail screen"><br><sub>AppsFlyer event detail (v3)</sub></td>
 </tr>
 </table>
 
@@ -56,7 +60,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 - Each event links to the upload that sent it, and each upload lists its events, with its gzip body unzipped
 - Pauses marked on the PostHog timeline too
 
-**v2.2: AppsFlyer events**
+**v3: AppsFlyer events**
 - An optional `SnitchAppsFlyer` product that shows every in-app event your app logs to AppsFlyer
 - One line to set up: your app's own AppsFlyer calls stay as they are
 
@@ -70,8 +74,24 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/snitch", from: "2.1.1")
+.package(url: "https://github.com/BachoOnn/snitch", from: "3.0.0")
 ```
+
+### Choosing a version
+
+Each major version adds one logger. Pick the one that covers the SDKs your app uses:
+
+| Version | Screens | Also downloads | Install |
+|---|---|---|---|
+| 1.x | Network | Nothing | `from: "1.1.2"` |
+| 2.x | Network, PostHog | PostHog | `from: "2.1.1"` |
+| 3.x | Network, PostHog, AppsFlyer | PostHog, AppsFlyer | `from: "3.0.0"` |
+
+`from:` stays within that major version, so you get its fixes but never the next
+logger's SDK. Swift Package Manager downloads every SDK a version depends on, even
+for products you don't add, so an app without PostHog or AppsFlyer can stay on 1.x
+and download nothing else. The SDKs are only built into apps that add
+`SnitchPostHog` or `SnitchAppsFlyer`.
 
 ## Quick start
 
