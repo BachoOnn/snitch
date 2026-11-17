@@ -39,7 +39,7 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 <tr>
 <td valign="top"><p align="center"><img src="docs/demo-pause.gif" width="200" alt="Pausing, resuming and clearing the timeline"></p><sub><b>Pause and clear</b><br>Paused time shows as a gap; clearing leaves your app alone</sub></td>
 <td valign="top"><p align="center"><img src="docs/demo-theme.gif" width="200" alt="The inspector switching between light and dark mode"></p><sub><b>Light and dark</b><br>Follows the device's appearance</sub></td>
-<td></td>
+<td valign="top"><p align="center"><img src="docs/demo-button.gif" width="200" alt="Dragging the floating button and tapping it to open the inspector"></p><sub><b>Floating button</b><br>Drag it anywhere; a red dot means new failed requests. Tap to open, or shake</sub></td>
 </tr>
 </table>
 
