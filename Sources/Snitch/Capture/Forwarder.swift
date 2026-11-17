@@ -57,7 +57,6 @@ final class Forwarder: NSObject, URLSessionDataDelegate {
         completionHandler(nil)
     }
 
-    // Server trust arrives here too, since there is no session-level handler.
     func urlSession(
         _ session: URLSession,
         task: URLSessionTask,

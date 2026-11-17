@@ -7,19 +7,14 @@
 
 import Foundation
 
-/// Unzips gzip data, such as the batches analytics SDKs upload, with Apple's built-in
-/// DEFLATE decoder.
 enum Gzip {
-    /// The unzipped bytes, or `nil` when `data` isn't complete gzip data.
     static func unzip(_ data: Data) -> Data? {
         let bytes = [UInt8](data)
         guard let start = deflateStart(in: bytes) else { return nil }
-        // The last 8 bytes are a checksum and the original size, not compressed data.
         let deflate = Data(bytes[start..<(bytes.count - 8)])
         return try? (deflate as NSData).decompressed(using: .zlib) as Data
     }
 
-    // A 10-byte header, then the optional fields its flags announce (RFC 1952).
     private static func deflateStart(in bytes: [UInt8]) -> Int? {
         guard bytes.count > 18, bytes[0] == 0x1f, bytes[1] == 0x8b, bytes[2] == 8 else { return nil }
         let flags = bytes[3]

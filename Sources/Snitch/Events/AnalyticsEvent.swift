@@ -28,7 +28,6 @@ public struct AnalyticsEvent: Identifiable, Equatable, Sendable {
     /// A short note shown under the name instead of the property names, such as a screen name.
     public let detail: String?
 
-    // Worked out once when the event is recorded, so the screens never decode JSON while drawing.
     let properties: Data
     let propertyNames: [String]
     let sdkProperties: [String: String]
@@ -74,7 +73,6 @@ public struct AnalyticsEvent: Identifiable, Equatable, Sendable {
     }
 }
 
-/// Keeps property values out of `print`, interpolation and logs.
 extension AnalyticsEvent: CustomStringConvertible, CustomDebugStringConvertible {
     /// The source and event name, such as `PostHog product_viewed`, without properties.
     public var description: String { "\(source) \(name)" }

@@ -44,7 +44,6 @@ public struct NetworkEntry: Identifiable, Equatable, Sendable {
     /// Whether the request has finished, successfully or not.
     public var isComplete: Bool { duration != nil }
 
-    // Worked out once when the request starts, so the screens never unzip or scan while drawing.
     let unzippedRequestBody: Data?
     let requestBodyIDs: Set<UUID>
 
@@ -75,7 +74,6 @@ public struct NetworkEntry: Identifiable, Equatable, Sendable {
     }
 }
 
-/// Keeps headers, bodies and query strings out of `print`, interpolation and logs.
 extension NetworkEntry: CustomStringConvertible, CustomDebugStringConvertible {
     /// A short summary such as `GET api.example.com/users 200`, without query, headers, or bodies.
     public var description: String {

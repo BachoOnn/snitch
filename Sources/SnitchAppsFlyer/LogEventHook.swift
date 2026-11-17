@@ -8,20 +8,12 @@
 import Foundation
 import ObjectiveC
 
-/// Wraps AppsFlyer's two public `logEvent` methods so each call is reported first, then runs
-/// exactly as before.
-///
-/// Both methods hand the event straight to the same internal method, and neither calls the
-/// other, so wrapping both reports each event once. Only the public methods are wrapped,
-/// because their names and arguments are AppsFlyer's documented API.
 enum LogEventHook {
     typealias Report = (_ sdk: AnyObject, _ name: String, _ values: [AnyHashable: Any]?) -> Void
 
     static let logEvent = NSSelectorFromString("logEvent:withValues:")
     static let logEventWithCompletion = NSSelectorFromString("logEventWithEventName:eventValues:completionHandler:")
 
-    /// Wraps the methods `type` has and returns how many it wrapped. A method that is missing,
-    /// or whose arguments aren't the expected objects, is left alone. Call once per class.
     @discardableResult
     static func install(in type: AnyClass, report: @escaping Report) -> Int {
         var wrapped = 0
@@ -51,8 +43,6 @@ enum LogEventHook {
         return wrapped
     }
 
-    /// The instance method, if its arguments after `self` and `_cmd` have exactly these
-    /// Objective-C type encodings.
     static func method(_ selector: Selector, in type: AnyClass, argumentTypes: [String]) -> Method? {
         guard let method = class_getInstanceMethod(type, selector),
               Int(method_getNumberOfArguments(method)) == argumentTypes.count + 2

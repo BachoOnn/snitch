@@ -21,7 +21,6 @@ extension URLRequest {
         httpBody ?? httpBodyStream?.readAll()
     }
 
-    /// A stream can be read only once, so the body is carried as data.
     func forwardedBySnitch(body: Data?) -> URLRequest {
         let copy = (self as NSURLRequest).mutableCopy() as! NSMutableURLRequest
         if let body, httpBody == nil {

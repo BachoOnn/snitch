@@ -18,7 +18,6 @@ struct UploadTests {
         return Data(#"{"api_key":"phc_test","batch":[\#(events.joined(separator: ","))]}"#.utf8)
     }
 
-    /// Wraps DEFLATE data in a gzip header and trailer, optionally with a file name field.
     private func gzip(_ data: Data, fileName: String? = nil) throws -> Data {
         var bytes: [UInt8] = [0x1f, 0x8b, 8, fileName == nil ? 0 : 0x08, 0, 0, 0, 0, 0, 0xff]
         if let fileName { bytes += Array(fileName.utf8) + [0] }

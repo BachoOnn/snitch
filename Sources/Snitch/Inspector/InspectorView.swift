@@ -15,7 +15,6 @@ struct InspectorView: View {
     let onClose: () -> Void
 
     private static let switchAnimation = Animation.spring(response: 0.38, dampingFraction: 0.86)
-    /// Long enough for the sheet to finish opening before the other screens are built.
     private static let prepareDelay: UInt64 = 700_000_000
 
     init(store: NetworkStore = Snitch.store, eventStore: EventStore = Snitch.events, onClose: @escaping () -> Void) {
@@ -52,7 +51,6 @@ struct InspectorView: View {
         screens.contains(screen) ? screen : .network
     }
 
-    // Screens stay alive once shown, so switching only animates them in and out.
     private var root: some View {
         let shown = screens.filter { mounted.contains($0) || $0 == current }
         let selectedIndex = screens.firstIndex(of: current) ?? 0
@@ -69,7 +67,6 @@ struct InspectorView: View {
             }
         }
         .background(SwipeReader(isEnabled: screens.count > 1, onSwipe: swiped))
-        // Here rather than on each screen, so requests and events can link to each other.
         .navigationDestination(for: UUID.self) { id in
             EntryDetailView(model: model, events: events, id: id)
         }

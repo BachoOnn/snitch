@@ -12,7 +12,6 @@ enum TextShare {
     static func present(title: String, make: @escaping @Sendable () -> String) {
         guard let top = InspectorPresenter.topViewController() else { return }
         let sheet = UIActivityViewController(activityItems: [Provider(title: title, make: make)], applicationActivities: nil)
-        // iPad shows the sheet as a popover, which needs an anchor.
         sheet.popoverPresentationController?.sourceView = top.view
         sheet.popoverPresentationController?.sourceRect = CGRect(x: top.view.bounds.maxX - 44, y: 0, width: 44, height: 44)
         top.present(sheet, animated: true)

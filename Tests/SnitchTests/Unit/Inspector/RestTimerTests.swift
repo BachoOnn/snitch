@@ -17,7 +17,6 @@ import Testing
         try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 
-    /// Polls instead of sleeping a fixed time, so a busy machine can't make the test flaky.
     private func eventually(_ condition: () -> Bool, timeout: Double = 3) async -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {

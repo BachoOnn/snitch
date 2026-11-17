@@ -68,7 +68,6 @@ public enum SnitchPostHog {
         timestamp: Date,
         uuid: UUID
     ) -> AnalyticsEvent? {
-        // Session replay frames are large and frequent; they would bury everything else.
         guard name != "$snapshot" else { return nil }
         return AnalyticsEvent(
             source: source,

@@ -12,7 +12,6 @@ final class FloatingButtonWindow: UIWindow {
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let button else { return nil }
-        // The on-screen frame, so a button still springing back can be tapped.
         let frame = button.layer.presentation()?.frame ?? button.frame
         return frame.contains(point) ? (super.hitTest(point, with: event) ?? button) : nil
     }

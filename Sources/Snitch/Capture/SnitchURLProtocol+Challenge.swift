@@ -8,8 +8,6 @@
 import Foundation
 
 extension SnitchURLProtocol {
-    /// Passes a challenge to the app's session. Its delegate's answer comes back
-    /// through a ``ChallengeAnswer``.
     func didReceive(
         _ challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void

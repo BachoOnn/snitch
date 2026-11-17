@@ -21,9 +21,7 @@ extension Theme {
         static let section: CGFloat = 18
         static let screen: CGFloat = 16
         static let floatingClearance: CGFloat = 100
-        /// Top padding above an empty state's icon.
         static let emptyStateTop: CGFloat = 80
-        /// How far below the top safe area the floating button first appears.
         static let floatingButtonInitialTop: CGFloat = 64
         static let switchSlide: CGFloat = 28
     }
@@ -46,25 +44,15 @@ extension Theme {
         static let hairline: CGFloat = 1
         static let methodPill = CGSize(width: 52, height: 28)
 
-        /// A count badge, such as the active-filters count on ``GlassCircle``.
         static let badge: CGFloat = 16
-        /// How far a badge overlaps the corner of what it's attached to.
         static let badgeOffset: CGFloat = 9
-        /// The floating button's error badge.
         static let errorBadge: CGFloat = 10
-        /// The Pretty/Raw segmented toggle.
         static let toggleHeight: CGFloat = 26
-        /// The name column in a header row.
         static let headerNameColumn: CGFloat = 112
-        /// The compact request/response summary line.
         static let summaryMaxWidth: CGFloat = 240
-        /// The filter panel popover.
         static let filterPanelWidth: CGFloat = 264
-        /// A status-class filter tile.
         static let statusTileHeight: CGFloat = 46
-        /// The dot inside a status-class filter tile.
         static let filterDot: CGFloat = 6
-        /// The pause marker's icon and minimum row height.
         static let pauseIcon: CGFloat = 16
         static let pauseMinHeight: CGFloat = 32
         static let pendingDot: CGFloat = 4

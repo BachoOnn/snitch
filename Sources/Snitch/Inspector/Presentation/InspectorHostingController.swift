@@ -31,7 +31,6 @@ final class InspectorHostingController: UIHostingController<InspectorView> {
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold),
         ], for: .selected)
 
-        // Before iOS 26 the bar draws a separator line; SwiftUI has no way to turn it off.
         if #unavailable(iOS 26) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()

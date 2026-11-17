@@ -8,10 +8,7 @@
 import Foundation
 import ObjectiveC
 
-/// URLSession doesn't say which session a request came from, so each installed
-/// configuration gets its own protocol subclass that re-sends with its settings.
 enum SessionProtocols {
-    // Caps growth in apps that build a new session for every request.
     static let limit = 64
 
     private static let lock = NSLock()

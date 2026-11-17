@@ -18,7 +18,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/PostHog/posthog-ios.git", from: "3.28.0"),
-        // Only the tests use AppsFlyer, to check its methods; SnitchAppsFlyer finds it at runtime.
         .package(url: "https://github.com/AppsFlyerSDK/AppsFlyerFramework.git", "6.1.0"..<"8.0.0"),
     ],
     targets: [

@@ -28,7 +28,6 @@ enum BodyDocumentLoader {
         "\(owner)|\(data.count)|\(pretty)"
     }
 
-    /// Bodies up to this size are formatted right away, so the page is complete on its first frame.
     static let immediateLimit = 16_384
 
     static func cached(_ key: String) -> Result? {

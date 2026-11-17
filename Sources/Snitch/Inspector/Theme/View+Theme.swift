@@ -8,7 +8,6 @@
 import SwiftUI
 
 extension View {
-    /// On earlier versions the bar is styled by `InspectorHostingController`, without a separator.
     @ViewBuilder
     func inspectorBarBackground() -> some View {
         if #available(iOS 26, *) {

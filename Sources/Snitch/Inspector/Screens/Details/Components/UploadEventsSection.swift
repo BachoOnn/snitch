@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Lists the analytics events a captured request uploaded, each linking to its detail.
 struct UploadEventsSection: View {
     let events: [AnalyticsEvent]
 

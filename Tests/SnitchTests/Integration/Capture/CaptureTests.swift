@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import Snitch
 
-/// Shares global state (Snitch.store, protocol registration, the stub), so tests run one at a time.
 @Suite(.serialized)
 final class CaptureTests {
     static let base = URL(string: "https://api.snitch.test")!
@@ -21,7 +20,6 @@ final class CaptureTests {
         SnitchURLProtocol.forwarder = Forwarder(configuration: forwarding)
     }()
 
-    // Installed once: each installed configuration gets its own protocol class.
     private static let configuration: URLSessionConfiguration = {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [StubURLProtocol.self]

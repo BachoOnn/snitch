@@ -7,9 +7,7 @@
 
 import UIKit
 
-/// The tap and drag gestures, kept apart from the button's lifecycle.
 extension FloatingButton {
-    // Moving a view inside a still, screen-sized window is smoother than moving the window.
     func expand(_ window: FloatingButtonWindow, button: UIView) {
         guard let bounds = window.windowScene?.coordinateSpace.bounds, window.frame != bounds else { return }
         let origin = window.frame.origin
@@ -34,7 +32,6 @@ extension FloatingButton {
             settle?.stopAnimation(true)
             settle = nil
             expand(window, button: button)
-            // From the first touch, not where the pan was recognized, so it stays under the finger.
             grabOffset = CGPoint(x: button.center.x - touchDown.x, y: button.center.y - touchDown.y)
             let finger = pan.location(in: window)
             button.center = CGPoint(x: finger.x + grabOffset.x, y: finger.y + grabOffset.y)

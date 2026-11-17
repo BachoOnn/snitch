@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Loading the body document and finding text inside it.
 extension BodySection {
     func load() async {
         guard let data, !data.isEmpty else { return }

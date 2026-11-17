@@ -11,8 +11,6 @@ import Testing
 @testable import Snitch
 @testable import SnitchAppsFlyer
 
-/// Stands in for AppsFlyerLib with the same two Objective-C methods, so the tests never call
-/// AppsFlyer itself. Each test wraps its own class, since wrapping can't be undone.
 class FakeSDK: NSObject {
     @objc var customerUserID: String?
     var received: [String] = []
@@ -32,7 +30,6 @@ class FakeSDK: NSObject {
 
 final class WrappedSDK: FakeSDK {}
 
-/// Has a method with AppsFlyer's name but different arguments, which must be left alone.
 final class OtherSDK: NSObject {
     var received: [Int] = []
 

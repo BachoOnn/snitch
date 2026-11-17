@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// URLProtocolClient callbacks must arrive on the thread that started loading, in its run loop mode.
 struct ClientThread {
     private let runLoop: CFRunLoop
     private let modes: [CFString]

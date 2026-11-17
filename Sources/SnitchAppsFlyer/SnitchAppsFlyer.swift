@@ -43,10 +43,8 @@ public enum SnitchAppsFlyer {
         }
     }()
 
-    /// AppsFlyer's main class, found at runtime so Snitch doesn't depend on the SDK.
     static let className = "AppsFlyerLib"
 
-    /// The user ID the app gave AppsFlyer, read by name like the class itself.
     static func customerUserID(of sdk: AnyObject) -> String? {
         guard let object = sdk as? NSObject, object.responds(to: NSSelectorFromString("customerUserID")) else { return nil }
         return object.value(forKey: "customerUserID") as? String

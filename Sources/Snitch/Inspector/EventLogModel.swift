@@ -55,7 +55,6 @@ final class EventLogModel: ObservableObject {
         let shown = all.filter { ($0.isAutomatic ? showsAutomatic : showsAppEvents) && $0.matches(search) }
         let isNarrowed = activeFilterCount > 0 || !search.trimmingCharacters(in: .whitespaces).isEmpty
         let oldest = all.first?.date
-        // A pause from before the oldest event belongs to events that were cleared.
         let shownPauses = isNarrowed ? [] : pauses.filter { pause in
             pause.end == nil || oldest.map { $0 <= pause.start } == true
         }
@@ -78,7 +77,6 @@ final class EventLogModel: ObservableObject {
         all.last { $0.id == id }
     }
 
-    /// The events a captured request uploaded, newest first.
     func events(in entry: NetworkEntry) -> [AnalyticsEvent] {
         guard !entry.requestBodyIDs.isEmpty else { return [] }
         return all.filter { entry.requestBodyIDs.contains($0.id) }.sorted { $0.date > $1.date }

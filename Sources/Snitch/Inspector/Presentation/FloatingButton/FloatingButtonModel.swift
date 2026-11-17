@@ -15,8 +15,6 @@ final class FloatingButtonModel: ObservableObject {
     @Published private(set) var isResting = false
 
     private var entries: [NetworkEntry] = []
-    // Failures are tracked by ID, not time: a request can start before the inspector
-    // was last opened and still fail after it was closed.
     private var seenErrors: Set<UUID> = []
     private var lastID: UUID?
     private var restTimer: RestTimer?

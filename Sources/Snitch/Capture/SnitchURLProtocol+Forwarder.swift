@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Callbacks from the forwarder, delivered on its serial delegate queue.
 extension SnitchURLProtocol {
     func didReceive(_ response: URLResponse) {
         guard !finished else { return }

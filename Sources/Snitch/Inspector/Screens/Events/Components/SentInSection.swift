@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// Links an event to the captured request that uploaded it.
 struct SentInSection: View {
     let entry: NetworkEntry
     let otherEventCount: Int

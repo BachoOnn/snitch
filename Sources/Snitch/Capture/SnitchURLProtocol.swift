@@ -7,7 +7,6 @@
 
 import Foundation
 
-/// Not final: SessionProtocols subclasses it for each installed configuration.
 class SnitchURLProtocol: URLProtocol {
     static let handledKey = "dev.snitch.handled"
 
@@ -59,7 +58,6 @@ class SnitchURLProtocol: URLProtocol {
         forwardedTask?.cancel()
     }
 
-    /// Runs `body` on the client thread unless loading has been stopped.
     func onClient(_ body: @escaping (URLProtocolClient) -> Void) {
         clientThread?.perform { [self] in
             guard !stopped, let client else { return }
@@ -67,7 +65,6 @@ class SnitchURLProtocol: URLProtocol {
         }
     }
 
-    /// Applies `change` to the recorded entry and republishes it.
     func record(_ change: (inout NetworkEntry) -> Void) {
         guard var entry else { return }
         change(&entry)
@@ -75,8 +72,6 @@ class SnitchURLProtocol: URLProtocol {
         Snitch.store.update(entry)
     }
 
-    /// The error's message plus its domain and code, such as `NSURLErrorDomain -1200`,
-    /// so a TLS or connection failure can be told apart at a glance.
     static func describe(_ error: Error) -> String {
         let error = error as NSError
         return "\(error.localizedDescription) (\(error.domain) \(error.code))"

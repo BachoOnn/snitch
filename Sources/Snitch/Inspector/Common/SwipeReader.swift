@@ -8,13 +8,6 @@
 import SwiftUI
 import UIKit
 
-/// Reports sideways swipes anywhere on the screen it is placed in, without getting in
-/// the way of vertical scrolling.
-///
-/// It is a UIKit pan recognizer because SwiftUI drag gestures either miss drags that
-/// start on a row's button or block the scroll view. The pan only begins when the drag
-/// starts sideways, and once it does, the list doesn't scroll and the row under the finger
-/// doesn't count it as a tap.
 struct SwipeReader: UIViewRepresentable {
     let isEnabled: Bool
     let onSwipe: (_ translation: CGPoint, _ velocity: CGPoint) -> Void
@@ -59,10 +52,6 @@ struct SwipeReader: UIViewRepresentable {
             return abs(velocity.x) > 2 * abs(velocity.y)
         }
 
-        // Other drags, such as scrolling and pulling the sheet down, wait for the swipe to
-        // fail, so a slightly diagonal swipe doesn't also move them. A vertical drag fails
-        // the swipe as soon as it starts. A row's tap or long press gives way once the
-        // swipe begins. Edge swipes are left alone so the back gesture keeps working.
         func gestureRecognizer(
             _ recognizer: UIGestureRecognizer,
             shouldBeRequiredToFailBy other: UIGestureRecognizer
@@ -71,8 +60,6 @@ struct SwipeReader: UIViewRepresentable {
         }
     }
 
-    /// An invisible view that adds the recognizer to its screen's root view, so the
-    /// swipe works on top of every row, not just on the empty space behind them.
     final class AnchorView: UIView {
         var recognizer: UIGestureRecognizer?
 

@@ -10,7 +10,6 @@ import Testing
 @testable import Snitch
 
 extension CaptureTests {
-    /// Runs against a real local server, since cookies are handled by URLSession itself.
     @Suite(.serialized)
     final class SessionSettings {
         private let server: LocalHTTPServer

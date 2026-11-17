@@ -48,7 +48,6 @@ public final class NetworkStore: @unchecked Sendable {
         lock.withLock { pauseItems }
     }
 
-    /// Applies `change` under the lock and notifies subscribers if it returns `true`.
     func mutate(_ change: () -> Bool) {
         lock.withLock {
             guard change() else { return }
