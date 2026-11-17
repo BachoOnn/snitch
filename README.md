@@ -17,14 +17,14 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 
 <table>
 <tr>
-<td align="center"><img src="docs/overview-timeline.png" width="200" alt="The request timeline"><br><sub>Network (v1)</sub></td>
-<td align="center"><img src="docs/overview-events.png" width="200" alt="The PostHog event timeline"><br><sub>PostHog (v2)</sub></td>
-<td align="center"><img src="docs/overview-appsflyer.png" width="200" alt="The AppsFlyer event timeline"><br><sub>AppsFlyer (v3)</sub></td>
+<td align="center" width="33%"><img src="docs/overview-timeline.png" width="240" alt="The request timeline"><br><sub>Network (v1)</sub></td>
+<td align="center" width="33%"><img src="docs/overview-events.png" width="240" alt="The PostHog event timeline"><br><sub>PostHog (v2)</sub></td>
+<td align="center" width="33%"><img src="docs/overview-appsflyer.png" width="240" alt="The AppsFlyer event timeline"><br><sub>AppsFlyer (v3)</sub></td>
 </tr>
 <tr>
-<td align="center"><img src="docs/overview-detail.png" width="200" alt="A request's detail screen"><br><sub>Request detail</sub></td>
-<td align="center"><img src="docs/overview-event-detail.png" width="200" alt="A PostHog event's detail screen"><br><sub>PostHog event</sub></td>
-<td align="center"><img src="docs/overview-appsflyer-detail.png" width="200" alt="An AppsFlyer event's detail screen"><br><sub>AppsFlyer event</sub></td>
+<td align="center" width="33%"><img src="docs/overview-detail.png" width="240" alt="A request's detail screen"><br><sub>Request detail</sub></td>
+<td align="center" width="33%"><img src="docs/overview-event-detail.png" width="240" alt="A PostHog event's detail screen"><br><sub>PostHog event</sub></td>
+<td align="center" width="33%"><img src="docs/overview-appsflyer-detail.png" width="240" alt="An AppsFlyer event's detail screen"><br><sub>AppsFlyer event</sub></td>
 </tr>
 </table>
 
@@ -32,14 +32,14 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 
 <table>
 <tr>
-<td valign="top" width="33%"><p align="center"><img src="docs/demo-network.gif" width="200" alt="Opening the inspector, searching, filtering and reading a request"></p><sub><b>Find requests</b><br>Search, filters, hidden headers, pretty or raw bodies, find in body</sub></td>
-<td valign="top" width="33%"><p align="center"><img src="docs/demo-copy.gif" width="200" alt="Copying a request, a header and a cURL command"></p><sub><b>Copy and share</b><br>Long press to copy, a copy button you can drag, cURL</sub></td>
-<td valign="top" width="33%"><p align="center"><img src="docs/demo-events.gif" width="200" alt="Swiping between screens and following an event to its upload"></p><sub><b>Follow events</b><br>Swipe between screens, open an event's upload and its other events</sub></td>
+<td valign="top" width="33%"><p align="center"><img src="docs/demo-network.gif" width="240" alt="Opening the inspector, searching, filtering and reading a request"></p><sub><b>Find requests</b><br>Search, filters, hidden headers, pretty or raw bodies, find in body</sub></td>
+<td valign="top" width="33%"><p align="center"><img src="docs/demo-copy.gif" width="240" alt="Copying a request, a header and a cURL command"></p><sub><b>Copy and share</b><br>Long press to copy, a copy button you can drag, cURL</sub></td>
+<td valign="top" width="33%"><p align="center"><img src="docs/demo-events.gif" width="240" alt="Swiping between screens and following an event to its upload"></p><sub><b>Follow events</b><br>Swipe between screens, open an event's upload and its other events</sub></td>
 </tr>
 <tr>
-<td valign="top"><p align="center"><img src="docs/demo-pause.gif" width="200" alt="Pausing, resuming and clearing the timeline"></p><sub><b>Pause and clear</b><br>Paused time shows as a gap; clearing leaves your app alone</sub></td>
-<td valign="top"><p align="center"><img src="docs/demo-theme.gif" width="200" alt="The inspector switching between light and dark mode"></p><sub><b>Light and dark</b><br>Follows the device's appearance</sub></td>
-<td valign="top"><p align="center"><img src="docs/demo-button.gif" width="200" alt="Dragging the floating button and tapping it to open the inspector"></p><sub><b>Floating button</b><br>Drag it anywhere; a red dot means new failed requests. Tap to open, or shake</sub></td>
+<td valign="top"><p align="center"><img src="docs/demo-pause.gif" width="240" alt="Pausing, resuming and clearing the timeline"></p><sub><b>Pause and clear</b><br>Paused time shows as a gap; clearing leaves your app alone</sub></td>
+<td valign="top"><p align="center"><img src="docs/demo-theme.gif" width="240" alt="The inspector switching between light and dark mode"></p><sub><b>Light and dark</b><br>Follows the device's appearance</sub></td>
+<td valign="top"><p align="center"><img src="docs/demo-button.gif" width="240" alt="Dragging the floating button and tapping it to open the inspector"></p><sub><b>Floating button</b><br>Drag it anywhere; a red dot means new failed requests. Tap to open, or shake</sub></td>
 </tr>
 </table>
 
