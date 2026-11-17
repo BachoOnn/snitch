@@ -17,16 +17,14 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 
 <table>
 <tr>
-<td align="center"><img src="docs/overview-timeline.png" width="260" alt="The request timeline"><br><sub>Network timeline (v1)</sub></td>
-<td align="center"><img src="docs/overview-detail.png" width="260" alt="A request's detail screen"><br><sub>Request detail (v1)</sub></td>
+<td align="center"><img src="docs/overview-timeline.png" width="200" alt="The request timeline"><br><sub>Network (v1)</sub></td>
+<td align="center"><img src="docs/overview-events.png" width="200" alt="The PostHog event timeline"><br><sub>PostHog (v2)</sub></td>
+<td align="center"><img src="docs/overview-appsflyer.png" width="200" alt="The AppsFlyer event timeline"><br><sub>AppsFlyer (v3)</sub></td>
 </tr>
 <tr>
-<td align="center"><img src="docs/overview-events.png" width="260" alt="The PostHog event timeline"><br><sub>PostHog events (v2)</sub></td>
-<td align="center"><img src="docs/overview-event-detail.png" width="260" alt="A PostHog event's detail screen"><br><sub>PostHog event detail (v2)</sub></td>
-</tr>
-<tr>
-<td align="center"><img src="docs/overview-appsflyer.png" width="260" alt="The AppsFlyer event timeline"><br><sub>AppsFlyer events (v3)</sub></td>
-<td align="center"><img src="docs/overview-appsflyer-detail.png" width="260" alt="An AppsFlyer event's detail screen"><br><sub>AppsFlyer event detail (v3)</sub></td>
+<td align="center"><img src="docs/overview-detail.png" width="200" alt="A request's detail screen"><br><sub>Request detail</sub></td>
+<td align="center"><img src="docs/overview-event-detail.png" width="200" alt="A PostHog event's detail screen"><br><sub>PostHog event</sub></td>
+<td align="center"><img src="docs/overview-appsflyer-detail.png" width="200" alt="An AppsFlyer event's detail screen"><br><sub>AppsFlyer event</sub></td>
 </tr>
 </table>
 
@@ -34,63 +32,14 @@ See what your iOS app sends and logs: network requests and analytics events, eac
 
 <table>
 <tr>
-<td align="center" width="300"><img src="docs/demo-network.gif" width="260" alt="Opening the inspector, searching, filtering by status and reading a request"></td>
-<td>
-<b>Find any request</b>
-<ul>
-<li>Open the inspector from the floating button, or shake the device</li>
-<li>Search by URL, method or status</li>
-<li>Filter by status code, result, method and host, with chips to remove each filter</li>
-<li>Switch between the request and the response</li>
-<li>Tap the eye to reveal hidden headers such as <code>Authorization</code></li>
-<li>Read bodies as pretty or raw JSON, and find text in them</li>
-</ul>
-</td>
+<td align="center" valign="top" width="33%"><img src="docs/demo-network.gif" width="200" alt="Opening the inspector, searching, filtering and reading a request"><br><sub><b>Find requests</b><br>Search, filters, hidden headers, pretty or raw bodies, find in body</sub></td>
+<td align="center" valign="top" width="33%"><img src="docs/demo-copy.gif" width="200" alt="Copying a request, a header and a cURL command"><br><sub><b>Copy and share</b><br>Long press to copy, a copy button you can drag, cURL</sub></td>
+<td align="center" valign="top" width="33%"><img src="docs/demo-events.gif" width="200" alt="Swiping between screens and following an event to its upload"><br><sub><b>Follow events</b><br>Swipe between screens, open an event's upload and its other events</sub></td>
 </tr>
 <tr>
-<td align="center"><img src="docs/demo-copy.gif" width="260" alt="Copying a request, a header and a cURL command"></td>
-<td>
-<b>Copy and share</b>
-<ul>
-<li>Long press a request or event to copy a one-line summary</li>
-<li>Long press a header to copy its value or the whole header</li>
-<li>Drag the copy button anywhere it's out of your way</li>
-<li>Tap it to copy the request and response, or long press it to copy as cURL</li>
-<li>Share the request and response, or the cURL command, from the share menu</li>
-</ul>
-</td>
-</tr>
-<tr>
-<td align="center"><img src="docs/demo-events.gif" width="260" alt="Swiping between screens and following an event to its upload"></td>
-<td>
-<b>Follow events to their upload</b>
-<ul>
-<li>Swipe sideways to move between Network, AppsFlyer and PostHog</li>
-<li>Show PostHog's own events, such as <code>$screen</code>, from the filters</li>
-<li>See which upload sent an event, and every event in that upload</li>
-<li>Read the upload's gzip body unzipped</li>
-</ul>
-</td>
-</tr>
-<tr>
-<td align="center"><img src="docs/demo-pause.gif" width="260" alt="Pausing, resuming and clearing the timeline"></td>
-<td>
-<b>Pause and clear</b>
-<ul>
-<li>Pause recording while you do something you don't need to see</li>
-<li>The time it was paused shows as a gap in the timeline</li>
-<li>Clear a screen when you want to start fresh; your app isn't affected</li>
-</ul>
-</td>
-</tr>
-<tr>
-<td align="center"><img src="docs/demo-theme.gif" width="260" alt="The inspector switching between light and dark mode"></td>
-<td>
-<b>Light and dark</b>
-<ul>
-<li>Follows the device's appearance, on every screen</li>
-</ul>
-</td>
+<td align="center" valign="top"><img src="docs/demo-pause.gif" width="200" alt="Pausing, resuming and clearing the timeline"><br><sub><b>Pause and clear</b><br>Paused time shows as a gap; clearing leaves your app alone</sub></td>
+<td align="center" valign="top"><img src="docs/demo-theme.gif" width="200" alt="The inspector switching between light and dark mode"><br><sub><b>Light and dark</b><br>Follows the device's appearance</sub></td>
+<td></td>
 </tr>
 </table>
 
