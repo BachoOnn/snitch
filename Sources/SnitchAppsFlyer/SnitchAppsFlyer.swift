@@ -5,7 +5,6 @@
 //  Created by BOniani on 17/11/2026.
 //
 
-import AppsFlyerLib
 import Snitch
 import UIKit
 
@@ -27,8 +26,9 @@ public enum SnitchAppsFlyer {
     ///
     /// AppsFlyer has no hook that sees events before they are sent, so Snitch wraps its two
     /// public `logEvent` methods. Each event is recorded, then passed on to AppsFlyer
-    /// unchanged. Calling this more than once has no extra effect. Does nothing in
-    /// non-`DEBUG` builds.
+    /// unchanged. Snitch finds AppsFlyer by name while the app runs, so it works with the
+    /// AppsFlyer version your app already has, and does nothing in apps without it.
+    /// Calling this more than once has no extra effect. Does nothing in non-`DEBUG` builds.
     public static func start() {
         #if DEBUG
         _ = started
@@ -36,11 +36,21 @@ public enum SnitchAppsFlyer {
     }
 
     private static let started: Void = {
+        guard let appsFlyer = NSClassFromString(className) else { return }
         Snitch.registerEventSource(source, icon: logo)
-        LogEventHook.install(in: AppsFlyerLib.self) { sdk, name, values in
-            Snitch.record(makeEvent(name: name, values: values, userID: (sdk as? AppsFlyerLib)?.customerUserID))
+        LogEventHook.install(in: appsFlyer) { sdk, name, values in
+            Snitch.record(makeEvent(name: name, values: values, userID: customerUserID(of: sdk)))
         }
     }()
+
+    /// AppsFlyer's main class, found at runtime so Snitch doesn't depend on the SDK.
+    static let className = "AppsFlyerLib"
+
+    /// The user ID the app gave AppsFlyer, read by name like the class itself.
+    static func customerUserID(of sdk: AnyObject) -> String? {
+        guard let object = sdk as? NSObject, object.responds(to: NSSelectorFromString("customerUserID")) else { return nil }
+        return object.value(forKey: "customerUserID") as? String
+    }
 
     static var logo: UIImage? {
         UIImage(named: "AppsFlyerLogo", in: .module, with: nil)

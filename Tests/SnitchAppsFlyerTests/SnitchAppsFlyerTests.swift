@@ -14,6 +14,7 @@ import Testing
 /// Stands in for AppsFlyerLib with the same two Objective-C methods, so the tests never call
 /// AppsFlyer itself. Each test wraps its own class, since wrapping can't be undone.
 class FakeSDK: NSObject {
+    @objc var customerUserID: String?
     var received: [String] = []
     var completions = 0
 
@@ -67,6 +68,18 @@ struct SnitchAppsFlyerTests {
         let sdk = OtherSDK()
         sdk.logEvent(7, withValues: true)
         #expect(sdk.received == [7])
+    }
+
+    @Test func findsAppsFlyerByName() {
+        #expect(NSClassFromString(SnitchAppsFlyer.className) == AppsFlyerLib.self)
+    }
+
+    @Test func readsTheUserIDByName() {
+        let sdk = FakeSDK()
+        #expect(SnitchAppsFlyer.customerUserID(of: sdk) == nil)
+        sdk.customerUserID = "user_8f2c"
+        #expect(SnitchAppsFlyer.customerUserID(of: sdk) == "user_8f2c")
+        #expect(SnitchAppsFlyer.customerUserID(of: OtherSDK()) == nil)
     }
 
     @Test func appsFlyerHasBothMethodsWithTheExpectedArguments() {

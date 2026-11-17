@@ -138,7 +138,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/snitch", from: "3.0.0")
+.package(url: "https://github.com/BachoOnn/snitch", from: "3.1.0")
 ```
 
 ### Choosing a version
@@ -149,13 +149,15 @@ Each major version adds one logger. Pick the one that covers the SDKs your app u
 |---|---|---|---|
 | 1.x | Network | Nothing | `from: "1.1.2"` |
 | 2.x | Network, PostHog | PostHog | `from: "2.1.1"` |
-| 3.x | Network, PostHog, AppsFlyer | PostHog, AppsFlyer | `from: "3.0.0"` |
+| 3.x | Network, PostHog, AppsFlyer | PostHog | `from: "3.1.0"` |
 
 `from:` stays within that major version, so you get its fixes but never the next
 logger's SDK. Swift Package Manager downloads every SDK a version depends on, even
-for products you don't add, so an app without PostHog or AppsFlyer can stay on 1.x
-and download nothing else. The SDKs are only built into apps that add
-`SnitchPostHog` or `SnitchAppsFlyer`.
+for products you don't add, so an app without PostHog can stay on 1.x and download
+nothing else. PostHog is only built into apps that add `SnitchPostHog`.
+
+`SnitchAppsFlyer` doesn't depend on AppsFlyer, so it adds nothing to download. From
+3.1.0 it uses the AppsFlyer already in your app; 3.0.0 downloaded it.
 
 ## Quick start
 
@@ -262,8 +264,8 @@ Swift Package Manager downloads PostHog when you add Snitch, even if you only us
 
 ### AppsFlyer events
 
-Add the `SnitchAppsFlyer` product to your app target (it needs AppsFlyer for iOS 6.1 or
-later), then start it next to Snitch:
+Add the `SnitchAppsFlyer` product to your app target (your app needs AppsFlyer for iOS
+6.1 or later), then start it next to Snitch:
 
 ```swift
 import SnitchAppsFlyer
@@ -287,9 +289,11 @@ What it shows and doesn't:
 - **No uploads on the Network screen:** AppsFlyer encrypts its requests and sends them
   through its own `URLSession`, so they can't be shown or linked to their events.
 
-`SnitchAppsFlyer` accepts AppsFlyer for iOS from 6.1 up to, but not including, 8.0, and uses
-whichever version your app already has. Like PostHog, Swift Package Manager downloads
-AppsFlyer when you add Snitch, but it is only built into apps that add `SnitchAppsFlyer`.
+`SnitchAppsFlyer` doesn't depend on AppsFlyer. It finds AppsFlyer by name while your app
+runs, so it works with whichever version your app already has and adds nothing to
+download. Before wrapping a method, it checks that the method exists and takes the
+arguments it expects; if not, it leaves that method alone. In an app without AppsFlyer,
+`start()` does nothing.
 
 ### Other options
 
