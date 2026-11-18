@@ -18,4 +18,7 @@ jobs:
           ios = sorted((r for r in runtimes if "iOS" in r), reverse=True)
           print(next(d["udid"] for r in ios for d in runtimes[r] if d["name"].startswith("iPhone")))
           ')
-          xcodebuild test -scheme Snitch-Package -destination "id=$DEVICE" -quiet
+          status=0
+          xcodebuild test -scheme Snitch-Package -destination "id=$DEVICE" > test.log 2>&1 || status=$?
+          grep -E "✘|error:|Failing tests:|^\s+[A-Za-z]+Tests\.|Test run with|TEST (SUCCEEDED|FAILED)" test.log || true
+          exit $status

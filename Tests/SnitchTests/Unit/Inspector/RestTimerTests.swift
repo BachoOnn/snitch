@@ -17,7 +17,7 @@ import Testing
         try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
     }
 
-    private func eventually(_ condition: () -> Bool, timeout: Double = 3) async -> Bool {
+    private func eventually(_ condition: () -> Bool, timeout: Double = 15) async -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
             if condition() { return true }
@@ -34,6 +34,7 @@ import Testing
         #expect(await eventually { rests.value == 1 })
         await wait(0.2)
         #expect(rests.value == 1)
+        timer.cancel()
     }
 
     @Test func pokingPostponesTheRest() async {

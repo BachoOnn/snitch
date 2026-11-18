@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 final class FloatingButtonModel: ObservableObject {
-    static let restDelay: TimeInterval = 5
+    nonisolated static let restDelay: TimeInterval = 5
     @Published private(set) var activity = 0
     @Published private(set) var hasNewErrors = false
     @Published private(set) var isResting = false
