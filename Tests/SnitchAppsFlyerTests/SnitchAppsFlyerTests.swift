@@ -67,6 +67,11 @@ struct SnitchAppsFlyerTests {
         #expect(sdk.received == [7])
     }
 
+    @Test func addsTheScreenEvenWithoutAppsFlyer() {
+        #expect(SnitchAppsFlyer.install(className: "NoSuchAnalyticsSDK") == 0)
+        #expect(Snitch.events.sources.contains("AppsFlyer"))
+    }
+
     @Test func findsAppsFlyerByName() {
         #expect(NSClassFromString(SnitchAppsFlyer.className) == AppsFlyerLib.self)
     }

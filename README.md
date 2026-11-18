@@ -87,7 +87,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/snitch", from: "3.1.0")
+.package(url: "https://github.com/BachoOnn/snitch", from: "3.1.1")
 ```
 
 ### Choosing a version
@@ -98,7 +98,7 @@ Each major version adds one logger. Pick the one that covers the SDKs your app u
 |---|---|---|---|
 | 1.x | Network | Nothing | `from: "1.1.2"` |
 | 2.x | Network, PostHog | PostHog | `from: "2.1.1"` |
-| 3.x | Network, PostHog, AppsFlyer | PostHog | `from: "3.1.0"` |
+| 3.x | Network, PostHog, AppsFlyer | PostHog | `from: "3.1.1"` |
 
 `from:` stays within that major version, so you get its fixes but never the next
 logger's SDK. Swift Package Manager downloads every SDK a version depends on, even
@@ -242,7 +242,7 @@ What it shows and doesn't:
 runs, so it works with whichever version your app already has and adds nothing to
 download. Before wrapping a method, it checks that the method exists and takes the
 arguments it expects; if not, it leaves that method alone. In an app without AppsFlyer,
-`start()` does nothing.
+the screen still appears and stays empty.
 
 ### Other options
 
