@@ -3,15 +3,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/BachoOnn/snitch/tags"><img alt="Version" src="https://img.shields.io/github/v/tag/BachoOnn/snitch?label=version&color=green"></a>
+  <a href="https://github.com/BachoOnn/snitch/actions/workflows/tests.yml"><img alt="Tests" src="https://github.com/BachoOnn/snitch/actions/workflows/tests.yml/badge.svg"></a>
+  <a href="https://github.com/BachoOnn/snitch/releases/latest"><img alt="Version" src="https://img.shields.io/github/v/tag/BachoOnn/snitch?label=version&color=green"></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-iOS%2016%2B-lightgrey">
   <img alt="Swift" src="https://img.shields.io/badge/swift-5.9%2B-orange">
   <a href="https://github.com/BachoOnn/snitch/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
 </p>
 
 See what your iOS app sends and logs: network requests and analytics events, each on its own screen in one inspector.
-
-> **Status:** early development. The network inspector, PostHog events and AppsFlyer events work; the API may still change.
 
 ### Overview
 
