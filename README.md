@@ -12,6 +12,10 @@
 
 See what your iOS app sends and logs: network requests and analytics events, each on its own screen in one inspector.
 
+<p align="center">
+  <img src="docs/demo-shake.gif" width="300" alt="Shaking the device opens the inspector, then switching to PostHog and opening an event">
+</p>
+
 ### Overview
 
 <table>
