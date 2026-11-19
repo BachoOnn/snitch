@@ -29,11 +29,10 @@ public enum SnitchAppsFlyer {
     /// unchanged. Snitch finds AppsFlyer by name while the app runs, so it works with the
     /// AppsFlyer version your app already has. In an app without AppsFlyer the screen still
     /// appears, and stays empty. Calling this more than once has no extra effect. Does
-    /// nothing in non-`DEBUG` builds.
+    /// nothing when Snitch isn't enabled (see `Snitch.isEnabled`).
     public static func start() {
-        #if DEBUG
+        guard Snitch.isEnabled else { return }
         _ = started
-        #endif
     }
 
     private static let started: Void = {

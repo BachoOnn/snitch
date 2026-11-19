@@ -9,11 +9,12 @@ import Foundation
 
 /// Entry point for Snitch's network capture.
 ///
-/// Capture only runs in `DEBUG` builds. In other builds every call here is a no-op,
-/// so Snitch cannot record traffic in a release build by accident.
+/// Capture only runs in `DEBUG` builds, unless ``enableOutsideDebug()`` lets it run in a
+/// test build such as one from TestFlight. Otherwise every call here is a no-op, so Snitch
+/// cannot record traffic in a release build by accident.
 public enum Snitch {
     /// The library version.
-    public static let version = "3.1.1"
+    public static let version = "3.2.0"
 
     /// The store that receives every captured entry.
     public static let store = NetworkStore()
@@ -55,7 +56,7 @@ public enum Snitch {
         opensOnShake: Bool = true,
         capturesSharedSession: Bool = true
     ) {
-        #if DEBUG
+        guard isEnabled else { return }
         let started: Bool = lock.withLock {
             guard !running else { return false }
             running = true
@@ -71,12 +72,11 @@ public enum Snitch {
                 if opensOnShake { ShakeToOpen.isEnabled = true }
             }
         }
-        #endif
     }
 
     /// Stops capturing new requests. Requests already in flight finish normally.
     public static func stop() {
-        #if DEBUG
+        guard isEnabled else { return }
         lock.withLock {
             guard running else { return }
             running = false
@@ -93,40 +93,34 @@ public enum Snitch {
             FloatingButton.shared.uninstall()
             ShakeToOpen.isEnabled = false
         }
-        #endif
     }
 
     /// Stops recording new requests until ``resume()``. The gap is kept in the
     /// store as a ``NetworkStore/Pause``. Requests already in flight are still recorded.
     public static func pause() {
-        #if DEBUG
         lock.withLock {
             guard running, !paused else { return }
             paused = true
             store.beginPause()
         }
-        #endif
     }
 
     /// Resumes recording after ``pause()``.
     public static func resume() {
-        #if DEBUG
         lock.withLock {
             guard paused else { return }
             paused = false
             store.endPause()
         }
-        #endif
     }
 
     /// Opens the inspector over the app's current screen.
     ///
-    /// Use this to open Snitch from your own debug menu. It does nothing in non-`DEBUG`
-    /// builds or when the inspector is already open.
+    /// Use this to open Snitch from your own debug menu. It does nothing when Snitch isn't
+    /// enabled (see ``isEnabled``) or when the inspector is already open.
     @MainActor
     public static func present() {
-        #if DEBUG
+        guard isEnabled else { return }
         InspectorPresenter.present()
-        #endif
     }
 }

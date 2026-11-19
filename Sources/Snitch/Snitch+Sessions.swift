@@ -15,13 +15,9 @@ extension Snitch {
     /// Requests captured this way are re-sent with default settings, so cookies go to
     /// the shared cookie store. Prefer ``install(in:)`` where you can.
     ///
-    /// Empty in non-`DEBUG` builds.
+    /// Empty when Snitch isn't enabled (see ``isEnabled``).
     public static var urlProtocolClasses: [AnyClass] {
-        #if DEBUG
-        [SnitchURLProtocol.self]
-        #else
-        []
-        #endif
+        isEnabled ? [SnitchURLProtocol.self] : []
     }
 
     /// Adds Snitch to a custom session configuration.
@@ -33,13 +29,12 @@ extension Snitch {
     /// Captured requests are re-sent with this configuration's own settings, so its
     /// cookie store, cache, credentials and network policies behave as without Snitch.
     /// Background configurations are left alone, since they don't run protocol classes.
+    /// Does nothing when Snitch isn't enabled (see ``isEnabled``).
     public static func install(in configuration: URLSessionConfiguration) {
-        #if DEBUG
-        guard configuration.identifier == nil else { return }
+        guard isEnabled, configuration.identifier == nil else { return }
         var classes = configuration.protocolClasses ?? []
         guard !classes.contains(where: { $0 is SnitchURLProtocol.Type }) else { return }
         classes.insert(SessionProtocols.makeClass(for: configuration), at: 0)
         configuration.protocolClasses = classes
-        #endif
     }
 }

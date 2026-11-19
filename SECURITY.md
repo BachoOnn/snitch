@@ -12,7 +12,7 @@ Reports are acknowledged as soon as possible. Please include the affected versio
 
 ## Design guarantees
 
-- Snitch is intended for debug builds only.
+- Snitch is intended for debug builds, and for internal test builds such as TestFlight when you turn it on with `Snitch.enableOutsideDebug()`. It never runs in an app installed from the App Store.
 - It does not intercept or decrypt network traffic and does not modify TLS behavior.
 - It sends no telemetry and makes no network calls of its own.
 - Captured data stays in memory on the device unless you export it yourself.

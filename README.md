@@ -85,7 +85,7 @@ Snitch is an in-app debugging tool for iOS. It records your app's own `URLSessio
 Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/BachoOnn/snitch", from: "3.1.1")
+.package(url: "https://github.com/BachoOnn/snitch", from: "3.2.0")
 ```
 
 ### Choosing a version
@@ -96,7 +96,7 @@ Each major version adds one logger. Pick the one that covers the SDKs your app u
 |---|---|---|---|
 | 1.x | Network | Nothing | `from: "1.1.2"` |
 | 2.x | Network, PostHog | PostHog | `from: "2.1.1"` |
-| 3.x | Network, PostHog, AppsFlyer | PostHog | `from: "3.1.1"` |
+| 3.x | Network, PostHog, AppsFlyer | PostHog | `from: "3.2.0"` |
 
 `from:` stays within that major version, so you get its fixes but never the next
 logger's SDK. Swift Package Manager downloads every SDK a version depends on, even
@@ -123,7 +123,8 @@ struct MyApp: App {
 ```
 
 Tap the floating button or shake the device to open the inspector. In builds without
-`DEBUG`, every Snitch call does nothing.
+`DEBUG`, every Snitch call does nothing, unless you
+[turn it on for QA builds](#testflight-and-qa-builds).
 
 `Snitch.start()` covers `URLSession.shared`. For your own sessions, add Snitch to the
 configuration before creating the session:
@@ -139,8 +140,11 @@ store and cookie rules, cache, credentials and network policies. Certificate che
 and login challenges still go to your session's delegate, so SSL pinning and custom
 trust handling keep working.
 
+Background sessions (`URLSessionConfiguration.background`) are not captured. iOS runs
+their uploads and downloads outside your app, so they never pass through Snitch.
+
 If the code that builds the session takes a list of protocol classes instead, pass
-`Snitch.urlProtocolClasses` (it is empty in builds without `DEBUG`). Requests captured
+`Snitch.urlProtocolClasses` (it is empty when Snitch is off). Requests captured
 this way use default settings, so cookies go to the shared cookie store; prefer
 `install(in:)` where you can.
 
@@ -250,6 +254,31 @@ Snitch.present()                                       // open it from your own 
 Snitch.pause()                                         // stop recording until resume()
 Snitch.resume()
 ```
+
+### TestFlight and QA builds
+
+TestFlight builds use a release configuration, so by default Snitch is off there. To
+give QA the inspector in the builds they test, add a ReleaseTest configuration:
+
+1. In your project's Info tab, duplicate the Release configuration and name it `ReleaseTest`.
+2. In your app target's build settings, add `RELEASE_TEST` to Active Compilation
+   Conditions for `ReleaseTest` only.
+3. Duplicate your scheme as `ReleaseTest` and set its Archive action to the
+   `ReleaseTest` configuration. Archive from this scheme for TestFlight.
+4. Turn Snitch on before starting it:
+
+```swift
+#if RELEASE_TEST
+Snitch.enableOutsideDebug()
+#endif
+Snitch.start()
+```
+
+Your App Store builds keep using Release, where this code isn't compiled in. As a second
+safeguard, Snitch stays off in any app installed from the App Store, even if
+`enableOutsideDebug()` runs. It works in TestFlight, ad hoc, enterprise and Xcode installs.
+Send App Store review the Release build, not ReleaseTest: review installs count as test
+installs.
 
 ## Requirements
 

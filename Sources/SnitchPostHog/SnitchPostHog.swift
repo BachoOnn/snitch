@@ -26,11 +26,12 @@ public enum SnitchPostHog {
     ///
     /// The one exception: screen views of Snitch's own UI, such as its floating button or
     /// the open inspector, are dropped instead of sent. Reading this property also adds the
-    /// PostHog screen to the inspector. In non-`DEBUG` builds the block only returns the event.
+    /// PostHog screen to the inspector. When Snitch isn't enabled (see `Snitch.isEnabled`), the
+    /// block only returns the event.
     public static var beforeSend: BeforeSendBlock {
         Snitch.registerEventSource(source, icon: logo)
         return { event in
-            #if DEBUG
+            guard Snitch.isEnabled else { return event }
             if isSnitchScreenView(name: event.event, properties: event.properties) {
                 return nil
             }
@@ -43,7 +44,6 @@ public enum SnitchPostHog {
             ) {
                 Snitch.record(recorded)
             }
-            #endif
             return event
         }
     }
