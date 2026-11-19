@@ -27,6 +27,11 @@ final class RestTimer {
         }
     }
 
+    /// Waits until the current wait ends, by resting or being cancelled.
+    func settled() async {
+        await task?.value
+    }
+
     func cancel() {
         task?.cancel()
         task = nil

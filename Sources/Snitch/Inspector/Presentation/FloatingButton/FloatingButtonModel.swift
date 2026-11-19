@@ -34,6 +34,11 @@ final class FloatingButtonModel: ObservableObject {
         restTimer?.poke()
     }
 
+    /// Waits until the button rests, or its wait is cut short by a touch.
+    func settled() async {
+        await restTimer?.settled()
+    }
+
     func markSeen() {
         seenErrors = Set(entries.filter(\.outcome.isError).map(\.id))
         hasNewErrors = false
